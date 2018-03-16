@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['triplec.linux@gmail.com']
   spec.description   = %q{cocoapods-tdfire-binary is a plugin which helps developer switching there project dependency between source and binary.}
   spec.summary       = %q{cocoapods-tdfire-binary is a plugin which helps developer switching there project dependency between source and binary.}
-  spec.homepage      = 'https://github.com/EXAMPLE/cocoapods-tdfire-binary'
+  spec.homepage      = 'https://github.com/tripleCC/cocoapods-tdfire-binary'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
