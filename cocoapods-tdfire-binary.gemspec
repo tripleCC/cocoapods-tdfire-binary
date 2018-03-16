@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = CocoapodsTdfireBinary::VERSION
   spec.authors       = ['tripleCC']
   spec.email         = ['triplec.linux@gmail.com']
-  spec.description   = %q{A short description of cocoapods-tdfire-binary.}
-  spec.summary       = %q{A longer description of cocoapods-tdfire-binary.}
+  spec.description   = %q{cocoapods-tdfire-binary is a plugin which helps developer switching there project dependency between source and binary.}
+  spec.summary       = %q{cocoapods-tdfire-binary is a plugin which helps developer switching there project dependency between source and binary.}
   spec.homepage      = 'https://github.com/EXAMPLE/cocoapods-tdfire-binary'
   spec.license       = 'MIT'
 
@@ -19,5 +19,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.3'
-  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rake', '~> 12.0'
+
+  spec.add_dependency 'cocoapods', '~> 1.4'
+  spec.add_dependency 'colorize', '~> 0.8'
+  
 end
