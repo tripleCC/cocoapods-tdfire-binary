@@ -35,9 +35,9 @@ module Pod
 输入参数错误.
 
 Example:
-  tdfire_external_pods ['TDFCore'] source:'git' group:'ios' branch:'develop'
-  tdfire_external_pods 'TDFCore' source:'git' group:'ios' branch:'develop'
-  tdfire_external_pods ['TDFCore'] group:'cocoapods' 
+  tdfire_external_pods ['TDFCore'], source:'git', group:'ios', branch:'develop'
+  tdfire_external_pods 'TDFCore', source:'git', group:'ios', branch:'develop'
+  tdfire_external_pods ['TDFCore'], group:'cocoapods' 
   ...
 
 默认值：

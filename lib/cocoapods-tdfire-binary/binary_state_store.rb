@@ -6,8 +6,8 @@ module  Tdfire
 			@@printed_pods ||= []
 		end
 
-		def self.unpublish_pods
-			@@use_external_source_pods ||= []
+		def self.unpublished_pods
+			@@unpublished_pods ||= []
 		end
 
 		def self.use_source_pods
