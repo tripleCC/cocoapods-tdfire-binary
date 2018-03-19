@@ -3,7 +3,11 @@ module  Tdfire
 		public
 
 		def self.printed_pods
-			@printed_pods ||= []
+			@@printed_pods ||= []
+		end
+
+		def self.unpublish_pods
+			@@use_external_source_pods ||= []
 		end
 
 		def self.use_source_pods
@@ -11,7 +15,7 @@ module  Tdfire
 		end
 
 		def self.use_source_pods=(pods)
-			ENV[USE_SOURCE_PODS_KEY] = Array(pods).join('|')
+			ENV[USE_SOURCE_PODS_KEY] = Array(pods).uniq.join('|')
 		end
 
 		def self.use_binary?

@@ -14,9 +14,9 @@ module CocoapodsTdfireBinary
 
 		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，当前打成 framework 的开发 Pod 需要源码依赖
 		if Tdfire::BinaryStateStore.use_binary? && !Tdfire::BinaryStateStore.force_use_binary?
-			Pod::UI.section("Tdfire: set use source for development_pod: \'#{development_pod}\'") do 
-				# 开发 Pod 使用源码依赖
-				Tdfire::BinaryStateStore.use_source_pods = Array(development_pod) + Tdfire::BinaryStateStore.use_source_pods
+			Pod::UI.section("Tdfire: set use source for development pod: \'#{development_pod}\'") do 
+				# 开发 Pod 默认设置为未发布状态
+				Tdfire::BinaryStateStore.unpublished_pods << Array(development_pod)
 			end unless development_pod.nil?
 			tdfire_default_development_pod = development_pod
 		end
@@ -44,13 +44,14 @@ module CocoapodsTdfireBinary
 	    end
 		end
 
-		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，提醒当前工程的所有开发 Pods 需要设置成源码依赖
+		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，提示当前工程的未发布的 Pods 
 		if Tdfire::BinaryStateStore.use_binary? && !Tdfire::BinaryStateStore.force_use_binary?
-			all_development_pods = context.sandbox.development_pods.keys - Array(tdfire_default_development_pod) - Tdfire::BinaryStateStore.use_source_pods
+			all_development_pods = context.sandbox.development_pods.keys - Array(tdfire_default_development_pod) - Tdfire::BinaryStateStore.unpublished_pods
 			all_development_pods_displayed_text = all_development_pods.map { |p| "'#{p}'" }.join(',')
-			Pod::UI.puts "Tdfire: You should add following code to your `Podfile`, and then run `pod install or pod update` again. \n\ntdfire_use_source_pods [#{all_development_pods_displayed_text}]\n".cyan unless all_development_pods.empty?
+			Pod::UI.puts "Tdfire: You should add following code to your `Podfile`, and then run `pod install or pod update` again. \n\ntdfire_unpublished_pods [#{all_development_pods_displayed_text}]\n".cyan unless all_development_pods.empty?
 		end
 
 		Pod::UI.puts "Tdfire: all source dependency pods: #{Tdfire::BinaryStateStore.use_source_pods.join(', ')}"
+		Pod::UI.puts "Tdfire: all unpublished pods: #{Tdfire::BinaryStateStore.unpublished_pods.join(', ')}"
 	end
 end

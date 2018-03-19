@@ -33,6 +33,10 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations_at_last(download_url = nil)
+
+        # 没有发布的pod，没有二进制版本，不进行下载配置
+        return if Tdfire::BinaryStateStore.unpublished_pods.include?(name)
+
         raise Pod::Informative, "You must invoke the method after setting name and version" if name.nil? || version.nil?
 
         set_framework_preserve_paths
@@ -48,7 +52,9 @@ module Pod
       def set_framework_preserve_paths
         framework_preserve_paths = ["#{name}.framework"]
         framework_preserve_paths += consumer(Platform.ios).preserve_paths unless consumer(Platform.ios).preserve_paths.nil?
-        source_preserve_paths = ["#{name}/**/**/*"]
+
+        # 规避 preserve_paths don't match any files 错误
+        source_preserve_paths = ["#{name}/**/**/*", "Classes/**/*"]
 
         # preserve_paths = xxx 无法不会将值设置进去，不明白其原理
         store_attribute('preserve_paths', framework_preserve_paths + source_preserve_paths)
