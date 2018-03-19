@@ -5,11 +5,19 @@ module Pod
   class Specification
     module DSL
 
+      private 
+
+      def use_source?
+        (!Tdfire::BinaryStateStore.force_use_binary? && 
+        (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.use_source_pods.include?(name))) ||
+        Tdfire::BinaryStateStore.force_use_source?
+      end
+
     	public
 
     	# 源码依赖配置
       def tdfire_source(&block)
-        if !Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.use_source_pods.include?(self.name)
+        if use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
           	UI.puts "Source".magenta.bold + " dependecy for " + "#{name} #{version}".light_blue 
             Tdfire::BinaryStateStore.printed_pods << name
@@ -21,7 +29,7 @@ module Pod
 
       # 二进制依赖配置
       def tdfire_binary(&block)
-        if Tdfire::BinaryStateStore.use_binary? && !Tdfire::BinaryStateStore.use_source_pods.include?(self.name)
+        if !use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
           	UI.puts "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".light_blue 
             Tdfire::BinaryStateStore.printed_pods << name
@@ -35,7 +43,7 @@ module Pod
       def tdfire_set_binary_download_configurations_at_last(download_url = nil)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
-        return if Tdfire::BinaryStateStore.unpublished_pods.include?(name)
+        return if !Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(name)
 
         raise Pod::Informative, "You must invoke the method after setting name and version" if name.nil? || version.nil?
 

@@ -6,26 +6,25 @@ module Pod
     module DSL
       # 使用源码依赖的pod
       def tdfire_use_source_pods(pods)
-      	old_pods = Tdfire::BinaryStateStore.use_source_pods
-      	UI.puts "Tdfire: the use source pods: #{old_pods.join(',')} will be overrided by new pods: #{pods.join(',')}".cyan if (!old_pods.empty? && old_pods != pods )
-
-      	Tdfire::BinaryStateStore.use_source_pods = pods
+        Pod::UI.puts "Tdfire: set use source pods: #{Array(pods).join(', ')}"
+      	Tdfire::BinaryStateStore.use_source_pods = Array(pods)
       end
 
       # 标明未发布的pod，因为未发布pod没有对应的二进制版本，无法下载
       # 未发布的pod，一定是源码依赖的
       def tdfire_unpublished_pods(pods)
-        Tdfire::BinaryStateStore.unpublished_pods << Array(pods)
-        Tdfire::BinaryStateStore.unpublished_pods.uniq!
-
-        # 未发布的pod，一定是源码依赖的
-        Tdfire::BinaryStateStore.use_source_pods << Array(Tdfire::BinaryStateStore.unpublished_pods) 
+        Pod::UI.puts "Tdfire: set unpublished pods: #{Array(pods).join(', ')}"
+        Tdfire::BinaryStateStore.unpublished_pods = Array(pods)
       end
 
       # 使用二进制依赖
       def tdfire_use_binary!
         Tdfire::BinaryStateStore.set_use_binary
       end
+
+      def tdfire_auto_set_default_unpublished_pod!
+        Tdfire::BinaryStateStore.set_auto_set_default_unpublished_pod
+      end      
 
       # 外源组件依赖
       def tdfire_external_pods(pods, *rest)
@@ -77,7 +76,7 @@ EOF
         end
 
       	# 除了依赖私有源正式版本的组件，其余组件一律视为未发布组件，进行源码依赖
-        tdfire_unpublish_pods(pods)
+        Tdfire::BinaryStateStore.unpublished_pods += Array(pods)
 
         # Tdfire::BinaryStateStore.use_source_pods = Array(pods) + Tdfire::BinaryStateStore.use_source_pods
       end
