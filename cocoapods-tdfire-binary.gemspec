@@ -22,6 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 12.0'
 
   spec.add_dependency 'cocoapods', '~> 1.4'
-  spec.add_dependency 'colorize', '~> 0.8'
   
 end
