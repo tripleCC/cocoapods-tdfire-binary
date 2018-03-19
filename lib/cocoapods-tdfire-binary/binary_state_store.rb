@@ -22,9 +22,18 @@ module  Tdfire
 			ENV[USE_BINARY_KEY] = USE_BINARY_SURE_VALUE
 		end
 
+		def self.force_use_binary?
+			ENV[FORCE_USE_BINARY_KEY] == USE_BINARY_SURE_VALUE
+		end
+
+		def self.set_force_use_binary
+			ENV[FORCE_USE_BINARY_KEY] = USE_BINARY_SURE_VALUE
+		end
+
 		private
 
 		USE_SOURCE_PODS_KEY = 'tdfire_use_source_pods'
+		FORCE_USE_BINARY_KEY = 'tdfire_force_use_binary'
 		USE_BINARY_KEY = 'tdfire_use_binary'
 		USE_BINARY_SURE_VALUE = '1'
 	end

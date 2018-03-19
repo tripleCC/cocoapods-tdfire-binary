@@ -48,9 +48,10 @@ module Pod
       def set_framework_preserve_paths
         framework_preserve_paths = ["#{name}.framework"]
         framework_preserve_paths += consumer(Platform.ios).preserve_paths unless consumer(Platform.ios).preserve_paths.nil?
+        source_preserve_paths = ["#{name}/**/**/*"]
 
         # preserve_paths = xxx 无法不会将值设置进去，不明白其原理
-        store_attribute('preserve_paths', framework_preserve_paths)
+        store_attribute('preserve_paths', framework_preserve_paths + source_preserve_paths)
       end
 
       def set_framework_download_script(download_url)

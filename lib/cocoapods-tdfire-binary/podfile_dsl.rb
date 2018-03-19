@@ -12,6 +12,11 @@ module Pod
       	Tdfire::BinaryStateStore.use_source_pods = pods
       end
 
+      # 强制使用二进制依赖
+      def tdfire_force_use_binary!
+        Tdfire::BinaryStateStore.set_force_use_binary
+      end
+
       # 使用二进制依赖
       def tdfire_use_binary!
         Tdfire::BinaryStateStore.set_use_binary

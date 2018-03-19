@@ -12,7 +12,8 @@ module CocoapodsTdfireBinary
 			context.podfile.install!('cocoapods', :share_schemes_for_development_pods => [development_pod])
 		end unless development_pod.nil?
 
-		if Tdfire::BinaryStateStore.use_binary?
+		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，当前打成 framework 的开发 Pod 需要源码依赖
+		if Tdfire::BinaryStateStore.use_binary? && !Tdfire::BinaryStateStore.force_use_binary?
 			Pod::UI.section("Tdfire: set use source for development_pod: \'#{development_pod}\'") do 
 				# 开发 Pod 使用源码依赖
 				Tdfire::BinaryStateStore.use_source_pods = Array(development_pod) + Tdfire::BinaryStateStore.use_source_pods
@@ -43,7 +44,8 @@ module CocoapodsTdfireBinary
 	    end
 		end
 
-		if Tdfire::BinaryStateStore.use_binary?
+		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，提醒当前工程的所有开发 Pods 需要设置成源码依赖
+		if Tdfire::BinaryStateStore.use_binary? && !Tdfire::BinaryStateStore.force_use_binary?
 			all_development_pods = context.sandbox.development_pods.keys - Array(tdfire_default_development_pod) - Tdfire::BinaryStateStore.use_source_pods
 			all_development_pods_displayed_text = all_development_pods.map { |p| "'#{p}'" }.join(',')
 			Pod::UI.puts "Tdfire: You should add following code to your `Podfile`, and then run `pod install or pod update` again. \n\ntdfire_use_source_pods [#{all_development_pods_displayed_text}]\n".cyan unless all_development_pods.empty?
