@@ -3,16 +3,24 @@ module  Tdfire
 		public
 
 		class << self
-			attr_accessor :unpublished_pods
+			# attr_accessor :unpublished_pods
 			attr_writer :use_source_pods
 			attr_reader :printed_pods
 		end
-		@unpublished_pods = []
+		# @unpublished_pods = []
 		@use_source_pods = []
 		@printed_pods = []
 
 		def self.use_source_pods
-			(@use_source_pods + @unpublished_pods).uniq			
+			(@use_source_pods + unpublished_pods).uniq			
+		end
+
+		def self.unpublished_pods
+			(ENV[UNPBLISHED_PODS] || []).split('|')
+		end
+
+		def self.unpublished_pods=(pods)
+			ENV[UNPBLISHED_PODS] = Array(pods).join('|')
 		end
 
 		def self.use_binary?
@@ -40,7 +48,8 @@ module  Tdfire
 		end
 
 		private
-		
+
+		UNPBLISHED_PODS = "tdfire_unpublished_pods"
 		AUTO_SET_DEFAULT_UNPUBLISHED_POD_KEY = 'auto_set_default_unpublished_pod'
 		FORCE_USE_SOURCE_KEY = 'tdfire_force_use_source'
 		FORCE_USE_BINARY_KEY = 'tdfire_force_use_binary'

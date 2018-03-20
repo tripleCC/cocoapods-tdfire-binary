@@ -16,7 +16,7 @@ module CocoapodsTdfireBinary
 		if Tdfire::BinaryStateStore.use_binary? && Tdfire::BinaryStateStore.auto_set_default_unpublished_pod?
 			Pod::UI.section("Tdfire: auto set unpublished for development pod: \'#{development_pod}\'") do 
 				# 开发 Pod 默认设置为未发布状态
-				Tdfire::BinaryStateStore.unpublished_pods << development_pod
+				Tdfire::BinaryStateStore.unpublished_pods += development_pod
 			end unless development_pod.nil?
 			tdfire_default_development_pod = development_pod
 		end
