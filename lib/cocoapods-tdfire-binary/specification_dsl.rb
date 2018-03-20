@@ -1,5 +1,5 @@
 require 'cocoapods-tdfire-binary/binary_state_store'
-require 'colored'
+require 'colored2'
 
 module Pod
   class Specification
