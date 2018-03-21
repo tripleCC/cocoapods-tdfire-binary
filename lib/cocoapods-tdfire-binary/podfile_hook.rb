@@ -1,8 +1,8 @@
 require 'cocoapods-tdfire-binary/binary_state_store'
+require 'cocoapods-tdfire-binary/source_chain_analyzer'
 
 module CocoapodsTdfireBinary
 	
-	tdfire_default_development_pod = nil
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :pre_install) do |context, _|
 		first_target_definition = context.podfile.target_definition_list.select{ |d| d.name != 'Pods' }.first
 		development_pod = first_target_definition.name.split('_').first unless first_target_definition.nil?
@@ -12,13 +12,24 @@ module CocoapodsTdfireBinary
 			context.podfile.install!('cocoapods', :share_schemes_for_development_pods => [development_pod])
 		end unless development_pod.nil?
 
-		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，当前打成 framework 的开发 Pod 需要源码依赖
-		if Tdfire::BinaryStateStore.use_binary? && Tdfire::BinaryStateStore.auto_set_default_unpublished_pod?
-			Pod::UI.section("Tdfire: auto set unpublished for development pod: \'#{development_pod}\'") do 
-				# 开发 Pod 默认设置为未发布状态
-				Tdfire::BinaryStateStore.unpublished_pods += development_pod
-			end unless development_pod.nil?
-			tdfire_default_development_pod = development_pod
+
+		# 标明未发布的pod，因为未发布pod没有对应的二进制版本，无法下载
+    # 未发布的pod，一定是源码依赖的
+    Pod::UI.section("Tdfire: auto set unpublished pods") do
+			Tdfire::BinaryStateStore.unpublished_pods = context.podfile.dependencies.select(&:external?).map(&:root_name)
+
+			Pod::UI.message "> Tdfire: unpublished pods: #{Tdfire::BinaryStateStore.unpublished_pods.join(', ')}"
+		end
+
+		# 没有标识use_frameworks!，进行源码依赖需要设置Pod依赖链上，依赖此源码Pod的也进行源码依赖
+		unless first_target_definition.uses_frameworks?
+			Pod::UI.section("Tdfire: analyze chain pods depend on use source pods: #{Tdfire::BinaryStateStore.use_source_pods.join(', ')}") do
+				chain_pods = Tdfire::SourceChainAnalyzer.new(context.podfile).analyze(Tdfire::BinaryStateStore.use_source_pods)
+
+				Pod::UI.message "> Tdfire: find chain pods: #{chain_pods.join(', ')}"
+
+				Tdfire::BinaryStateStore.use_source_pods += chain_pods 
+			end unless Tdfire::BinaryStateStore.use_source_pods.empty? 
 		end
 	end
 
@@ -44,14 +55,7 @@ module CocoapodsTdfireBinary
 	    end
 		end
 
-		# 在采用二进制依赖，并且不是强制二进制依赖的情况下，提示当前工程的未发布的 Pods 
-		if Tdfire::BinaryStateStore.use_binary?
-			all_development_pods = context.sandbox.development_pods.keys - Array(tdfire_default_development_pod) - Tdfire::BinaryStateStore.use_source_pods
-			all_development_pods_displayed_text = all_development_pods.map { |p| "'#{p}'" }.join(',')
-			Pod::UI.puts "Tdfire: You should add following code to your `Podfile`, and then run `pod install or pod update` again. \n\ntdfire_unpublished_pods [#{all_development_pods_displayed_text}]\n".cyan unless all_development_pods.empty?
-		end
-
-		Pod::UI.puts "Tdfire: all source dependency pods: #{Tdfire::BinaryStateStore.use_source_pods.join(', ')}"
+		Pod::UI.puts "Tdfire: all source dependency pods: #{Tdfire::BinaryStateStore.real_use_source_pods.join(', ')}"
 		Pod::UI.puts "Tdfire: all unpublished pods: #{Tdfire::BinaryStateStore.unpublished_pods.join(', ')}"
 	end
 end

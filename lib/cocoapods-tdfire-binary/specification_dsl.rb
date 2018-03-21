@@ -9,7 +9,7 @@ module Pod
 
       def use_source?
         (!Tdfire::BinaryStateStore.force_use_binary? && 
-        (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.use_source_pods.include?(name))) ||
+        (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(name))) ||
         Tdfire::BinaryStateStore.force_use_source?
       end
 
@@ -19,7 +19,7 @@ module Pod
       def tdfire_source(&block)
         if use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.puts "Source".magenta.bold + " dependecy for " + "#{name} #{version}".blue 
+          	UI.puts "Source".magenta.bold + " dependecy for " + "#{name} #{version}".green.bold
             Tdfire::BinaryStateStore.printed_pods << name
           end
 
@@ -31,7 +31,7 @@ module Pod
       def tdfire_binary(&block)
         if !use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.puts "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".blue 
+          	UI.puts "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".green.bold 
             Tdfire::BinaryStateStore.printed_pods << name
           end
 
