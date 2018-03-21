@@ -16,11 +16,11 @@ module  Tdfire
 		end
 
 		def self.unpublished_pods
-			String(ENV[UNPBLISHED_PODS]).split('|')
+			String(ENV[UNPBLISHED_PODS]).split('|').uniq
 		end
 
 		def self.unpublished_pods=(pods)
-			ENV[UNPBLISHED_PODS] = Array(pods).join('|')
+			ENV[UNPBLISHED_PODS] = Array(pods).uniq.join('|')
 		end
 
 		def self.use_binary?

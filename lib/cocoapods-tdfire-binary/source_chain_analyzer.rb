@@ -14,7 +14,7 @@ module Tdfire
 				find_parent_pods(pod, @pods_data) unless @parent_pods.include?(pod)
 			end unless @lockfile.nil?
 
-			@parent_pods.uniq
+			@parent_pods.map{ |pod| pod.split('/', 2).first }.uniq
 		end
 
 		private
@@ -29,7 +29,6 @@ module Tdfire
 				find_parent_pods(hold_pod_name, pods_data - parent_pod_hashes)
 			end
 		end
-
 
 		def generate_lockfile(podfile)
 			fetch_external_source = false
