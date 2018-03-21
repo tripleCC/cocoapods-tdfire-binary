@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoapods-tdfire-binary (0.1.6)
+    cocoapods-tdfire-binary (0.1.7)
       cocoapods (~> 1.4)
       colored2 (~> 3.1)
 
