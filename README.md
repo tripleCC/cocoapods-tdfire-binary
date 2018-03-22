@@ -28,21 +28,28 @@ tdfire_external_pods 'SDWebImage'
 > For podspec
 
 ```
-s.tdfire_source |s|
-# source configuration
-	...
+...
 
+tdfire_source_proc = Proc.new do
+    # source configuration
 end
 
-s.tdfire_binary |s|
-# binary configuration
+unless %w[tdfire_set_binary_download_configurations_at_last tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
+    
+  tdfire_source_proc.call
+else
+  s.tdfire_source &tdfire_source_proc
+  
+  s.tdfire_binary do |s|
+    s.vendored_framework = "#{s.name}.framework"
+    s.source_files = "#{s.name}.framework/Headers/*"
+    s.public_header_files = "#{s.name}.framework/Headers/*"
 
-	s.vendored_framework = "#{s.name}.framework"
-  s.source_files = "#{s.name}.framework/Headers/*"
-  s.public_header_files = "#{s.name}.framework/Headers/*"
-
-  ...
+    # binary configuration
+  end
+  
+  s.tdfire_set_binary_download_configurations_at_last
 end
 
-s.tdfire_set_binary_download_configurations_at_last
+...
 ```
