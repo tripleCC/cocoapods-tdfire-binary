@@ -47,9 +47,8 @@ else
     # binary configuration
   end
   
+  # s.tdfire_set_binary_download_configurations_at_last(download_url)
   s.tdfire_set_binary_download_configurations_at_last
 end
 
-# s.tdfire_set_binary_download_configurations_at_last(download_url)
-s.tdfire_set_binary_download_configurations_at_last
 ```
