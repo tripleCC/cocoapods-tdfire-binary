@@ -57,7 +57,7 @@ module CocoapodsTdfireBinary
 	    end
 		end
 
-		Pod::UI.puts "Tdfire: all source dependency pods: #{BinaryStateStore.real_use_source_pods.join(', ')}" if BinaryStateStore.use_binary?
+		Pod::UI.puts "Tdfire: all source dependency pods: #{BinaryStateStore.real_use_source_pods.join(', ')}"
 		Pod::UI.puts "Tdfire: all unpublished pods: #{BinaryStateStore.unpublished_pods.join(', ')}"
 	end
 end
