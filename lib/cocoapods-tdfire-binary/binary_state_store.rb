@@ -6,10 +6,12 @@ module  Tdfire
 			# attr_accessor :unpublished_pods
 			attr_accessor :use_source_pods
 			attr_reader :printed_pods
+			attr_accessor :use_frameworks
 		end
 		# @unpublished_pods = []
 		@use_source_pods = []
 		@printed_pods = []
+		@use_frameworks = false
 
 		def self.real_use_source_pods
 			(@use_source_pods + unpublished_pods).uniq	

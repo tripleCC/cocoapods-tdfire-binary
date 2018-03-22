@@ -2,7 +2,8 @@ require 'cocoapods-tdfire-binary/binary_state_store'
 require 'cocoapods-tdfire-binary/source_chain_analyzer'
 
 module CocoapodsTdfireBinary
-	
+	include Tdfire
+
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :pre_install) do |context, _|
 		first_target_definition = context.podfile.target_definition_list.select{ |d| d.name != 'Pods' }.first
 		development_pod = first_target_definition.name.split('_').first unless first_target_definition.nil?
@@ -16,20 +17,21 @@ module CocoapodsTdfireBinary
 		# 标明未发布的pod，因为未发布pod没有对应的二进制版本，无法下载
     # 未发布的pod，一定是源码依赖的
     Pod::UI.section("Tdfire: auto set unpublished pods") do
-			Tdfire::BinaryStateStore.unpublished_pods = context.podfile.dependencies.select(&:external?).map(&:root_name)
+			BinaryStateStore.unpublished_pods = context.podfile.dependencies.select(&:external?).map(&:root_name)
 
-			Pod::UI.message "> Tdfire: unpublished pods: #{Tdfire::BinaryStateStore.unpublished_pods.join(', ')}"
+			Pod::UI.message "> Tdfire: unpublished pods: #{BinaryStateStore.unpublished_pods.join(', ')}"
 		end
 
 		# 没有标识use_frameworks!，进行源码依赖需要设置Pod依赖链上，依赖此源码Pod的也进行源码依赖
-		unless first_target_definition.uses_frameworks?
-			Pod::UI.section("Tdfire: analyze chain pods depend on use source pods: #{Tdfire::BinaryStateStore.use_source_pods.join(', ')}") do
-				chain_pods = Tdfire::SourceChainAnalyzer.new(context.podfile).analyze(Tdfire::BinaryStateStore.use_source_pods)
+		BinaryStateStore.use_frameworks = first_target_definition.uses_frameworks?
+		unless BinaryStateStore.use_frameworks
+			Pod::UI.section("Tdfire: analyze chain pods depend on use source pods: #{BinaryStateStore.use_source_pods.join(', ')}") do
+				chain_pods = SourceChainAnalyzer.new(context.podfile).analyze(BinaryStateStore.use_source_pods)
 
 				Pod::UI.message "> Tdfire: find chain pods: #{chain_pods.join(', ')}"
 
-				Tdfire::BinaryStateStore.use_source_pods += chain_pods 
-			end unless Tdfire::BinaryStateStore.use_source_pods.empty? 
+				BinaryStateStore.use_source_pods += chain_pods 
+			end unless BinaryStateStore.use_source_pods.empty? 
 		end
 	end
 
@@ -55,7 +57,7 @@ module CocoapodsTdfireBinary
 	    end
 		end
 
-		Pod::UI.puts "Tdfire: all source dependency pods: #{Tdfire::BinaryStateStore.real_use_source_pods.join(', ')}"
-		Pod::UI.puts "Tdfire: all unpublished pods: #{Tdfire::BinaryStateStore.unpublished_pods.join(', ')}"
+		Pod::UI.puts "Tdfire: all source dependency pods: #{BinaryStateStore.real_use_source_pods.join(', ')}"
+		Pod::UI.puts "Tdfire: all unpublished pods: #{BinaryStateStore.unpublished_pods.join(', ')}"
 	end
 end

@@ -15,11 +15,15 @@ module Pod
 
     	public
 
+      def tdfire_use_frameworks?
+        Tdfire::BinaryStateStore.use_frameworks
+      end
+
     	# 源码依赖配置
       def tdfire_source(&block)
         if use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.puts "Source".magenta.bold + " dependecy for " + "#{name} #{version}".green.bold
+          	UI.message "Source".magenta.bold + " dependecy for " + "#{name} #{version}".green.bold
             Tdfire::BinaryStateStore.printed_pods << name
           end
 
@@ -31,7 +35,7 @@ module Pod
       def tdfire_binary(&block)
         if !use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.puts "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".green.bold 
+          	UI.message "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".green.bold 
             Tdfire::BinaryStateStore.printed_pods << name
           end
 
