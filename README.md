@@ -8,6 +8,7 @@ A description of cocoapods-tdfire-binary.
 
 ## Usage
 
+
 > For Podfile
 
 ```
@@ -15,13 +16,11 @@ A description of cocoapods-tdfire-binary.
 plugin 'cocoapods-tdfire-binary'
 
 tdfire_use_binary!
-tdfire_use_source_pods 'AFNetworking'
+tdfire_use_source_pods ['AFNetworking']
 
 use_frameworks!
 
 ...
-
-tdfire_external_pods 'SDWebImage'
 
 ```
 
@@ -51,5 +50,6 @@ else
   s.tdfire_set_binary_download_configurations_at_last
 end
 
-...
+# s.tdfire_set_binary_download_configurations_at_last(download_url)
+s.tdfire_set_binary_download_configurations_at_last
 ```
