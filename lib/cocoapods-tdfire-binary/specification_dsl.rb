@@ -54,7 +54,7 @@ module Pod
       private
 
       def framework_url_for_pod_version(pod, version)
-        "http://10.1.131.104:8080/getframework/PRODUCTION/#{pod}/#{version}"
+        "http://iosframeworkserver-shopkeeperclient.cloudapps.2dfire.com/getframework/PRODUCTION/#{pod}/#{version}"
       end
 
       def set_framework_preserve_paths

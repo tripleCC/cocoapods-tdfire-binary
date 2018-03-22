@@ -8,6 +8,13 @@ A description of cocoapods-tdfire-binary.
 
 ## Usage
 
+> For .gitignore
+
+```
+...
+
+*.framework
+```
 
 > For Podfile
 
@@ -39,7 +46,7 @@ unless %w[tdfire_set_binary_download_configurations_at_last tdfire_source tdfire
 else
   s.tdfire_source &tdfire_source_proc
   
-  s.tdfire_binary do |s|
+  s.tdfire_binary do 
     s.vendored_framework = "#{s.name}.framework"
     s.source_files = "#{s.name}.framework/Headers/*"
     s.public_header_files = "#{s.name}.framework/Headers/*"
