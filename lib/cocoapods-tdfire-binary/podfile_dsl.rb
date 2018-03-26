@@ -24,27 +24,27 @@ module Pod
       def tdfire_external_pods(pods, *rest)
       	argvs = rest.last || {}
         if !argvs.kind_of?(Hash)
-          info =  <<-EOF
-输入参数错误.
+          info =  <<~EOF
+            输入参数错误.
 
-Example:
-  tdfire_external_pods ['TDFCore'], source:'git', group:'ios', branch:'develop'
-  tdfire_external_pods 'TDFCore', source:'git', group:'ios', branch:'develop'
-  tdfire_external_pods ['TDFCore'], group:'cocoapods' 
-  ...
+            Example:
+              tdfire_external_pods ['TDFCore'], source:'git', group:'ios', branch:'develop'
+              tdfire_external_pods 'TDFCore', source:'git', group:'ios', branch:'develop'
+              tdfire_external_pods ['TDFCore'], group:'cocoapods' 
+              ...
 
-默认值：
-  source:path
-  group:ios
-  branch:develop
+            默认值：
+              source:path
+              group:ios
+              branch:develop
 
-所有值:
-  source -> git path
-  group -> 任意
-  branch -> 任意
+            所有值:
+              source -> git path
+              group -> 任意
+              branch -> 任意
 
-格式可以和pod语法一致
-EOF
+            格式可以和pod语法一致
+          EOF
           raise Pod::Informative, info
         end
 

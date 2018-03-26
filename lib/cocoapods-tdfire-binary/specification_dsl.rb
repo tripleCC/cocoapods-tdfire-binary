@@ -76,33 +76,33 @@ module Pod
         framework_name = "#{name}.framework"
         framework_relative_path = "Carthage/Build/iOS/#{framework_name}"
 
-        download_script = <<-EOF
-#!/bin/sh
+        download_script = <<~EOF
+          #!/bin/sh
 
-if [[ -d #{framework_name} ]]; then
-  echo "Tdfire: #{framework_name} is not empty"
-  exit 0
-fi
+          if [[ -d #{framework_name} ]]; then
+            echo "Tdfire: #{framework_name} is not empty"
+            exit 0
+          fi
 
-if [[ ! -d tdfire_download_temp ]]; then
-  mkdir tdfire_download_temp
-fi
+          if [[ ! -d tdfire_download_temp ]]; then
+            mkdir tdfire_download_temp
+          fi
 
-cd tdfire_download_temp
+          cd tdfire_download_temp
 
-curl --fail -O -J -v #{download_url}
+          curl --fail -O -J -v #{download_url}
 
-if [[ -f #{framework_name}.zip ]]; then
-  echo "Tdfire: copying #{framework_name} ..."
+          if [[ -f #{framework_name}.zip ]]; then
+            echo "Tdfire: copying #{framework_name} ..."
 
-  unzip #{framework_name}.zip
-  cp -fr #{framework_relative_path} ../
-fi
+            unzip #{framework_name}.zip
+            cp -fr #{framework_relative_path} ../
+          fi
 
-cd ..
-rm -fr tdfire_download_temp
+          cd ..
+          rm -fr tdfire_download_temp
 
-echo "pod cache path for #{name}: $(pwd)"
+          echo "pod cache path for #{name}: $(pwd)"
         EOF
 
         eval_download_script = %Q[echo '#{download_script}' > download.sh && sh download.sh && rm download.sh]
