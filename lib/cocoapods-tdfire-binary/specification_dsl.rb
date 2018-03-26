@@ -66,7 +66,7 @@ module Pod
         framework_preserve_paths += consumer(Platform.ios).preserve_paths unless consumer(Platform.ios).preserve_paths.nil?
 
         # 规避 preserve_paths don't match any files 错误
-        source_preserve_paths = ["#{name}/**/**/*", "Classes/**/*"]
+        source_preserve_paths = consumer(Platform.ios).source_files
 
         # preserve_paths = xxx 无法不会将值设置进去，不明白其原理
         store_attribute('preserve_paths', framework_preserve_paths + source_preserve_paths)
