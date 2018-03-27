@@ -9,7 +9,7 @@ module Pod
 
       def use_source?
         (!Tdfire::BinaryStateStore.force_use_binary? && 
-        (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(name))) ||
+        (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
         Tdfire::BinaryStateStore.force_use_source?
       end
 
@@ -22,9 +22,9 @@ module Pod
     	# 源码依赖配置
       def tdfire_source(&block)
         if use_source?
-          if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.message "Source".magenta.bold + " dependecy for " + "#{name} #{version}".green.bold
-            Tdfire::BinaryStateStore.printed_pods << name
+          if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+          	UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
+            Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
           yield self if block_given?
@@ -34,9 +34,9 @@ module Pod
       # 二进制依赖配置
       def tdfire_binary(&block)
         if !use_source?
-          if !Tdfire::BinaryStateStore.printed_pods.include?(name)
-          	UI.message "Binary".cyan.bold + " dependecy for " + "#{name} #{version}".green.bold 
-            Tdfire::BinaryStateStore.printed_pods << name
+          if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+          	UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold 
+            Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
           yield self if block_given?
@@ -45,37 +45,45 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations_at_last(download_url = nil)
+        set_use_static_framework
+        set_framework_preserve_paths
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
-        return if !Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(name)
+        return if !Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)
 
-        raise Pod::Informative, "You must invoke the method after setting name and version" if name.nil? || version.nil?
+        raise Pod::Informative, "You must invoke the method after setting name and version" if root.name.nil? || version.nil?
 
-        set_framework_preserve_paths
-        set_framework_download_script(download_url || framework_url_for_pod_version(name, version))
+        set_framework_download_script(download_url || framework_url_for_pod_version(root.name, version))
       end
 
       private
 
-      def framework_url_for_pod_version(pod, version)
-        "http://iosframeworkserver-shopkeeperclient.cloudapps.2dfire.com/getframework/PRODUCTION/#{pod}/#{version}"
+      def set_use_static_framework
+        store_attribute('static_framework', true)
       end
 
+      # 同时保留源码资源，二进制文件
       def set_framework_preserve_paths
-        framework_preserve_paths = ["#{name}.framework"]
+        # 源码依赖下，保留二进制文件
+        framework_preserve_paths = [framework_name]
         framework_preserve_paths += consumer(Platform.ios).preserve_paths unless consumer(Platform.ios).preserve_paths.nil?
 
-        # 规避 preserve_paths don't match any files 错误
-        source_preserve_paths = consumer(Platform.ios).source_files
+        # 二进制依赖下，保留源码文件
+        source_preserve_paths = ["#{root.name}/Classes/**/*", "Classes/**/*", "*.{h,m}"] 
+
+        # 增加 consumer(Platform.ios).source_files 规避 preserve_paths don't match any files 错误
+        source_preserve_paths += consumer(Platform.ios).source_files unless consumer(Platform.ios).source_files.nil?
+
+        # 二进制依赖下，保留资源文件
+        resource_preserve_paths = ["#{root.name}/Assets/**/*", "Resources/**/*", "Assets/**/*"] 
+
+        all_preserve_paths = framework_preserve_paths + source_preserve_paths + resource_preserve_paths
 
         # preserve_paths = xxx 无法不会将值设置进去，不明白其原理
-        store_attribute('preserve_paths', framework_preserve_paths + source_preserve_paths)
+        store_attribute('preserve_paths', all_preserve_paths)
       end
 
       def set_framework_download_script(download_url)
-        framework_name = "#{name}.framework"
-        framework_relative_path = "Carthage/Build/iOS/#{framework_name}"
-
         download_script = <<~EOF
           #!/bin/sh
 
@@ -102,7 +110,7 @@ module Pod
           cd ..
           rm -fr tdfire_download_temp
 
-          echo "pod cache path for #{name}: $(pwd)"
+          echo "pod cache path for #{root.name}: $(pwd)"
         EOF
 
         eval_download_script = %Q[echo '#{download_script}' > download.sh && sh download.sh && rm download.sh]
@@ -110,6 +118,18 @@ module Pod
 
         # prepare_command = xxx 在内部执行的话，无法将值设置进hash，不明白其原理
         store_attribute('prepare_command', eval_download_script)
+      end
+
+      def framework_url_for_pod_version(pod, version)
+        "http://iosframeworkserver-shopkeeperclient.cloudapps.2dfire.com/getframework/PRODUCTION/#{pod}/#{version}"
+      end
+
+      def framework_name
+        "#{root.name}.framework"
+      end
+
+      def framework_relative_path
+        "./#{framework_name}"
       end
     end
   end
