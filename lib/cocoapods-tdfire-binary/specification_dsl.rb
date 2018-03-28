@@ -3,6 +3,9 @@ require 'colored2'
 
 module Pod
   class Specification
+    private
+    attr_accessor :tdfire_source_spec
+
     module DSL
 
       private 
@@ -27,9 +30,59 @@ module Pod
             Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
+          tdfire_source_spec = self
           configurator.call self
         end
       end
+
+      def tdfire_set_binary_configuration(spec)
+        puts spec.attributes_hash
+
+        # 组件frameworks的依赖
+        store_attribute('vendored_frameworks', "#{root.name}.framework")
+        store_attribute('source_files', "#{root.name}.framework/Headers/*")
+        store_attribute('public_header_files', "#{root.name}.framework/Headers/*")
+
+        # 保留对frameworks lib 的依赖
+        %w[frameworks libraries weak_frameworks].each do |attribute|
+          tdfire_store_binary_array_attribute(spec, attribute)
+        end
+
+        # spec.subspecs.each do |s|
+        #   subspec(s.name)
+          # if valide_subspec.nil?
+          #   valide_subspec = s
+          #   subspec(s.name) do |ss|
+          #     ss.set_binary_configuration()
+          #   end
+          # else
+          #   subspec(s.name) do |ss|
+          #     ss.dependecy valide_subspec.name
+          #   end
+          # end
+        # end
+      end
+
+      def tdfire_ios_consumer
+        consumer(Platform.ios)
+      end
+
+      def tdfire_store_binary_array_attribute(spec, attribute)
+        temp = tdfire_binary_array_attribute(spec, attribute)
+        temp += attributes_hash[attribute] unless attributes_hash[attribute].nil?
+        store_attribute(attribute, temp) unless temp.empty?  
+      end
+
+      def tdfire_binary_array_attribute(spec, attribute)
+        temp = spec.tdfire_ios_consumer.send(attribute) || []
+        spec_temp = spec.subspecs.map { |s| s.tdfire_ios_consumer.send(attribute) }.flatten
+        temp += spec_temp unless spec_temp.nil?
+
+        puts "#{attribute} #{temp}"
+
+        temp
+      end
+      
 
       # 二进制依赖配置
       def tdfire_binary(configurator, &block)
@@ -40,7 +93,15 @@ module Pod
           end
 
           yield self if block_given?
+
+          tdfire_source_spec = Spec.new
+          configurator.call tdfire_source_spec
+          tdfire_set_binary_configuration(tdfire_source_spec)
         end
+      end
+
+      def tdfire_source_spec
+        @tdfire_source_spec ||= Spec.new
       end
 
       # 配置二进制文件下载、cache 住解压好的 framework
@@ -54,6 +115,8 @@ module Pod
         raise Pod::Informative, "You must invoke the method after setting name and version" if root.name.nil? || version.nil?
 
         set_framework_download_script(download_url || framework_url_for_pod_version(root.name, version))
+
+        puts attributes_hash
       end
 
       private

@@ -42,7 +42,6 @@ module CocoapodsTdfireBinary
 	#fix `Shell Script` Build Phase Fails When Input / Output Files List is Too Large
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :post_install) do |context, _|
 		Pod::UI.section('Tdfire: auto clean input and output files') do
-			should_clean_input_output_paths = false
 			context.umbrella_targets.map(&:user_targets).flatten.uniq.each do |t|
 	      phase = t.shell_script_build_phases.find { |p| p.name.include?(Pod::Installer::UserProjectIntegrator::TargetIntegrator::COPY_PODS_RESOURCES_PHASE_NAME) }
 
@@ -53,14 +52,13 @@ module CocoapodsTdfireBinary
 	      if input_output_paths > max_input_output_paths
 	      	phase.input_paths.clear
 	      	phase.output_paths.clear
-	      	should_clean_input_output_paths = true
 	      end
 
 	    end
 
 	    context.umbrella_targets.map(&:user_project).each do |project|
 	      project.save
-	    end if should_clean_input_output_paths
+	    end 
 		end
 
 		Pod::UI.puts "Tdfire: all source dependency pods: #{BinaryStateStore.real_use_source_pods.join(', ')}" if BinaryStateStore.use_binary?
