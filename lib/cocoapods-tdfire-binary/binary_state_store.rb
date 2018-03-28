@@ -5,11 +5,14 @@ module  Tdfire
 		class << self
 			# attr_accessor :unpublished_pods
 			attr_accessor :use_source_pods
+			attr_accessor :use_binary_pods
 			attr_reader :printed_pods
 			attr_accessor :use_frameworks
+			attr_accessor :use_source
 		end
-		# @unpublished_pods = []
+		
 		@use_source_pods = []
+		@use_binary_pods = []
 		@printed_pods = []
 		@use_frameworks = false
 

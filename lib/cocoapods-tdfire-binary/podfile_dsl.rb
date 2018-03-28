@@ -15,6 +15,20 @@ module Pod
         Tdfire::BinaryStateStore.set_use_binary
       end  
 
+      # 因为暂时无法将全部组件二进制化，tdfire_use_binary! 默认全部进行二进制依赖不利于渐进测试
+      # 所以添加 tdfire_use_source! 默认全部进行源码依赖，开放指定二进制依赖组件接口
+      # 
+      # 使用二进制依赖的pod
+      # 与 tdfire_use_binary 互斥
+      def tdfire_use_binary_pods(pods)
+        Pod::UI.puts "Tdfire: set use binary pods: #{Array(pods).join(', ')}"
+        Tdfire::BinaryStateStore.use_binary_pods = Array(pods)
+      end
+
+      def tdfire_use_source!
+        
+      end
+
       # 强制使用二进制依赖，忽略未发布和依赖源码设置
       # def tdfire_force_use_binary!
       #   Tdfire::BinaryStateStore.set_force_use_binary
