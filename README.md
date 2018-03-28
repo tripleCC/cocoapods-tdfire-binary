@@ -62,7 +62,7 @@ use_frameworks!
 ```
 ...
 
-tdfire_source_proc = Proc.new do
+tdfire_source_configurator = lambda do |s|
     # source configuration
     # s.source_files = 'PodA/Classes/**/*'
     # s.resource_bundles = {
@@ -72,13 +72,11 @@ end
 
 unless %w[tdfire_set_binary_download_configurations_at_last tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
     
-  tdfire_source_proc.call
+  tdfire_source_configurator.call s
 else
-  s.static_framework = true
-
-  s.tdfire_source &tdfire_source_proc
+  s.tdfire_source tdfire_source_configurator
   
-  s.tdfire_binary do 
+  s.tdfire_binary tdfire_source_configurator do 
     s.vendored_framework = "#{s.name}.framework"
     s.source_files = "#{s.name}.framework/Headers/*"
     s.public_header_files = "#{s.name}.framework/Headers/*"

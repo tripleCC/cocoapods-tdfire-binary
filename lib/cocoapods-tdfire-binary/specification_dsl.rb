@@ -20,19 +20,19 @@ module Pod
       end
 
     	# 源码依赖配置
-      def tdfire_source(&block)
+      def tdfire_source(configurator)
         if use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
           	UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
             Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
-          yield self if block_given?
+          configurator.call self
         end
       end
 
       # 二进制依赖配置
-      def tdfire_binary(&block)
+      def tdfire_binary(configurator, &block)
         if !use_source?
           if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
           	UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold 
