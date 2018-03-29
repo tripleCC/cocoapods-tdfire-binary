@@ -70,7 +70,7 @@ tdfire_source_configurator = lambda do |s|
     # }
 end
 
-unless %w[tdfire_set_binary_download_configurations_at_last tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
+unless %w[tdfire_set_binary_download_configurations tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
     
   tdfire_source_configurator.call s
 else
@@ -84,8 +84,8 @@ else
     # binary configuration
   end
   
-  # s.tdfire_set_binary_download_configurations_at_last(download_url)
-  s.tdfire_set_binary_download_configurations_at_last
+  # s.tdfire_set_binary_download_configurations(download_url)
+  s.tdfire_set_binary_download_configurations
 end
 
 ```
@@ -97,7 +97,7 @@ end
   - 配置二进制依赖，其中 `vendored_framework`、`source_files`、`public_header_files`，如上即可
   - 由于此方案对二进制中的 subspec 并**不做区分**，统一打包成一个二进制文件，所以如果依赖了 subspec ，插件还是会去下载完整的二进制文件
 
-- tdfire_set_binary_download_configurations_at_last
+- tdfire_set_binary_download_configurations
   - 强制设置 static_framework 为 true，规避使用 use_frameworks! 时，动态库依赖链（动态库依赖静态库问题）、影响启动时间问题
   - 设置 preserve_paths，让 cache 保留源码、资源、二进制全部文件
   - 设置下载 prepare_command，未发布组件将会略过这一步骤

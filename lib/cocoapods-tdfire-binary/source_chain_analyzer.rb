@@ -1,4 +1,4 @@
-module Tdfire
+ module Tdfire
 	class SourceChainAnalyzer
 
 		def initialize(podfile)
