@@ -13,9 +13,17 @@ module Pod
 				2Dfire 二进制工具库，提供打包、lint、推送、拉取、发布等命令
       DESC
 
+			FIRE_FLAG = "2dfire"
+
       def first_podspec
       	Dir["#{Dir.pwd}/*.podspec"].first
-      end
+			end
+
+			def fire_sources
+				config.sources_manager.all.select do |source|
+					source.url.downcase.include? FIRE_FLAG
+				end
+			end
 		end
 	end
 end

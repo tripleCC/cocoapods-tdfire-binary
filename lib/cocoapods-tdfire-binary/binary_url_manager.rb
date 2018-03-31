@@ -6,7 +6,11 @@ module Tdfire
 
 		def self.pull_url_for_pod_version(pod, version)
     	HOST + "/getframework/PRODUCTION/#{pod}/#{version}"
-    end
+		end
+
+		def self.get_pull_url_for_pod_version(pod, version)
+			Curl.get(pull_url_for_pod_version(pod, version))
+		end
 
     def self.push_url
     	# param = <<~EOF
@@ -24,15 +28,15 @@ module Tdfire
 
     def self.post_push_url(name, version, path, commit = nil, commit_hash = nil)
     	param = {
-    		:frameworkName = name,
-    		:version = version,
-    		:environment = "PRODUCTION",
-    		:changelog = commit,
-    		:featureName = commit,
-    		:framework = "@#{path}"
-    		:commitHash = commit_hash
+    		:frameworkName => name,
+    		:version => version,
+    		:environment => "PRODUCTION",
+    		:changelog => commit,
+    		:featureName => commit,
+    		:framework => "@#{path}",
+    		:commitHash => commit_hash
     	}
-    	Curl.post("http://www.google.com/", param)
+    	Curl.post(push_url, param)
     end
 
     def self.private_cocoapods_url

@@ -89,7 +89,7 @@ module Tdfire
 		def set_framework_download_script
 			download_url = BinaryUrlManager.pull_url_for_pod_version(target_spec.root.name, target_spec.version)
 
-			download_script = <<~EOF
+			download_script = <<-EOF
         #!/bin/sh
 
         if [[ -d #{framework_name} ]]; then
