@@ -5,27 +5,31 @@ A description of cocoapods-tdfire-binary.
 ## Installation
 
     $ gem install cocoapods-tdfire-binary
+    
+    
+## TODO
+
+1. 拥有 Subspec 的组件二进制依赖方式
+2. 本地 Lint 二进制
 
 ## Usage
 
 ```
-pod binary package [--carthage]
 
-pod binary lint 
+Usage:
 
-pod binary push filepath version
+    $ pod binary COMMAND
 
-pod binary pull name version 
+      2Dfire 二进制工具库，提供打包、lint、推送、拉取、发布等命令
 
-pod binary publish specfile
+Commands:
 
+    + lint      对本地二进制进行 Lint
+    + package   二进制打包
+    + publish   正式发布二进制组件
+    + pull      下载二进制 zip 包
+    + push      推送二进制 zip 包
 
-pod binary assemble
-```
-### Package
-
-```
- pod package PodB.podspec --force --exclude-deps --no-mangle --spec-sources=git@git.2dfire-inc.com:qingmu/private_cocoapods.git 
 ```
 
 ### For .gitignore
@@ -34,6 +38,7 @@ pod binary assemble
 ...
 
 *.framework
+*.zip
 ```
 
 > For Podfile
@@ -53,12 +58,6 @@ use_frameworks!
 
 ### For podspec
 
-> Tip
-> 源码必须存放在如下路径中: `["#{name}/Classes/**/*", "Classes/**/*", "*.{h,m}"]`
-> 资源文件必须存放在如下路径中: `["#{name}/Assets/**/*", "Resources/**/*", "Assets/**/*"]`
-
-
-
 ```
 ...
 
@@ -75,16 +74,7 @@ unless %w[tdfire_set_binary_download_configurations tdfire_source tdfire_binary]
   tdfire_source_configurator.call s
 else
   s.tdfire_source tdfire_source_configurator
-  
-  s.tdfire_binary tdfire_source_configurator do 
-    s.vendored_framework = "#{s.name}.framework"
-    s.source_files = "#{s.name}.framework/Headers/*"
-    s.public_header_files = "#{s.name}.framework/Headers/*"
-
-    # binary configuration
-  end
-  
-  # s.tdfire_set_binary_download_configurations(download_url)
+  s.tdfire_binary tdfire_source_configurator
   s.tdfire_set_binary_download_configurations
 end
 
@@ -94,12 +84,20 @@ end
   - 配置源码依赖
 
 - tdfire_binary
-  - 配置二进制依赖，其中 `vendored_framework`、`source_files`、`public_header_files`，如上即可
+  - 配置二进制依赖，其中 `vendored_framework`、`source_files`、`public_header_files` 内部设置成如下路径
+    
+  ```
+  s.vendored_framework = "#{s.name}.framework"
+  s.source_files = "#{s.name}.framework/Headers/*"
+  s.public_header_files = "#{s.name}.framework/Headers/*"
+  ```
+  - 提取 subspec 中的依赖、frameworks、 libraries、 weak_frameworks，至二进制组件对应属性中
   - 由于此方案对二进制中的 subspec 并**不做区分**，统一打包成一个二进制文件，所以如果依赖了 subspec ，插件还是会去下载完整的二进制文件
 
 - tdfire_set_binary_download_configurations
   - 强制设置 static_framework 为 true，规避使用 use_frameworks! 时，动态库依赖链（动态库依赖静态库问题）、影响启动时间问题
   - 设置 preserve_paths，让 cache 保留源码、资源、二进制全部文件
+    - preserve_paths 由组件，子组件的源码、资源路径，以及 Framework 路径组成
   - 设置下载 prepare_command，未发布组件将会略过这一步骤
 
 ### For Lib Env

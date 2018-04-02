@@ -20,14 +20,13 @@ module Pod
       # 
       # 使用二进制依赖的pod
       # 与 tdfire_use_binary 互斥
-      def tdfire_use_binary_pods(pods)
-        Pod::UI.puts "Tdfire: set use binary pods: #{Array(pods).join(', ')}"
-        Tdfire::BinaryStateStore.use_binary_pods = Array(pods)
-      end
-
-      def tdfire_use_source!
-        
-      end
+      # def tdfire_use_binary_pods(pods)
+      #   Pod::UI.puts "Tdfire: set use binary pods: #{Array(pods).join(', ')}"
+      #   Tdfire::BinaryStateStore.use_binary_pods = Array(pods)
+      # end
+      #
+      # def tdfire_use_source!
+      # end
 
       # 强制使用二进制依赖，忽略未发布和依赖源码设置
       # def tdfire_force_use_binary!

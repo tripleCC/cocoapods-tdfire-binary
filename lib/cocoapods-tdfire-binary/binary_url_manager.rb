@@ -30,7 +30,8 @@ module Tdfire
 		end
 
 		def self.private_cocoapods_url
-			"git@git.2dfire-inc.com:ios/cocoapods-spec.git"
+			#"git@git.2dfire-inc.com:ios/cocoapods-spec.git"
+			"git@git.2dfire-inc.com:qingmu/private_cocoapods.git"
 		end
 	end
 end
