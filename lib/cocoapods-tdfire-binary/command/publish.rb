@@ -12,9 +12,11 @@ module Pod
             CLAide::Argument.new('NAME.podspec', false),
         ]
 
-        self.options = [
-            ['--commit="Fix some bugs"', '发布的 commit 信息'],
-        ]
+        def self.options
+          [
+            ['--commit="Fix some bugs"', '发布的 commit 信息']
+          ].concat(super)
+        end
 
         def initialize(argv)
           spec_file = argv.shift_argument
@@ -41,7 +43,7 @@ module Pod
                 '--use-libraries',
                 '--verbose'
             ]
-            argv << %Q[--commit-message = #{commit_prefix(spec) + "\n" + @commit}] unless @commit.empty?
+            argvs << %Q[--commit-message=#{commit_prefix(spec) + "\n" + @commit}] unless @commit.to_s.empty?
 
             push = Repo::Push.new(CLAide::ARGV.new(argvs))
             push.validate!
@@ -51,7 +53,7 @@ module Pod
 
         private
         def commit_prefix(spec)
-          output_path = @fire_sources.first.pod_path(spec.name) + spec.version.to_s
+          output_path = fire_sources.first.pod_path(spec.name) + spec.version.to_s
           if output_path.exist?
             message = "[Fix] #{spec}"
           elsif output_path.dirname.directory?

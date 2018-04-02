@@ -47,7 +47,7 @@ module Pod
 	      	@path = path
 	      	@name = name || path.split('/').last - ZIP_SUBFFIX
 	      	@version = version
-	      	@commit = commit || version
+	      	@commit = commit
 	      	super
 	      end
 
@@ -65,10 +65,10 @@ module Pod
 					hash_log =  `git show-ref #{@version}`
 					hash_log = hash_log.split(' ').first unless hash_log.empty?
 
-					commit = @commit || tag_log
+					commit = @commit || tag_log || @version
 
 					UI.section("Tdfire: start pushing framework zip file ...") do
-						UI.message "Tdfire: post argvs: name -> #{@name}, version -> #{@version}, path -> #{@path}, commit -> #{commit}, commit hash -> #{hash_log}"
+						UI.puts "Tdfire: post argvs: name -> #{@name}, version -> #{@version}, path -> #{@path}, commit -> #{commit}, commit hash -> #{hash_log}"
 						Tdfire::BinaryUrlManager.post_push_url(@name, @version, @path, commit, hash_log)
 					end
         end

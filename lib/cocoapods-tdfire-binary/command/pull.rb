@@ -23,13 +23,13 @@ module Pod
 
         def validate!
           super
-          help! "必须提供有效组件名" if @name.empty?
-          help! "必须提供有效版本号" if @version.empty?
+          help! "必须提供有效组件名" if @name.nil?
+          help! "必须提供有效版本号" if @version.nil?
         end
 
         def run
 					UI.section("Tdfire: start pulling framework zip file ...") do
-						UI.message "Tdfire: get argvs: name -> #{@name}, version -> #{@version}"
+						UI.puts "Tdfire: get argvs: name -> #{@name}, version -> #{@version}"
         	  Tdfire::BinaryUrlManager.get_pull_url_for_pod_version(@name, @version)
 					end
         end
