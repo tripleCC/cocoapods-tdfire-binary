@@ -41,7 +41,8 @@ module Pod
 
           yield self if block_given?
 
-          @tdfire_reference_spec = Spec.new
+          # parent 一定要有，否则 subspec dependecy 会出现 split nil 错误
+          @tdfire_reference_spec = Specification.new(self)
           configurator.call @tdfire_reference_spec
           tdfire_refactor.configure_binary_with_reference_spec(tdfire_reference_spec)
         end

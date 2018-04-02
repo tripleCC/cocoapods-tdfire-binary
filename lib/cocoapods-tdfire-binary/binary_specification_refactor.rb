@@ -25,9 +25,10 @@ module Pod
   		store_attribute(name, temp) unless temp.empty?  
   	end
 
-  	def store_hash_value_with_attribute_and_reference_spec(name, spec)
+  	def store_hash_value_with_attribute_and_reference_spec(name, spec, &select)
   		temp = spec.all_hash_value_for_attribute(name)
   		temp.merge!(attributes_hash[name]) unless attributes_hash[name].nil?
+			temp.select! { |k, v| yield k if block_given? }
   		store_attribute(name, temp) unless temp.empty?  
   	end
   	#--------------------------------------------------------------------#
@@ -56,7 +57,12 @@ module Tdfire
       end
 
       # 保留对其他组件的依赖
-      target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec)
+      target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec) do |name|
+				# 去除对自身子组件的依赖
+				name.split('/').first != target_spec.root.name
+			end
+
+			Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.dependencies.map(&:name).join(', ')}"
 		end
 
 		#--------------------------------------------------------------------#		
