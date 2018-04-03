@@ -92,8 +92,20 @@ end
   s.public_header_files = "#{s.name}.framework/Headers/*"
   ```
   - 提取 subspec 中的依赖、frameworks、 libraries、 weak_frameworks，至二进制组件对应属性中
-  - 由于此方案对二进制中的 subspec 并**不做区分**，统一打包成一个二进制文件，所以如果依赖了 subspec ，插件还是会去下载完整的二进制文件
-
+  - 在组件源码依赖有 subspec 的情况下，插件会在二进制依赖时，动态创建 default subspec `TdfireBinary`，以及源码依赖时的 subspec ，并且让后者的所有 subspec 依赖 `TdfireBinary`
+  - 由于此方案对二进制中的 subspec 并**不做区分**，统一打包成一个二进制文件，所以如果在使用二进制依赖时，依赖了 subspec ，插件还是会去下载完整的二进制文件，并且从最终生成的结果看，目录中只有 `TdfireBinary` subspec
+  - 此插件不支持嵌套 subspec 场景，如
+  
+  ```ruby
+  Pod::Spec.new do |s|
+    s.name = 'Root'
+    s.subspec 'Level_1' do |sp|
+      sp.subspec 'Level_2' do |ssp|
+      end
+    end
+  end
+  ``` 
+   
 - tdfire_set_binary_download_configurations
   - 强制设置 static_framework 为 true，规避使用 use_frameworks! 时，动态库依赖链（动态库依赖静态库问题）、影响启动时间问题
   - 设置 preserve_paths，让 cache 保留源码、资源、二进制全部文件
