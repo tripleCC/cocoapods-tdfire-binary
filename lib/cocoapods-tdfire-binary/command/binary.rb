@@ -4,6 +4,7 @@ require 'cocoapods-tdfire-binary/command/publish'
 require 'cocoapods-tdfire-binary/command/pull'
 require 'cocoapods-tdfire-binary/command/push'
 require 'cocoapods-tdfire-binary/command/assemble'
+require 'cocoapods-tdfire-binary/command/lib'
 
 module Pod
 	class Command

@@ -45,7 +45,7 @@ module Pod
             ]
             argvs << %Q[--commit-message=#{commit_prefix(spec) + "\n" + @commit}] unless @commit.to_s.empty?
 
-            push = Repo::Push.new(CLAide::ARGV.new(argvs))
+            push = Pod::Command::Repo::Push.new(CLAide::ARGV.new(argvs))
             push.validate!
             push.run
           end
