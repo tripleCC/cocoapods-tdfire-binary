@@ -43,8 +43,30 @@ module Tdfire
 			@target_spec = target_spec
 		end
 
+		#--------------------------------------------------------------------#
+		# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
+		def configure_binary_default_subspec_with_reference_spec(spec)
+			default_subspec = "TdfireBinary"
+			target_spec.subspec default_subspec do |ss|
+				subspec_refactor = BinarySpecificationRefactor.new(ss)
+				subspec_refactor.configure_binary_with_reference_spec(spec)
+			end
+
+			# 创建源码依赖时的 subspec，并且设置所有的 subspec 依赖 default_subspec
+			spec.subspecs.each do |s|
+				target_spec.subspec s.base_name do |ss|
+					ss.dependency "#{target_spec.root.name}/#{default_subspec}"
+				end
+			end
+
+			target_spec.default_subspec = default_subspec
+			target_spec.default_subspec = default_subspec
+
+			Pod::UI.message "Tdfire: subspecs for #{target_spec.name}: #{target_spec.subspecs.map(&:name).join(', ')}"
+		end
+
 		#--------------------------------------------------------------------#		
-		# spec 是源码依赖时的配置
+		# spec 是二进制依赖时的配置
 		def configure_binary_with_reference_spec(spec)
 			# 组件 frameworks 的依赖
 			target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
