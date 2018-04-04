@@ -58,12 +58,13 @@ module Pod
         end
       end
 
+
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations
         tdfire_refactor.set_preserve_paths_with_reference_spec(tdfire_reference_spec)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
-        return if !Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)
+        return if tdfire_should_skip_download?
 
         raise Pod::Informative, "You must invoke the method after setting name and version" if root.name.nil? || version.nil?
 
@@ -78,9 +79,15 @@ module Pod
     end
 
     def tdfire_use_source?
-      (!Tdfire::BinaryStateStore.force_use_binary? && 
-      (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
-      Tdfire::BinaryStateStore.force_use_source?
+      ((!Tdfire::BinaryStateStore.force_use_binary? &&
+          (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
+          Tdfire::BinaryStateStore.force_use_source?) &&
+          (Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)
+    end
+
+    def tdfire_should_skip_download?
+      (!Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)) ||
+          (Tdfire::BinaryStateStore.lib_lint_binary_pod == root.name)
     end
   end
 end

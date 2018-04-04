@@ -8,6 +8,7 @@ module  Tdfire
 			attr_reader :printed_pods
 			attr_accessor :use_frameworks
 			attr_accessor :use_source
+			attr_accessor :lib_lint_binary_pod
 		end
 		
 		@use_source_pods = []
