@@ -16,11 +16,13 @@ module Pod
 	      def self.options
           [
             ['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
+            ['--spec-sources', '私有源地址'],
           ].concat(super)
         end
 
 	      def initialize(argv)
 	      	@clean = argv.flag?('clean')
+	      	@spec_sources = argv.option('spec-sources')
 	      	@spec_file = first_podspec
 	      	super
 	      end
@@ -40,7 +42,7 @@ module Pod
 
         def package(spec)
         	UI.section("Tdfire: package #{spec.name} ...") do
-	        	system "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{Tdfire::BinaryUrlManager.private_cocoapods_url}"
+	        	system "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Tdfire::BinaryUrlManager.private_cocoapods_url}"
 	        end
         end
 
