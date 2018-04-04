@@ -84,12 +84,15 @@ end
   - 配置源码依赖
 
 - tdfire_binary
-  - 配置二进制依赖，其中 `vendored_framework`、`source_files`、`public_header_files` 内部设置成如下路径
+  - 配置二进制依赖，其中 `vendored_framework` 、`source_files`、`public_header_files` 内部设置成如下路径
     
   ```
   s.vendored_framework = "#{s.name}.framework"
-  s.source_files = "#{s.name}.framework/Headers/*"
-  s.public_header_files = "#{s.name}.framework/Headers/*"
+  #
+  # 这两句 framework 不需要，cocoapods-packager 插件生成的 framework 中， Headers 是一个软连接 ，所以即使设置了也不生效
+  # 这样就需要使用者都以 < > 的形式引用头文件了，而且需要是 umbrella 头文件，否则会出现警告 
+  # s.source_files = "#{s.name}.framework/Headers/*"
+  # s.public_header_files = "#{s.name}.framework/Headers/*"
   ```
   - 提取 subspec 中的依赖、frameworks、 libraries、 weak_frameworks，至二进制组件对应属性中
   - 在组件源码依赖有 subspec 的情况下，插件会在二进制依赖时，动态创建 default subspec `TdfireBinary`，以及源码依赖时的 subspec ，并且让后者的所有 subspec 依赖 `TdfireBinary`

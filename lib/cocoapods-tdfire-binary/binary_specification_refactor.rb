@@ -70,8 +70,8 @@ module Tdfire
 		def configure_binary_with_reference_spec(spec)
 			# 组件 frameworks 的依赖
 			target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
-			target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
-			target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
+			# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
+			# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
 
 			# 保留对 frameworks lib 的依赖
       %w[frameworks libraries weak_frameworks].each do |name|
@@ -137,7 +137,7 @@ module Tdfire
           echo "Tdfire: copying #{framework_name} ..."
 
           unzip #{framework_name}.zip
-          cp -fr #{framework_name} ../
+          cp -fa #{framework_name} ../
         fi
 
         cd ..
