@@ -53,6 +53,7 @@ module Pod
 
 					# cocoapods-packager 使用了 --exclude-deps 后，虽然没有把 dependency 的符号信息打进可执行文件，但是它把 dependency 的 bundle 给拷贝过来了 (builder.rb 229 copy_resources)
 					# 这里把多余的 bundle 删除
+					# https://github.com/CocoaPods/cocoapods-packager/pull/199
 					resource_bundles = spec.all_hash_value_for_attribute('resource_bundles').keys.flatten.uniq
 					FileUtils.chdir("#{framework_path}/Versions/A/Resources") do
 						dependency_bundles = Dir.glob('*.bundle').select { |b| !resource_bundles.include?(b.split('.').first) }

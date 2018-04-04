@@ -59,7 +59,7 @@ module Pod
       end
 
       # 配置二进制文件下载、cache 住解压好的 framework
-      def tdfire_set_binary_download_configurations(download_url = nil)
+      def tdfire_set_binary_download_configurations
         tdfire_refactor.set_preserve_paths_with_reference_spec(tdfire_reference_spec)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
