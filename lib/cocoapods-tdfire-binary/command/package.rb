@@ -1,5 +1,7 @@
 require 'colored2'
+require 'fileutils'
 require 'cocoapods-tdfire-binary/binary_url_manager'
+require 'cocoapods-tdfire-binary/binary_specification_refactor'
 
 module Pod
 	class Command
@@ -43,13 +45,32 @@ module Pod
         end
 
         def zip(spec)
-        	framework_path = "#{spec.name}-#{spec.version}/ios/#{spec.name}.framework"
+					framework_directory = "#{spec.name}-#{spec.version}/ios"
+					framework_name = "#{spec.name}.framework"
+					framework_path = "#{framework_directory}/#{framework_name}"
 
         	raise Informative, "没有需要压缩的 framework 文件：#{framework_path}" unless File.exist?(framework_path)
 
-        	output_name = "#{spec.name}.framework.zip"
+					# cocoapods-packager 使用了 --exclude-deps 后，虽然没有把 dependency 的符号信息打进可执行文件，但是它把 dependency 的 bundle 给拷贝过来了 (builder.rb 229 copy_resources)
+					# 这里把多余的 bundle 删除
+					resource_bundles = spec.all_hash_value_for_attribute('resource_bundles').keys.flatten.uniq
+					FileUtils.chdir("#{framework_path}/Versions/A/Resources") do
+						dependency_bundles = Dir.glob('*.bundle').select { |b| !resource_bundles.include?(b.split('.').first) }
+						unless dependency_bundles.empty?
+							Pod::UI::puts "Tdfire: remove dependency bundles: #{dependency_bundles.join(', ')}"
+
+							dependency_bundles.each do |b|
+								FileUtils.rm_rf(b)
+							end
+						end
+					end
+
+        	output_name = "#{framework_name}.zip"
         	UI.section("Tdfire: zip #{framework_path} ...") do
-						system "zip #{output_name} #{framework_path}"
+						FileUtils.chdir(framework_directory) do
+							system "zip --symlinks -r #{output_name} #{framework_name}"
+							system "mv #{output_name} ../../"
+						end
 					end
 
 					Pod::UI::puts "Tdfire: save framework zip file to #{Dir.pwd}/#{output_name}".green

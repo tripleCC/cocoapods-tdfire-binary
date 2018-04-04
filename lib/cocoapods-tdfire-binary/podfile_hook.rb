@@ -6,10 +6,14 @@ module CocoapodsTdfireBinary
 
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :pre_install) do |context, _|
 		# 使用 cocoapods package 打包，不使用 carthage 了，不用设置 share schemes
+		# 如果使用 carhtage ，一定要让需要二进制化的 target shared，此 target 不能是 static framework / library ，必须是 dynamic framework.
+		# 并且需要在这里做个标记，记录目标 target ，让这个 target 对应的 podspec 跳过 set_use_static_framework 这一步.
+		# pod install 时，强制使用源码，然后使用  --no-skip-current iOS --no-use-binaries
+		# carthage 生成 static framework 参照 https://github.com/Carthage/Carthage/blob/master/Documentation/StaticFrameworks.md
 		#
 		# first_target_definition = context.podfile.target_definition_list.select{ |d| d.name != 'Pods' }.first
 		# development_pod = first_target_definition.name.split('_').first unless first_target_definition.nil?
-
+    #
 		# Pod::UI.section("Tdfire: auto set share scheme for development pod: \'#{development_pod}\'") do
 		# 	# carthage 需要 shared scheme 构建 framework
 		# 	context.podfile.install!('cocoapods', :share_schemes_for_development_pods => [development_pod])

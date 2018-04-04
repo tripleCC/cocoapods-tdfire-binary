@@ -28,6 +28,9 @@ module Pod
           end
 
           configurator.call self
+
+          # 在设置了 use_frameworks! 的情况下才会生效
+          tdfire_refactor.set_use_static_framework
         end
       end
 
@@ -41,7 +44,7 @@ module Pod
 
           yield self if block_given?
 
-          # parent 一定要有，否则 subspec dependecy 会出现 split nil 错误
+          # name 一定要有，否则 subspec dependecy 会出现 split nil 错误
           @tdfire_reference_spec = Specification.new(nil, 'TdfireSpecification')
           configurator.call @tdfire_reference_spec
 
@@ -57,7 +60,6 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations(download_url = nil)
-        tdfire_refactor.set_use_static_framework
         tdfire_refactor.set_preserve_paths_with_reference_spec(tdfire_reference_spec)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置

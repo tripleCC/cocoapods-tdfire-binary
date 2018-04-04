@@ -5,7 +5,6 @@ module  Tdfire
 		class << self
 			# attr_accessor :unpublished_pods
 			attr_accessor :use_source_pods
-			attr_accessor :use_binary_pods
 			attr_reader :printed_pods
 			attr_accessor :use_frameworks
 			attr_accessor :use_source
