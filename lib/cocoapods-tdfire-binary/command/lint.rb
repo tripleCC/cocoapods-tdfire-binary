@@ -13,13 +13,16 @@ module Pod
 				def self.options
 					[
 							['--sources', '私有源地址'],
+							['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
 					].concat(super)
 				end
 
 				def initialize(argv)
+					@clean = argv.flag?('clean')
 					@sources = argv.option('sources')
 					@spec_file = first_podspec
 					@spec_name = @spec_file.split('/').last.split('.').first
+					unzip_framework
 					super
 				end
 
@@ -28,6 +31,14 @@ module Pod
 					help! '当前目录下没有podspec文件.' if @spec_file.nil?
 					framework = "#{@spec_name}.framework"
 					help! "当前目录下没有#{framework}文件" unless File.exist?(framework)
+				end
+
+				def unzip_framework
+					framework = "#{@spec_name}.framework"
+					zip_name = "#{framework}.zip"
+					if File.exist?(zip_name) && !File.exist?("#{@spec_name}.framework")
+						system "unzip #{zip_name}"
+					end
 				end
 
 				def run
@@ -43,6 +54,8 @@ module Pod
 					lint= Pod::Command::Lib::Lint.new(CLAide::ARGV.new(argvs))
 					lint.validate!
 					lint.run
+
+					system "rm -fr #{@spec_name}.framework " if @clean
 				end
 			end
 		end
