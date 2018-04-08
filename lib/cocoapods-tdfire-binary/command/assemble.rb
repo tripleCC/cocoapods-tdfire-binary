@@ -2,6 +2,7 @@ require 'cocoapods-tdfire-binary/command/package'
 require 'cocoapods-tdfire-binary/command/lint'
 require 'cocoapods-tdfire-binary/command/publish'
 require 'cocoapods-tdfire-binary/command/push'
+require 'cocoapods-tdfire-binary/binary_state_store'
 
 module Pod
   class Command
@@ -29,6 +30,7 @@ module Pod
           lint = command_class::new(CLAide::ARGV.new(argv))
           lint.validate!
           lint.run
+          Tdfire::BinaryStateStore.printed_pods.clear
         end
       end
     end

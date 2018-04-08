@@ -55,6 +55,7 @@ module Pod
 					lint.validate!
 					lint.run
 
+					Tdfire::BinaryStateStore.lib_lint_binary_pod = nil
 					system "rm -fr #{@spec_name}.framework " if @clean
 				end
 			end
