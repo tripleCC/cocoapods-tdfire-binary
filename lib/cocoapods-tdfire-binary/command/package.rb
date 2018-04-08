@@ -66,7 +66,7 @@ module Pod
 								FileUtils.rm_rf(b)
 							end
 						end
-					end
+					end if File.exist? "#{framework_path}/Versions/A/Resources"
 
         	output_name = "#{framework_name}.zip"
         	UI.section("Tdfire: zip #{framework_path} ...") do
