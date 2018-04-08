@@ -47,25 +47,25 @@ module CocoapodsTdfireBinary
 	# CocoaPods 1.5.0 修复了此问题
 	#
 	# fix `Shell Script` Build Phase Fails When Input / Output Files List is Too Large
-	# 	Pod::UI.section('Tdfire: auto clean input and output files') do
-	# 		context.umbrella_targets.map(&:user_targets).flatten.uniq.each do |t|
-	#       phase = t.shell_script_build_phases.find { |p| p.name.include?(Pod::Installer::UserProjectIntegrator::TargetIntegrator::COPY_PODS_RESOURCES_PHASE_NAME) }
+		Pod::UI.section('Tdfire: auto clean input and output files') do
+			context.umbrella_targets.map(&:user_targets).flatten.uniq.each do |t|
+	      phase = t.shell_script_build_phases.find { |p| p.name.include?(Pod::Installer::UserProjectIntegrator::TargetIntegrator::COPY_PODS_RESOURCES_PHASE_NAME) }
 
-	#       max_input_output_paths = 1000
-	#       input_output_paths = phase.input_paths.count + phase.output_paths.count
-	#       Pod::UI.message "Tdfire: input paths and output paths count for #{t.name} : #{input_output_paths}"
+	      max_input_output_paths = 1000
+	      input_output_paths = phase.input_paths.count + phase.output_paths.count
+	      Pod::UI.message "Tdfire: input paths and output paths count for #{t.name} : #{input_output_paths}"
 
-	#       if input_output_paths > max_input_output_paths
-	#       	phase.input_paths.clear
-	#       	phase.output_paths.clear
-	#       end
+	      if input_output_paths > max_input_output_paths
+	      	phase.input_paths.clear
+	      	phase.output_paths.clear
+	      end
 
-	#     end
+	    end
 
-	#     context.umbrella_targets.map(&:user_project).each do |project|
-	#       project.save
-	#     end 
-	# 	end
+	    context.umbrella_targets.map(&:user_project).each do |project|
+	      project.save
+	    end
+		end
 
 		Pod::UI.puts "Tdfire: all source dependency pods: #{BinaryStateStore.real_use_source_pods.join(', ')}" if BinaryStateStore.use_binary?
 		Pod::UI.puts "Tdfire: all unpublished pods: #{BinaryStateStore.unpublished_pods.join(', ')}"
