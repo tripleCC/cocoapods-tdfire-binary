@@ -30,7 +30,7 @@ module Pod
           lint = command_class::new(CLAide::ARGV.new(argv))
           lint.validate!
           lint.run
-          Tdfire::BinaryStateStore.printed_pods.clear
+          Pod::Tdfire::BinaryStateStore.printed_pods.clear
         end
       end
     end

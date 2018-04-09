@@ -27,7 +27,7 @@ module Pod
 
         	def run
         		argvs = [
-        			"--template-url=#{Tdfire::BinaryUrlManager.template_lib_url}",
+        			"--template-url=#{Pod::Tdfire::BinaryUrlManager.template_lib_url}",
         			@name
         		]
 

@@ -14,12 +14,14 @@ module Pod
 					[
 							['--sources', '私有源地址'],
 							['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
+							['--one-binary', '只让 Lint 的 Pod 进行二进制依赖，其余都用源码'],
 					].concat(super)
 				end
 
 				def initialize(argv)
 					@clean = argv.flag?('clean')
 					@sources = argv.option('sources')
+					@one_binary = argv.flag?('one-binary')
 					@spec_file = first_podspec
 					@spec_name = @spec_file.split('/').last.split('.').first
 					unzip_framework
@@ -42,10 +44,14 @@ module Pod
 				end
 
 				def run
-					Tdfire::BinaryStateStore.lib_lint_binary_pod = @spec_name
+					if @one_binary
+						Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod = @spec_name
+					else
+						Pod::Tdfire::BinaryStateStore.set_force_use_binary
+					end
 
 					argvs = [
-							"--sources=#{@sources || Tdfire::BinaryUrlManager.private_cocoapods_url}",
+							"--sources=#{@sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}",
 							'--allow-warnings',
 							'--use-libraries',
 							'--verbose'
@@ -55,7 +61,12 @@ module Pod
 					lint.validate!
 					lint.run
 
-					Tdfire::BinaryStateStore.lib_lint_binary_pod = nil
+					if @one_binary
+						Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod = nil
+					else
+						Pod::Tdfire::BinaryStateStore.unset_force_use_binary
+					end
+
 					system "rm -fr #{@spec_name}.framework " if @clean
 				end
 			end

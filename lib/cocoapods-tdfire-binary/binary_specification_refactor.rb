@@ -35,89 +35,90 @@ module Pod
   end
 end
 
-module Tdfire
-	class BinarySpecificationRefactor
-		attr_accessor :target_spec
+module Pod
+	module Tdfire
+		class BinarySpecificationRefactor
+			attr_accessor :target_spec
 
-		def initialize(target_spec)
-			@target_spec = target_spec
-		end
-
-		#--------------------------------------------------------------------#
-		# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
-		def configure_binary_default_subspec_with_reference_spec(spec)
-			default_subspec = "TdfireBinary"
-			target_spec.subspec default_subspec do |ss|
-				subspec_refactor = BinarySpecificationRefactor.new(ss)
-				subspec_refactor.configure_binary_with_reference_spec(spec)
+			def initialize(target_spec)
+				@target_spec = target_spec
 			end
 
-			# 创建源码依赖时的 subspec，并且设置所有的 subspec 依赖 default_subspec
-			spec.subspecs.each do |s|
-				target_spec.subspec s.base_name do |ss|
-					ss.dependency "#{target_spec.root.name}/#{default_subspec}"
+			#--------------------------------------------------------------------#
+			# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
+			def configure_binary_default_subspec_with_reference_spec(spec)
+				default_subspec = "TdfireBinary"
+				target_spec.subspec default_subspec do |ss|
+					subspec_refactor = BinarySpecificationRefactor.new(ss)
+					subspec_refactor.configure_binary_with_reference_spec(spec)
 				end
+
+				# 创建源码依赖时的 subspec，并且设置所有的 subspec 依赖 default_subspec
+				spec.subspecs.each do |s|
+					target_spec.subspec s.base_name do |ss|
+						ss.dependency "#{target_spec.root.name}/#{default_subspec}"
+					end
+				end
+
+				target_spec.default_subspec = default_subspec
+				target_spec.default_subspec = default_subspec
+
+				Pod::UI.message "Tdfire: subspecs for #{target_spec.name}: #{target_spec.subspecs.map(&:name).join(', ')}"
 			end
 
-			target_spec.default_subspec = default_subspec
-			target_spec.default_subspec = default_subspec
+			#--------------------------------------------------------------------#
+			# spec 是二进制依赖时的配置
+			def configure_binary_with_reference_spec(spec)
+				# 组件 frameworks 的依赖
+				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
+				# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
+				# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
 
-			Pod::UI.message "Tdfire: subspecs for #{target_spec.name}: #{target_spec.subspecs.map(&:name).join(', ')}"
-		end
+				# 保留对 frameworks lib 的依赖
+				%w[frameworks libraries weak_frameworks].each do |name|
+					target_spec.store_array_value_with_attribute_and_reference_spec(name, spec)
+				end
 
-		#--------------------------------------------------------------------#		
-		# spec 是二进制依赖时的配置
-		def configure_binary_with_reference_spec(spec)
-			# 组件 frameworks 的依赖
-			target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
-			# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
-			# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
+				# 保留对其他组件的依赖
+				target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec) do |name|
+					# 去除对自身子组件的依赖
+					name.split('/').first != target_spec.root.name
+				end
 
-			# 保留对 frameworks lib 的依赖
-      %w[frameworks libraries weak_frameworks].each do |name|
-        target_spec.store_array_value_with_attribute_and_reference_spec(name, spec)
-      end
-
-      # 保留对其他组件的依赖
-      target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec) do |name|
-				# 去除对自身子组件的依赖
-				name.split('/').first != target_spec.root.name
+				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.dependencies.map(&:name).join(', ')}"
 			end
 
-			Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.dependencies.map(&:name).join(', ')}"
-		end
+			#--------------------------------------------------------------------#
+			# spec 是源码依赖时的配置
+			def set_preserve_paths_with_reference_spec(spec)
+				# 源码、资源文件
+				source_files = spec.all_array_value_for_attribute('source_files')
+				resources = spec.all_array_value_for_attribute('resources')
+				resource_bundles = spec.all_hash_value_for_attribute('resource_bundles')
+				source_preserve_paths = source_files + resources + resource_bundles.values.flatten
 
-		#--------------------------------------------------------------------#		
-		# spec 是源码依赖时的配置
-		def set_preserve_paths_with_reference_spec(spec)
-			# 源码、资源文件
-      source_files = spec.all_array_value_for_attribute('source_files')
-      resources = spec.all_array_value_for_attribute('resources')
-      resource_bundles = spec.all_hash_value_for_attribute('resource_bundles')
-      source_preserve_paths = source_files + resources + resource_bundles.values.flatten
+				# 二进制文件
+				framework_preserve_paths = [framework_name]
+				preserve_paths = source_preserve_paths + framework_preserve_paths
 
-      # 二进制文件
-      framework_preserve_paths = [framework_name]
-      preserve_paths = source_preserve_paths + framework_preserve_paths
+				# 保留原有的 preserve_paths
+				preserve_paths += target_spec.attributes_hash['preserve_paths'] unless target_spec.attributes_hash['preserve_paths'].nil?
+				target_spec.preserve_paths = preserve_paths.uniq
 
-      # 保留原有的 preserve_paths
-      preserve_paths += target_spec.attributes_hash['preserve_paths'] unless target_spec.attributes_hash['preserve_paths'].nil?
-      target_spec.preserve_paths = preserve_paths.uniq
+				Pod::UI.message "Tdfire: preserve paths for #{target_spec.name}: #{preserve_paths.join(', ')}"
+			end
 
-      Pod::UI.message "Tdfire: preserve paths for #{target_spec.name}: #{preserve_paths.join(', ')}"
-		end
+			#--------------------------------------------------------------------#
 
-		#--------------------------------------------------------------------#
+			def set_use_static_framework
+				target_spec.static_framework = true if target_spec.respond_to?('static_framework')
+			end
 
-		def set_use_static_framework
-			target_spec.static_framework = true if target_spec.respond_to?('static_framework')
-		end
+			#--------------------------------------------------------------------#
+			def set_framework_download_script
+				download_url = Pod::Tdfire::BinaryUrlManager.pull_url_for_pod_version(target_spec.root.name, target_spec.version)
 
-		#--------------------------------------------------------------------#
-		def set_framework_download_script
-			download_url = BinaryUrlManager.pull_url_for_pod_version(target_spec.root.name, target_spec.version)
-
-			download_script = <<-EOF
+				download_script = <<-EOF
         #!/bin/sh
 
         if [[ -d #{framework_name} ]]; then
@@ -144,19 +145,20 @@ module Tdfire
         rm -fr tdfire_download_temp
 
         echo "pod cache path for #{target_spec.root.name}: $(pwd)"
-      EOF
+				EOF
 
-      combined_download_script = %Q[echo '#{download_script}' > download.sh && sh download.sh && rm download.sh]
-      combined_download_script += " && " << target_spec.prepare_command unless target_spec.prepare_command.nil?
+				combined_download_script = %Q[echo '#{download_script}' > download.sh && sh download.sh && rm download.sh]
+				combined_download_script += " && " << target_spec.prepare_command unless target_spec.prepare_command.nil?
 
-      target_spec.prepare_command = combined_download_script
+				target_spec.prepare_command = combined_download_script
+			end
+
+			#--------------------------------------------------------------------#
+			private
+
+			def framework_name
+				"#{target_spec.root.name}.framework"
+			end
 		end
-
-		#--------------------------------------------------------------------#
-		private 
-
-		def framework_name
-      "#{target_spec.root.name}.framework"
-    end
 	end
 end

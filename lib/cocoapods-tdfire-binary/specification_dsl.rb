@@ -4,10 +4,9 @@ require 'colored2'
 
 module Pod
   class Specification
-    include Tdfire
 
     def tdfire_refactor
-      @refactor ||= BinarySpecificationRefactor.new(self)
+      @refactor ||= Pod::Tdfire::BinarySpecificationRefactor.new(self)
     end
 
     module DSL
@@ -22,9 +21,9 @@ module Pod
       # 源码依赖配置
       def tdfire_source(configurator)
         if tdfire_use_source?
-          if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+          if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
             UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
-            Tdfire::BinaryStateStore.printed_pods << root.name
+            Pod::Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
           configurator.call self
@@ -37,9 +36,9 @@ module Pod
       # 二进制依赖配置
       def tdfire_binary(configurator, &block)
         if !tdfire_use_source?
-          if !Tdfire::BinaryStateStore.printed_pods.include?(root.name)
-            UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold 
-            Tdfire::BinaryStateStore.printed_pods << root.name
+          if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+            UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold
+            Pod::Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
           yield self if block_given?
@@ -79,15 +78,15 @@ module Pod
     end
 
     def tdfire_use_source?
-      ((!Tdfire::BinaryStateStore.force_use_binary? &&
-          (!Tdfire::BinaryStateStore.use_binary? || Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
-          Tdfire::BinaryStateStore.force_use_source?) &&
-          (Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)
+      ((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
+          (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
+          Pod::Tdfire::BinaryStateStore.force_use_source?) &&
+          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)
     end
 
     def tdfire_should_skip_download?
-      (!Tdfire::BinaryStateStore.force_use_binary? && Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)) ||
-          (Tdfire::BinaryStateStore.lib_lint_binary_pod == root.name)
+      (!Pod::Tdfire::BinaryStateStore.force_use_binary? && Pod::Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)) ||
+          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod == root.name)
     end
   end
 end

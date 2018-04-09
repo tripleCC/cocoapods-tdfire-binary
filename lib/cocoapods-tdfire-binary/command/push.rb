@@ -69,7 +69,7 @@ module Pod
 
 					UI.section("Tdfire: start pushing framework zip file ...") do
 						UI.puts "Tdfire: post argvs: name -> #{@name}, version -> #{@version}, path -> #{@path}, commit -> #{commit}, commit hash -> #{hash_log}"
-						Tdfire::BinaryUrlManager.post_push_url(@name, @version, @path, commit, hash_log)
+						Pod::Tdfire::BinaryUrlManager.post_push_url(@name, @version, @path, commit, hash_log)
 					end
         end
 			end

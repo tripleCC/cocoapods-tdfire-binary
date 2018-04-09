@@ -30,7 +30,7 @@ module Pod
         def run
 					UI.section("Tdfire: start pulling framework zip file ...") do
 						UI.puts "Tdfire: get argvs: name -> #{@name}, version -> #{@version}"
-        	  Tdfire::BinaryUrlManager.get_pull_url_for_pod_version(@name, @version)
+						Pod::Tdfire::BinaryUrlManager.get_pull_url_for_pod_version(@name, @version)
 					end
         end
 			end

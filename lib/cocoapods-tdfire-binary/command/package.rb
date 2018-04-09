@@ -6,7 +6,7 @@ require 'cocoapods-tdfire-binary/binary_specification_refactor'
 module Pod
 	class Command
 		class Binary < Command
-			class Package < Binary 
+			class Package < Binary
         self.abstract_command = false
 				self.summary = '二进制打包'
 				self.description = <<-DESC
@@ -42,7 +42,7 @@ module Pod
 
         def package(spec)
         	UI.section("Tdfire: package #{spec.name} ...") do
-	        	system "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Tdfire::BinaryUrlManager.private_cocoapods_url}"
+	        	system "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}"
 	        end
         end
 
