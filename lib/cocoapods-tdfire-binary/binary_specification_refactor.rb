@@ -110,7 +110,7 @@ module Tdfire
 		#--------------------------------------------------------------------#
 
 		def set_use_static_framework
-			target_spec.static_framework = true
+			target_spec.static_framework = true if target_spec.respond_to?('static_framework')
 		end
 
 		#--------------------------------------------------------------------#
