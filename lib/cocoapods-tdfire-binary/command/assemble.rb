@@ -20,7 +20,7 @@ module Pod
         end
 
         def run
-          run_command Package
+          run_command Package, ['--clean']
           run_command Lint
           run_command Push
           run_command Publish

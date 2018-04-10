@@ -78,7 +78,7 @@ module Pod
 
 					Pod::UI::puts "Tdfire: save framework zip file to #{Dir.pwd}/#{output_name}".green
 
-					system "rm -fr #{spec.name}-#{@spec.version}" if @clean
+					system "rm -fr #{spec.name}-#{spec.version}" if @clean
         end
 
 			end

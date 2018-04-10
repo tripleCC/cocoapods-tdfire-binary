@@ -28,8 +28,8 @@ module Pod
   	def store_hash_value_with_attribute_and_reference_spec(name, spec, &select)
   		temp = spec.all_hash_value_for_attribute(name)
   		temp.merge!(attributes_hash[name]) unless attributes_hash[name].nil?
-			temp.select! { |k, v| yield k if block_given? }
-  		store_attribute(name, temp) unless temp.empty?  
+			temp.select! { |k, v| yield k } if block_given?
+      store_attribute(name, temp) unless temp.empty?
   	end
   	#--------------------------------------------------------------------#
   end
@@ -77,7 +77,10 @@ module Pod
 				# 保留对 frameworks lib 的依赖
 				%w[frameworks libraries weak_frameworks].each do |name|
 					target_spec.store_array_value_with_attribute_and_reference_spec(name, spec)
-				end
+        end
+
+        # 把 ios 里面的配置都拷贝过来，不管其他平台
+        target_spec.store_hash_value_with_attribute_and_reference_spec("ios", spec)
 
 				# 保留对其他组件的依赖
 				target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec) do |name|
@@ -85,7 +88,7 @@ module Pod
 					name.split('/').first != target_spec.root.name
 				end
 
-				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.dependencies.map(&:name).join(', ')}"
+				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.consumer(Pod::Platform.ios).dependencies.map(&:name).join(', ')}"
 			end
 
 			#--------------------------------------------------------------------#
