@@ -88,7 +88,7 @@ module Pod
 				%w[frameworks libraries weak_frameworks].each do |name|
           value = spec.tdfire_recursive_ios_value_for_name(name)
           target_value = target_spec.tdfire_ios_value_for_name(name)
-          value += target_value unless target_value .nil?
+          value += target_value unless target_value.nil?
           target_spec.store_attribute(name, value) unless value.empty?
 
           Pod::UI.message "Tdfire: #{name} for #{target_spec.name}: #{value}"
