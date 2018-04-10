@@ -30,7 +30,17 @@ module Pod
   		temp.merge!(attributes_hash[name]) unless attributes_hash[name].nil?
 			temp.select! { |k, v| yield k } if block_given?
       store_attribute(name, temp) unless temp.empty?
-  	end
+    end
+
+    def tdfire_recursive_ios_value_for_name(name)
+      subspec_ios_consumers = recursive_subspecs.map { |s| s.consumer(Pod::Platform.ios) } || []
+      value = (Array(consumer(Pod::Platform.ios)) + subspec_ios_consumers).map { |c| c.send(name) }.flatten
+      value
+    end
+
+    def tdfire_ios_value_for_name(name)
+      consumer(Pod::Platform.ios).send(name)
+    end
   	#--------------------------------------------------------------------#
   end
 end
@@ -76,24 +86,30 @@ module Pod
 
 				# 保留对 frameworks lib 的依赖
 				%w[frameworks libraries weak_frameworks].each do |name|
-					target_spec.store_array_value_with_attribute_and_reference_spec(name, spec)
+          value = spec.tdfire_recursive_ios_value_for_name(name)
+          target_value = target_spec.tdfire_ios_value_for_name(name)
+          value += target_value unless target_value .nil?
+          target_spec.store_attribute(name, value) unless value.empty?
+
+          Pod::UI.message "Tdfire: #{name} for #{target_spec.name}: #{value}"
         end
 
-        # 把 ios 里面的配置都拷贝过来，不管其他平台
-        target_spec.store_hash_value_with_attribute_and_reference_spec("ios", spec)
+        # 保留对其他组件的依赖
+        dependencies = spec.all_dependencies || []
+        target_dependencies = target_spec.all_dependencies
+        dependencies += target_dependencies unless target_dependencies.nil?
+        # 去除对自身子组件的依赖
+        dependencies.select! { |d| d.name.split('/').first != spec.root.name }
+        dependencies_hash = dependencies.reduce({}) { |r, d| r[d.name] = d.requirement.to_s; r }
+        target_spec.store_attribute("dependencies", dependencies_hash) unless dependencies_hash.empty?
 
-				# 保留对其他组件的依赖
-				target_spec.store_hash_value_with_attribute_and_reference_spec('dependencies', spec) do |name|
-					# 去除对自身子组件的依赖
-					name.split('/').first != target_spec.root.name
-				end
-
-				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{target_spec.consumer(Pod::Platform.ios).dependencies.map(&:name).join(', ')}"
+				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{dependencies_hash.keys}"
 			end
 
 			#--------------------------------------------------------------------#
 			# spec 是源码依赖时的配置
 			def set_preserve_paths_with_reference_spec(spec)
+        # 这里一般不会和上面那个方法一样，不同平台的配置还不一致，所以就不用 consumer 了
 				# 源码、资源文件
 				source_files = spec.all_array_value_for_attribute('source_files')
 				resources = spec.all_array_value_for_attribute('resources')

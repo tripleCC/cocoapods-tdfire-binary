@@ -50,9 +50,9 @@ module Pod
           # 如果存在 subspec，则生成 default subpsec ，并将所有的 subspec 配置转移到此 subspec 中
           # 已存在的 subspec 依赖此 subspec
           unless @tdfire_reference_spec.subspecs.empty?
-            tdfire_refactor.configure_binary_default_subspec_with_reference_spec( @tdfire_reference_spec)
+            tdfire_refactor.configure_binary_default_subspec_with_reference_spec(@tdfire_reference_spec)
           else
-            tdfire_refactor.configure_binary_with_reference_spec( @tdfire_reference_spec)
+            tdfire_refactor.configure_binary_with_reference_spec(@tdfire_reference_spec)
           end
         end
       end
