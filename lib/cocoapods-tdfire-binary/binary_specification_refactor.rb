@@ -5,32 +5,32 @@ module Pod
   	#--------------------------------------------------------------------#
   	# =>  获取自身以及子组件的属性合并值
   	#--------------------------------------------------------------------#
-  	def all_value_for_attribute(name)
-  		(Array(self) + Array(recursive_subspecs))
-      .map { |s| s.attributes_hash[name] }
-      .compact
-  	end
-
-  	def all_hash_value_for_attribute(name)
-  		all_value_for_attribute(name).reduce({}, :merge)
-  	end
-
-  	def all_array_value_for_attribute(name)
-  		all_value_for_attribute(name).flatten
-  	end
-
-  	def store_array_value_with_attribute_and_reference_spec(name, spec)
-  		temp = spec.all_array_value_for_attribute(name)
-  		temp += attributes_hash[name] unless attributes_hash[name].nil?
-  		store_attribute(name, temp) unless temp.empty?  
-  	end
-
-  	def store_hash_value_with_attribute_and_reference_spec(name, spec, &select)
-  		temp = spec.all_hash_value_for_attribute(name)
-  		temp.merge!(attributes_hash[name]) unless attributes_hash[name].nil?
-			temp.select! { |k, v| yield k } if block_given?
-      store_attribute(name, temp) unless temp.empty?
-    end
+    # def all_value_for_attribute(name)
+  		# (Array(self) + Array(recursive_subspecs))
+    #   .map { |s| s.attributes_hash[name] }
+    #   .compact
+    # end
+    #
+    # def all_hash_value_for_attribute(name)
+  		# all_value_for_attribute(name).reduce({}, :merge)
+    # end
+    #
+    # def all_array_value_for_attribute(name)
+  		# all_value_for_attribute(name).flatten
+    # end
+    #
+    # def store_array_value_with_attribute_and_reference_spec(name, spec)
+  		# temp = spec.all_array_value_for_attribute(name)
+  		# temp += attributes_hash[name] unless attributes_hash[name].nil?
+  		# store_attribute(name, temp) unless temp.empty?
+    # end
+    #
+    # def store_hash_value_with_attribute_and_reference_spec(name, spec, &select)
+  		# temp = spec.all_hash_value_for_attribute(name)
+  		# temp.merge!(attributes_hash[name]) unless attributes_hash[name].nil?
+			# temp.select! { |k, v| yield k } if block_given?
+    #   store_attribute(name, temp) unless temp.empty?
+    # end
 
     def tdfire_recursive_value(name, platform = :ios)
       subspec_consumers = recursive_subspecs
@@ -39,39 +39,6 @@ module Pod
                               .uniq
       value = (Array(consumer(platform)) + subspec_consumers).map { |c| c.send(name) }.flatten
       value
-    end
-
-
-    def tdfire_copy_configuration(spec)
-      # 默认二进制支持所有平台，或者和源码时支持平台一致
-      # 支持多平台用 deployment_target，单平台用 platform
-      #
-      spec.available_platforms.each do |platform|
-        Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
-          target_platform = send(platform.to_sym)
-
-          # 保留对 frameworks lib 的依赖
-          %w[frameworks libraries weak_frameworks].each do |name|
-            value = spec.tdfire_recursive_value(name, platform )
-            target_platform.send("#{name}=", value) unless value.empty?
-
-            Pod::UI.message "Tdfire: #{name} for #{platform}: #{tdfire_recursive_value(name, platform)}"
-          end
-
-          # 保留对其他组件的依赖
-          dependencies = spec.all_dependencies(platform) || []
-          target_dependencies = all_dependencies(platform)
-          dependencies += target_dependencies unless target_dependencies.nil?
-
-          # 去除对自身子组件的依赖
-          valid_dependencies = dependencies.select { |d| d.name.split('/').first != spec.root.name }
-          valid_dependencies.each do |d|
-            target_platform.send("dependency=", d.name, d.requirement.to_s)
-          end
-
-          Pod::UI.message "Tdfire: dependencies for #{platform} #{name}: #{all_dependencies.map(&:name).join(', ')}"
-        end
-      end
     end
   	#--------------------------------------------------------------------#
   end
@@ -116,7 +83,31 @@ module Pod
 				# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
 				# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
 
-        target_spec.tdfire_copy_configuration(spec)
+        available_platforms(spec).each do |platform|
+          Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
+            target_platform = target_spec.send(platform.to_sym)
+
+            # 保留对 frameworks lib 的依赖
+            %w[frameworks libraries weak_frameworks].each do |name|
+              value = spec.tdfire_recursive_value(name, platform )
+              target_platform.send("#{name}=", value) unless value.empty?
+
+              Pod::UI.message "Tdfire: #{name} for #{platform}: #{target_spec.tdfire_recursive_value(name, platform)}"
+            end
+
+            # 保留对其他组件的依赖
+            dependencies = spec.all_dependencies(platform) || []
+            target_dependencies = target_spec.all_dependencies(platform)
+            dependencies += target_dependencies unless target_dependencies.nil?
+
+            # 去除对自身子组件的依赖
+            dependencies
+                .select { |d| d.name.split('/').first != spec.root.name }
+                .each { |d| target_platform.send("dependency=", d.name, d.requirement.to_s) }
+
+            Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.all_dependencies.map(&:name).join(', ')}"
+          end
+        end
       end
 
 			#--------------------------------------------------------------------#
@@ -124,20 +115,29 @@ module Pod
 			def set_preserve_paths(spec)
         # 这里一般不会和上面那个方法一样，不同平台的配置还不一致，所以就不用 consumer 了
 				# 源码、资源文件
-				source_files = spec.all_array_value_for_attribute('source_files')
-				resources = spec.all_array_value_for_attribute('resources')
-				resource_bundles = spec.all_hash_value_for_attribute('resource_bundles')
-				source_preserve_paths = source_files + resources + resource_bundles.values.flatten
+        #
+        available_platforms(spec).each do |platform|
+          Pod::UI.section("Tdfire: set preserve paths for platform #{platform}") do
+            source_files = spec.tdfire_recursive_value('source_files', platform)
+            resources = spec.tdfire_recursive_value('resources', platform)
+            resource_bundles = spec.tdfire_recursive_value('resource_bundles', platform)
 
-				# 二进制文件
-				framework_preserve_paths = [framework_name]
-				preserve_paths = source_preserve_paths + framework_preserve_paths
+            source_preserve_paths = source_files + resources + resource_bundles.map(&:values).flatten
 
-				# 保留原有的 preserve_paths
-				preserve_paths += target_spec.attributes_hash['preserve_paths'] unless target_spec.attributes_hash['preserve_paths'].nil?
-				target_spec.preserve_paths = preserve_paths.uniq
+            # 二进制文件
+            framework_preserve_paths = [framework_name]
+            preserve_paths = source_preserve_paths + framework_preserve_paths
 
-				Pod::UI.message "Tdfire: preserve paths for #{target_spec.name}: #{preserve_paths.join(', ')}"
+            # 保留原有的 preserve_paths
+            target_preserve_paths = target_spec.tdfire_recursive_value('preserve_paths', platform)
+            preserve_paths += target_preserve_paths unless target_preserve_paths.empty?
+
+            target_platform = target_spec.send(platform.to_sym)
+            target_platform.send("preserve_paths=", preserve_paths)
+
+            Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
+          end
+        end
 			end
 
 			#--------------------------------------------------------------------#
@@ -187,6 +187,14 @@ module Pod
 
 			#--------------------------------------------------------------------#
 			private
+
+      def available_platforms(spec)
+        # 平台信息没设置，表示支持所有平台
+        # 所以二进制默认支持所有平台，或者和源码时支持平台一致(平台设置在源码配置lambda外)
+        # 支持多平台用 deployment_target，单平台用 platform
+        #
+        target_spec.available_platforms || spec.available_platforms || [:ios]
+      end
 
 			def framework_name
 				"#{target_spec.root.name}.framework"
