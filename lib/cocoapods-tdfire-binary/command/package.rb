@@ -17,11 +17,13 @@ module Pod
           [
             ['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
             ['--spec-sources', '私有源地址'],
+            ['--use-carthage', 'carthage使用carthage进行打包'],
           ].concat(super)
         end
 
 	      def initialize(argv)
 	      	@clean = argv.flag?('clean')
+          @use_carthage = argv.flag?('use-carthage')
 	      	@spec_sources = argv.option('spec-sources')
 	      	@spec_file = first_podspec
 	      	super

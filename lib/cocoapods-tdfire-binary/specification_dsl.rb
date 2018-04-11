@@ -49,10 +49,10 @@ module Pod
 
           # 如果存在 subspec，则生成 default subpsec ，并将所有的 subspec 配置转移到此 subspec 中
           # 已存在的 subspec 依赖此 subspec
-          unless @tdfire_reference_spec.subspecs.empty?
-            tdfire_refactor.configure_binary_default_subspec_with_reference_spec(@tdfire_reference_spec)
+          unless @tdfire_reference_spec.recursive_subspecs.empty?
+            tdfire_refactor.configure_binary_default_subspec(@tdfire_reference_spec)
           else
-            tdfire_refactor.configure_binary_with_reference_spec(@tdfire_reference_spec)
+            tdfire_refactor.configure_binary(@tdfire_reference_spec)
           end
         end
       end
@@ -60,7 +60,7 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations
-        tdfire_refactor.set_preserve_paths_with_reference_spec(tdfire_reference_spec)
+        tdfire_refactor.set_preserve_paths(tdfire_reference_spec)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
         return if tdfire_should_skip_download?

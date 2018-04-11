@@ -32,14 +32,46 @@ module Pod
       store_attribute(name, temp) unless temp.empty?
     end
 
-    def tdfire_recursive_ios_value_for_name(name)
-      subspec_ios_consumers = recursive_subspecs.map { |s| s.consumer(Pod::Platform.ios) } || []
-      value = (Array(consumer(Pod::Platform.ios)) + subspec_ios_consumers).map { |c| c.send(name) }.flatten
+    def tdfire_recursive_value(name, platform = :ios)
+      subspec_consumers = recursive_subspecs
+                              .select { |s| s.supported_on_platform?(platform) }
+                              .map { |s| s.consumer(platform) }
+                              .uniq
+      value = (Array(consumer(platform)) + subspec_consumers).map { |c| c.send(name) }.flatten
       value
     end
 
-    def tdfire_ios_value_for_name(name)
-      consumer(Pod::Platform.ios).send(name)
+
+    def tdfire_copy_configuration(spec)
+      # 默认二进制支持所有平台，或者和源码时支持平台一致
+      # 支持多平台用 deployment_target，单平台用 platform
+      #
+      spec.available_platforms.each do |platform|
+        Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
+          target_platform = send(platform.to_sym)
+
+          # 保留对 frameworks lib 的依赖
+          %w[frameworks libraries weak_frameworks].each do |name|
+            value = spec.tdfire_recursive_value(name, platform )
+            target_platform.send("#{name}=", value) unless value.empty?
+
+            Pod::UI.message "Tdfire: #{name} for #{platform}: #{tdfire_recursive_value(name, platform)}"
+          end
+
+          # 保留对其他组件的依赖
+          dependencies = spec.all_dependencies(platform) || []
+          target_dependencies = all_dependencies(platform)
+          dependencies += target_dependencies unless target_dependencies.nil?
+
+          # 去除对自身子组件的依赖
+          valid_dependencies = dependencies.select { |d| d.name.split('/').first != spec.root.name }
+          valid_dependencies.each do |d|
+            target_platform.send("dependency=", d.name, d.requirement.to_s)
+          end
+
+          Pod::UI.message "Tdfire: dependencies for #{platform} #{name}: #{all_dependencies.map(&:name).join(', ')}"
+        end
+      end
     end
   	#--------------------------------------------------------------------#
   end
@@ -56,11 +88,11 @@ module Pod
 
 			#--------------------------------------------------------------------#
 			# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
-			def configure_binary_default_subspec_with_reference_spec(spec)
+			def configure_binary_default_subspec(spec)
 				default_subspec = "TdfireBinary"
 				target_spec.subspec default_subspec do |ss|
 					subspec_refactor = BinarySpecificationRefactor.new(ss)
-					subspec_refactor.configure_binary_with_reference_spec(spec)
+					subspec_refactor.configure_binary(spec)
 				end
 
 				# 创建源码依赖时的 subspec，并且设置所有的 subspec 依赖 default_subspec
@@ -78,37 +110,18 @@ module Pod
 
 			#--------------------------------------------------------------------#
 			# spec 是二进制依赖时的配置
-			def configure_binary_with_reference_spec(spec)
+			def configure_binary(spec)
 				# 组件 frameworks 的依赖
 				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
 				# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
 				# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
 
-				# 保留对 frameworks lib 的依赖
-				%w[frameworks libraries weak_frameworks].each do |name|
-          value = spec.tdfire_recursive_ios_value_for_name(name)
-          target_value = target_spec.tdfire_ios_value_for_name(name)
-          value += target_value unless target_value.nil?
-          target_spec.store_attribute(name, value) unless value.empty?
-
-          Pod::UI.message "Tdfire: #{name} for #{target_spec.name}: #{value}"
-        end
-
-        # 保留对其他组件的依赖
-        dependencies = spec.all_dependencies || []
-        target_dependencies = target_spec.all_dependencies
-        dependencies += target_dependencies unless target_dependencies.nil?
-        # 去除对自身子组件的依赖
-        dependencies.select! { |d| d.name.split('/').first != spec.root.name }
-        dependencies_hash = dependencies.reduce({}) { |r, d| r[d.name] = d.requirement.to_s; r }
-        target_spec.store_attribute("dependencies", dependencies_hash) unless dependencies_hash.empty?
-
-				Pod::UI.message "Tdfire: dependencies for #{target_spec.name}: #{dependencies_hash.keys}"
-			end
+        target_spec.tdfire_copy_configuration(spec)
+      end
 
 			#--------------------------------------------------------------------#
 			# spec 是源码依赖时的配置
-			def set_preserve_paths_with_reference_spec(spec)
+			def set_preserve_paths(spec)
         # 这里一般不会和上面那个方法一样，不同平台的配置还不一致，所以就不用 consumer 了
 				# 源码、资源文件
 				source_files = spec.all_array_value_for_attribute('source_files')
