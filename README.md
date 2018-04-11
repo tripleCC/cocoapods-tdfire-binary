@@ -58,7 +58,7 @@ use_frameworks!
 
 ### For podspec
 
-> 目前只支持 iOS 平台， podspec 中的 platform ／ deployment_target 必须只有 iOS （插件内部也会进行限制）
+> 目前只支持 iOS 平台 （插件内部也会进行限制）
 
 
 ```

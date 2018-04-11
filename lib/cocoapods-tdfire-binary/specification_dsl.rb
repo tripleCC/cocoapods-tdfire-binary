@@ -28,8 +28,7 @@ module Pod
 
           configurator.call self
 
-          # 在设置了 use_frameworks! 的情况下才会生效
-          tdfire_refactor.set_use_static_framework
+          tdfire_refactor.configure_source
         end
       end
 

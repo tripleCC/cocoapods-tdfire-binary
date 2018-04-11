@@ -54,12 +54,25 @@ module Pod
         ENV[FORCE_USE_SOURCE_KEY] == USE_SURE_VALUE
       end
 
+      def self.set_limit_platform
+        ENV[LIMIT_PLATFORM_KEY] = USE_SURE_VALUE
+      end
+
+      def self.unset_limit_platform
+        ENV[LIMIT_PLATFORM_KEY] = '0'
+      end
+
+      def self.limit_platform?
+        ENV[LIMIT_PLATFORM_KEY] == USE_SURE_VALUE
+      end
+
       private
 
       UNPBLISHED_PODS = "tdfire_unpublished_pods"
       FORCE_USE_SOURCE_KEY = 'tdfire_force_use_source'
       FORCE_USE_BINARY_KEY = 'tdfire_force_use_binary'
       USE_BINARY_KEY = 'tdfire_use_binary'
+      LIMIT_PLATFORM_KEY = 'tdfire_limit_platform'
       USE_SURE_VALUE = '1'
     end
   end

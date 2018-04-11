@@ -35,9 +35,14 @@ module Pod
         end
 
         def run
+          # 组件有多个 platform 时，限制 cocoapods-packager 只打 ios 代码
+          Pod::Tdfire::BinaryStateStore.set_limit_platform
+
         	spec = Specification.from_file(@spec_file)
         	package(spec)
         	zip(spec)
+
+          Pod::Tdfire::BinaryStateStore.unset_limit_platform
         end
 
         private

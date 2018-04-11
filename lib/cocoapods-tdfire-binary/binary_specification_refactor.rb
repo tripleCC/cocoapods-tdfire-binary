@@ -1,4 +1,5 @@
 require 'cocoapods-tdfire-binary/binary_url_manager'
+require 'cocoapods-tdfire-binary/binary_state_store'
 
 module Pod
   class Specification
@@ -53,11 +54,19 @@ module Pod
 				@target_spec = target_spec
 			end
 
+      def configure_source
+        # 在设置了 use_frameworks! 的情况下才会生效
+        set_use_static_framework
+
+        # cocoapods-package 打包时，只让 iOS 平台生效
+        set_platform_limitation(target_spec) if Pod::Tdfire::BinaryStateStore.limit_platform?
+      end
+
 			#--------------------------------------------------------------------#
 			# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
 			def configure_binary_default_subspec(spec)
         # 限制二进制只支持 iOS 平台 （这里是 parent spec）
-        set_binary_platform_limitation(spec)
+        set_platform_limitation(spec)
 
 				default_subspec = "TdfireBinary"
 				target_spec.subspec default_subspec do |ss|
@@ -82,7 +91,7 @@ module Pod
 			# spec 是二进制依赖时的配置
 			def configure_binary(spec)
         # 限制二进制只支持 iOS 平台 （这里是 spec 或者 subpsec）
-        set_binary_platform_limitation(spec)
+        set_platform_limitation(spec)
 
 				# 组件 frameworks 的依赖
 				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
@@ -116,7 +125,7 @@ module Pod
         end
       end
 
-      def set_binary_platform_limitation(spec)
+      def set_platform_limitation(spec)
         target_spec.platform = :ios, deployment_target(spec, :ios)
       end
 			#--------------------------------------------------------------------#
