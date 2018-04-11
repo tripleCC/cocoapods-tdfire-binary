@@ -39,6 +39,7 @@ module Pod
           Pod::Tdfire::BinaryStateStore.set_limit_platform
 
         	spec = Specification.from_file(@spec_file)
+          prepare(spec)
         	package(spec)
         	zip(spec)
 
@@ -46,6 +47,12 @@ module Pod
         end
 
         private
+
+        def prepare(spec)
+          UI.section("Tdfire: prepare for packaging ...") do
+            clean(spec)
+          end
+        end
 
         def package(spec)
         	UI.section("Tdfire: package #{spec.name} ...") do
@@ -85,7 +92,14 @@ module Pod
 
 					Pod::UI::puts "Tdfire: save framework zip file to #{Dir.pwd}/#{output_name}".green
 
-					system "rm -fr #{spec.name}-#{spec.version}" if @clean
+					clean(spec) if @clean
+        end
+
+        def clean(spec)
+          file = "#{spec.name}-#{spec.version}"
+
+          UI.message "Tdfire: cleaning #{file}"
+          system "rm -fr #{spec.name}-#{spec.version}" if File.exist?(file)
         end
 
 			end
