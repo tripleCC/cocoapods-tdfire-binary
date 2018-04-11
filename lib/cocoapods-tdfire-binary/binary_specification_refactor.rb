@@ -56,6 +56,9 @@ module Pod
 			#--------------------------------------------------------------------#
 			# 生成default subspec TdfireBinary ，并将源码依赖时的配置转移到此 subspec 上
 			def configure_binary_default_subspec(spec)
+        # 限制二进制只支持 iOS 平台 （这里是 parent spec）
+        set_binary_platform_limitation(spec)
+
 				default_subspec = "TdfireBinary"
 				target_spec.subspec default_subspec do |ss|
 					subspec_refactor = BinarySpecificationRefactor.new(ss)
@@ -78,6 +81,9 @@ module Pod
 			#--------------------------------------------------------------------#
 			# spec 是二进制依赖时的配置
 			def configure_binary(spec)
+        # 限制二进制只支持 iOS 平台 （这里是 spec 或者 subpsec）
+        set_binary_platform_limitation(spec)
+
 				# 组件 frameworks 的依赖
 				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
 				# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
@@ -110,6 +116,9 @@ module Pod
         end
       end
 
+      def set_binary_platform_limitation(spec)
+        target_spec.platform = :ios, deployment_target(spec, :ios)
+      end
 			#--------------------------------------------------------------------#
 			# spec 是源码依赖时的配置
 			def set_preserve_paths(spec)
@@ -187,6 +196,10 @@ module Pod
 
 			#--------------------------------------------------------------------#
 			private
+
+      def deployment_target(spec, platform = :ios)
+        target_spec.deployment_target(platform) || spec.deployment_target(platform)
+      end
 
       def available_platforms(spec)
         # 平台信息没设置，表示支持所有平台
