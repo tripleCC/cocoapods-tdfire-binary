@@ -23,7 +23,7 @@ module Pod
 					@sources = argv.option('sources')
 					@one_binary = argv.flag?('one-binary')
 					@spec_file = first_podspec
-					@spec_name = @spec_file.split('/').last.split('.').first
+					@spec_name = @spec_file.split('/').last.split('.').first unless @spec_file.nil?
 					unzip_framework
 					super
 				end
