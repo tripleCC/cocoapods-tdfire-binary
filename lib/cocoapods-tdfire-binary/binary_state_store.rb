@@ -11,12 +11,14 @@ module Pod
         attr_accessor :use_frameworks
         attr_accessor :use_source
         attr_accessor :lib_lint_binary_pod
+        attr_accessor :limit_platform
       end
 
       @use_source_pods = []
       @use_binary_pods = []
       @printed_pods = []
       @use_frameworks = false
+      @limit_platform = false
 
       def self.real_use_source_pods
         (@use_source_pods + unpublished_pods).uniq
@@ -52,18 +54,6 @@ module Pod
 
       def self.force_use_source?
         ENV[FORCE_USE_SOURCE_KEY] == USE_SURE_VALUE
-      end
-
-      def self.set_limit_platform
-        ENV[LIMIT_PLATFORM_KEY] = USE_SURE_VALUE
-      end
-
-      def self.unset_limit_platform
-        ENV[LIMIT_PLATFORM_KEY] = '0'
-      end
-
-      def self.limit_platform?
-        ENV[LIMIT_PLATFORM_KEY] == USE_SURE_VALUE
       end
 
       private

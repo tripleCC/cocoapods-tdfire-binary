@@ -59,7 +59,7 @@ module Pod
         set_use_static_framework
 
         # cocoapods-package 打包时，只让 iOS 平台生效
-        set_platform_limitation(target_spec) if Pod::Tdfire::BinaryStateStore.limit_platform?
+        set_platform_limitation(target_spec) if Pod::Tdfire::BinaryStateStore.limit_platform
       end
 
 			#--------------------------------------------------------------------#

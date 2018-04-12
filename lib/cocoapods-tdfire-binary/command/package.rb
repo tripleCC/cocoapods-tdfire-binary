@@ -1,5 +1,6 @@
 require 'colored2'
 require 'fileutils'
+require 'cocoapods_packager'
 require 'cocoapods-tdfire-binary/binary_url_manager'
 require 'cocoapods-tdfire-binary/binary_specification_refactor'
 
@@ -38,14 +39,14 @@ module Pod
 
         def run
           # 组件有多个 platform 时，限制 cocoapods-packager 只打 ios 代码
-          Pod::Tdfire::BinaryStateStore.set_limit_platform
+          Pod::Tdfire::BinaryStateStore.limit_platform = true
 
         	spec = Specification.from_file(@spec_file)
           prepare(spec)
         	package(spec)
         	zip(spec)
 
-          Pod::Tdfire::BinaryStateStore.unset_limit_platform
+          Pod::Tdfire::BinaryStateStore.limit_platform = false
         end
 
         private
@@ -58,9 +59,19 @@ module Pod
 
         def package(spec)
         	UI.section("Tdfire: package #{spec.name} ...") do
-            command = "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}"
-            command += ' --local' if @local
-	        	system command
+            argvs = [
+                "#{spec.name}.podspec",
+                "--exclude-deps",
+                "--force",
+                "--no-mangle",
+                "--spec-sources=#{@spec_sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}",
+            ]
+
+            argvs << "--local" if @local
+            
+            package = Pod::Command::Package.new(CLAide::ARGV.new(argvs))
+            package.validate!
+            package.run
 	        end
         end
 
