@@ -17,12 +17,14 @@ module Pod
           [
             ['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
             ['--spec-sources', '私有源地址'],
+            # ['--local', '使用本地代码'],
             ['--use-carthage', 'carthage使用carthage进行打包'],
           ].concat(super)
         end
 
 	      def initialize(argv)
 	      	@clean = argv.flag?('clean')
+          @local = argv.flag?('local')
           @use_carthage = argv.flag?('use-carthage')
 	      	@spec_sources = argv.option('spec-sources')
 	      	@spec_file = first_podspec
@@ -56,7 +58,9 @@ module Pod
 
         def package(spec)
         	UI.section("Tdfire: package #{spec.name} ...") do
-	        	system "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}"
+            command = "pod package #{spec.name}.podspec --exclude-deps --force --no-mangle --spec-sources=#{@spec_sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}"
+            command += ' --local' if @local
+	        	system command
 	        end
         end
 
