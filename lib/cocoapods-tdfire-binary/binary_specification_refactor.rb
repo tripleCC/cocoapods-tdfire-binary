@@ -118,7 +118,7 @@ module Pod
             # 去除对自身子组件的依赖
             dependencies
                 .select { |d| d.name.split('/').first != spec.root.name }
-                .each { |d| target_platform.send("dependency=", d.name, d.requirement.to_s) }
+                .each { |d| target_platform.dependency(d.name, d.requirement.to_s) }
 
             Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.all_dependencies.map(&:name).join(', ')}"
           end
