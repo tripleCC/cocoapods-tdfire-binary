@@ -38,7 +38,7 @@ module Pod
                               .select { |s| s.supported_on_platform?(platform) }
                               .map { |s| s.consumer(platform) }
                               .uniq
-      value = (Array(consumer(platform)) + subspec_consumers).map { |c| c.send(name) }.flatten
+      value = (Array(consumer(platform)) + subspec_consumers).map { |c| c.send(name) }.flatten.uniq
       value
     end
   	#--------------------------------------------------------------------#
@@ -72,7 +72,7 @@ module Pod
 				target_spec.subspec default_subspec do |ss|
 					subspec_refactor = BinarySpecificationRefactor.new(ss)
 					subspec_refactor.configure_binary(spec)
-				end
+        end
 
 				# 创建源码依赖时的 subspec，并且设置所有的 subspec 依赖 default_subspec
 				spec.subspecs.each do |s|
@@ -111,16 +111,14 @@ module Pod
             end
 
             # 保留对其他组件的依赖
-            dependencies = spec.all_dependencies(platform) || []
-            target_dependencies = target_spec.all_dependencies(platform)
-            dependencies += target_dependencies unless target_dependencies.nil?
+            dependencies = spec.tdfire_recursive_value('dependencies', platform)
 
             # 去除对自身子组件的依赖
             dependencies
-                .select { |d| d.name.split('/').first != spec.root.name }
+                .select { |d| d.root_name != target_spec.root.name }
                 .each { |d| target_platform.dependency(d.name, d.requirement.to_s) }
 
-            Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.all_dependencies.map(&:name).join(', ')}"
+            Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.tdfire_recursive_value('dependencies', platform).map(&:name).join(', ')}"
           end
         end
       end
