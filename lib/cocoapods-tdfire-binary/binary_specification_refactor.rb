@@ -149,7 +149,7 @@ module Pod
             preserve_paths += target_preserve_paths unless target_preserve_paths.empty?
 
             target_platform = target_spec.send(platform.to_sym)
-            target_platform.send("preserve_paths=", preserve_paths)
+            target_platform.preserve_paths = preserve_paths.uniq
 
             Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
           end

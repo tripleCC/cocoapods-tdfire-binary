@@ -37,7 +37,7 @@ module Pod
       def tdfire_external_pods(pods, *rest)
       	argvs = rest.last || {}
         if !argvs.kind_of?(Hash)
-          info =  <<~EOF
+          info =  <<-EOF
             输入参数错误.
 
             Example:
