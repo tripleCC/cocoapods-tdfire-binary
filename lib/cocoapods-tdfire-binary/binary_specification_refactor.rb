@@ -129,11 +129,10 @@ module Pod
 			#--------------------------------------------------------------------#
 			# spec 是源码依赖时的配置
 			def set_preserve_paths(spec)
-        # 这里一般不会和上面那个方法一样，不同平台的配置还不一致，所以就不用 consumer 了
-				# 源码、资源文件
-        #
         available_platforms(spec).each do |platform|
           Pod::UI.section("Tdfire: set preserve paths for platform #{platform}") do
+            # 源码、资源文件
+            #
             source_files = spec.tdfire_recursive_value('source_files', platform)
             resources = spec.tdfire_recursive_value('resources', platform)
             resource_bundles = spec.tdfire_recursive_value('resource_bundles', platform)
@@ -159,6 +158,9 @@ module Pod
 			#--------------------------------------------------------------------#
 
 			def set_use_static_framework
+        # 1.4.0 版本生效
+        # 使用 use_frameworks! 后，生成静态 Framework
+        #
 				target_spec.static_framework = true if target_spec.respond_to?('static_framework')
 			end
 

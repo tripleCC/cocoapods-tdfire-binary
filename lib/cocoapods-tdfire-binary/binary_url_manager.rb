@@ -25,7 +25,7 @@ module Pod
 			end
 
 			def self.run_curl(command)
-				Pod::UI.message "CURL: \n" + command
+				Pod::UI.message "CURL: \n" + command + "\n"
 
 				system command
 			end
