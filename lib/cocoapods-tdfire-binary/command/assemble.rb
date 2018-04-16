@@ -20,10 +20,19 @@ module Pod
         end
 
         def run
-          run_command Package, ['--clean']
-          run_command Lint
-          run_command Push
-          run_command Publish
+          # 每条命令要重开一个上下文
+          system 'pod binary package --clean'
+          system 'pod binary lint'
+          system 'pod binary push'
+          system 'pod binary publish'
+
+          # the sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
+          # lint 和 publish 的时候，都会出现这个问题
+          #
+          # run_command Package, ['--clean']
+          # run_command Lint
+          # run_command Push
+          # run_command Publish
         end
 
         def run_command(command_class, argv = [])
