@@ -95,8 +95,8 @@ module Pod
 
 				# 组件 frameworks 的依赖
 				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
-				# target_spec.source_files = "#{target_spec.root.name}.framework/Headers/*"
-				# target_spec.public_header_files = "#{target_spec.root.name}.framework/Headers/*"
+				# target_spec.source_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
+				# target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 
         available_platforms(spec).each do |platform|
           Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
