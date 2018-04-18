@@ -95,6 +95,15 @@ module Pod
 
 				# 组件 frameworks 的依赖
 				target_spec.vendored_frameworks = "#{target_spec.root.name}.framework"
+        # 如果不加这一句，会提示找不到 bundle。测试时需要 shift + cmd + k 清除 production
+        #
+        # static framework 不像 dynamic framework ，后者在生成 production 后，会有一个专门的 Frameworks 文件夹，其内部的结构和打包前是一致的， bundle 也会在 .framework 文件中
+        # 而 static framework 的可执行文件部分，会被合并到 App 的可执行文件中， bundle 按逻辑会放到 main bundle 中，
+        # 但是 CocoaPods 并不会帮 vendored_frameworks 中的 static framework  做 bundle 的拷贝工作，
+        # 所以这里需要暴露 static framework 中的 bundle ，明确让 CocoaPods 拷贝 bundle 到 main bundle，
+        # 可以查看 高德地图 和 友盟等 framework ，都已这种方式处理
+        #
+        target_spec.resources = "#{target_spec.root.name}.framework/Resources/*.bundle"
 				# target_spec.source_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 				# target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 
