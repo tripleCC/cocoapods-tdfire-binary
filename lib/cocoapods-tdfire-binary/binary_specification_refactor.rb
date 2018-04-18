@@ -103,7 +103,7 @@ module Pod
         # 所以这里需要暴露 static framework 中的 bundle ，明确让 CocoaPods 拷贝 bundle 到 main bundle，
         # 可以查看 高德地图 和 友盟等 framework ，都已这种方式处理
         #
-        target_spec.resources = "#{target_spec.root.name}.framework/Resources/*.bundle"
+        target_spec.resources = ["#{target_spec.root.name}.framework/Resources/*.bundle", "#{target_spec.root.name}.framework/Versions/A/Resources/*.bundle"]
 				# target_spec.source_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 				# target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 
