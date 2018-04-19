@@ -105,7 +105,12 @@ module Pod
         #
         # 如果组件不是用的 resource_bundle，而是用的 resources ，那么这里就不会拷贝组件的资源文件
         #
-        target_spec.resources = ["#{target_spec.root.name}.framework/Resources/*.bundle", "#{target_spec.root.name}.framework/Versions/A/Resources/*.bundle"]
+
+        framework_resources = spec.tdfire_recursive_value('resources', :ios)
+        resource_bundles = spec.tdfire_recursive_value('resource_bundles', :ios)
+        # 不判断 lint 会报错 did not match any file
+        target_spec.resources = "#{target_spec.root.name}.framework/Resources/*" if resource_bundles.select(&:any?).any? || framework_resources.any?
+        Pod::UI.message "Tdfire: resources for binary: #{target_spec.tdfire_recursive_value('resources', :ios).join(', ')}"
 
         # cococapods 会将以下头文件添加入 user search path ，这样使用者可以使用 " " 对头文件进行引用
         #
@@ -144,28 +149,27 @@ module Pod
 			# spec 是源码依赖时的配置
 			def set_preserve_paths(spec)
         available_platforms(spec).each do |platform|
-          Pod::UI.section("Tdfire: set preserve paths for platform #{platform}") do
-            # 源码、资源文件
-            #
-            source_files = spec.tdfire_recursive_value('source_files', platform)
-            resources = spec.tdfire_recursive_value('resources', platform)
-            resource_bundles = spec.tdfire_recursive_value('resource_bundles', platform)
+          Pod::UI.message("Tdfire: set preserve paths for platform #{platform}")
+          # 源码、资源文件
+          #
+          source_files = spec.tdfire_recursive_value('source_files', platform)
+          resources = spec.tdfire_recursive_value('resources', platform)
+          resource_bundles = spec.tdfire_recursive_value('resource_bundles', platform)
 
-            source_preserve_paths = source_files + resources + resource_bundles.map(&:values).flatten
+          source_preserve_paths = source_files + resources + resource_bundles.map(&:values).flatten
 
-            # 二进制文件
-            framework_preserve_paths = [framework_name]
-            preserve_paths = source_preserve_paths + framework_preserve_paths
+          # 二进制文件
+          framework_preserve_paths = [framework_name]
+          preserve_paths = source_preserve_paths + framework_preserve_paths
 
-            # 保留原有的 preserve_paths
-            target_preserve_paths = target_spec.tdfire_recursive_value('preserve_paths', platform)
-            preserve_paths += target_preserve_paths unless target_preserve_paths.empty?
+          # 保留原有的 preserve_paths
+          target_preserve_paths = target_spec.tdfire_recursive_value('preserve_paths', platform)
+          preserve_paths += target_preserve_paths unless target_preserve_paths.empty?
 
-            target_platform = target_spec.send(platform.to_sym)
-            target_platform.preserve_paths = preserve_paths.uniq
+          target_platform = target_spec.send(platform.to_sym)
+          target_platform.preserve_paths = preserve_paths.uniq
 
-            Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
-          end
+          Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
         end
 			end
 
