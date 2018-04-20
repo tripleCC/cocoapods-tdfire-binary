@@ -86,8 +86,11 @@ module Pod
 					# 这里把多余的 bundle 删除
 					# https://github.com/CocoaPods/cocoapods-packager/pull/199
 					resource_bundles = spec.tdfire_recursive_value('resource_bundles').map(&:keys).flatten.uniq
+					resources= spec.tdfire_recursive_value('resources').map { |r| r.split('/').last }
 					FileUtils.chdir("#{framework_path}/Versions/A/Resources") do
-						dependency_bundles = Dir.glob('*.bundle').select { |b| !resource_bundles.include?(b.split('.').first) }
+						dependency_bundles = Dir.glob('*.bundle').select do |b|
+							!resource_bundles.include?(b.split('.').first) && !resources.include?(b)
+						end
 						unless dependency_bundles.empty?
 							Pod::UI::puts "Tdfire: remove dependency bundles: #{dependency_bundles.join(', ')}"
 
