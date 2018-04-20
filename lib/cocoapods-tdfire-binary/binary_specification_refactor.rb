@@ -109,7 +109,7 @@ module Pod
         framework_resources = spec.tdfire_recursive_value('resources', :ios)
         resource_bundles = spec.tdfire_recursive_value('resource_bundles', :ios)
         # 不判断 lint 会报错 did not match any file
-        target_spec.resources = "#{target_spec.root.name}.framework/Resources/*" if resource_bundles.select(&:any?).any? || framework_resources.any?
+        target_spec.resources = ["#{target_spec.root.name}.framework/Resources/*", "#{target_spec.root.name}.framework/Versions/A/Resources/*"] if resource_bundles.select(&:any?).any? || framework_resources.any?
         Pod::UI.message "Tdfire: resources for binary: #{target_spec.tdfire_recursive_value('resources', :ios).join(', ')}"
 
         # cococapods 会将以下头文件添加入 user search path ，这样使用者可以使用 " " 对头文件进行引用
