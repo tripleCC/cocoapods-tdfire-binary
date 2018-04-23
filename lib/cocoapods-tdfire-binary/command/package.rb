@@ -19,7 +19,7 @@ module Pod
             ['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
             ['--spec-sources', '私有源地址'],
             # ['--local', '使用本地代码'],
-            ['--use-carthage', 'carthage使用carthage进行打包'],
+            ['--use-carthage', 'carthage使用carthage进行打包，三方库提供carthage的优先'],
           ].concat(super)
         end
 
@@ -38,18 +38,57 @@ module Pod
         end
 
         def run
-          # 组件有多个 platform 时，限制 cocoapods-packager 只打 ios 代码
-          Pod::Tdfire::BinaryStateStore.limit_platform = true
-
-        	spec = Specification.from_file(@spec_file)
-          prepare(spec)
-        	package(spec)
-        	zip(spec)
-
-          Pod::Tdfire::BinaryStateStore.limit_platform = false
+					if @use_carthage
+						build_by_carthage
+					else
+						build_by_pod_packager
+					end
         end
 
         private
+				def build_by_pod_packager
+					# 组件有多个 platform 时，限制 cocoapods-packager 只打 ios 代码
+					Pod::Tdfire::BinaryStateStore.limit_platform = true
+
+					spec = Specification.from_file(@spec_file)
+					prepare(spec)
+					package(spec)
+					zip_packager_framework(spec)
+
+					Pod::Tdfire::BinaryStateStore.limit_platform = false
+				end
+
+				def build_by_carthage
+					build_script = <<-EOF
+if [[ -d swift-staticlibs ]]; then
+	rm -fr swift-staticlibs 
+fi
+
+if [[ ! $(command -v carthage) ]]; then
+	brew install carthage 
+fi
+
+git clone git@git.2dfire-inc.com:cocoapods-repos/swift-staticlibs.git					
+
+xcconfig=$(mktemp /tmp/static.xcconfig.XXXXXX)
+trap 'rm -f "$xcconfig"' INT TERM HUP EXIT
+
+echo "LD = $PWD/swift-staticlibs/ld.py" >> $xcconfig
+echo "DEBUG_INFORMATION_FORMAT = dwarf" >> $xcconfig
+
+export XCODE_XCCONFIG_FILE="$xcconfig"
+
+carthage build "$@" --no-skip-current --platform iOS
+
+rm -fr swift-staticlibs
+					EOF
+
+					system build_script
+
+					spec = Specification.from_file(@spec_file)
+					zip_carthage_framework(spec)
+				end
+
 
         def prepare(spec)
           UI.section("Tdfire: prepare for packaging ...") do
@@ -75,7 +114,7 @@ module Pod
 	        end
         end
 
-        def zip(spec)
+        def zip_packager_framework(spec)
 					framework_directory = "#{spec.name}-#{spec.version}/ios"
 					framework_name = "#{spec.name}.framework"
 					framework_path = "#{framework_directory}/#{framework_name}"
@@ -100,18 +139,33 @@ module Pod
 						end
 					end if File.exist? "#{framework_path}/Versions/A/Resources"
 
-        	output_name = "#{framework_name}.zip"
-        	UI.section("Tdfire: zip #{framework_path} ...") do
+        	zip_framework(spec, framework_directory)
+
+					clean(spec) if @clean
+				end
+
+				def zip_carthage_framework(spec)
+					framework_directory = "Carthage/Build/iOS"
+					framework_name = "#{spec.name}.framework"
+					framework_path = "#{framework_directory}/#{framework_name}"
+
+					raise Informative, "没有需要压缩的 framework 文件：#{framework_path}" unless File.exist?(framework_path)
+
+					zip_framework(spec, framework_directory)
+				end
+
+				def zip_framework(spec, framework_directory)
+					framework_name = "#{spec.name}.framework"
+					output_name = "#{framework_name}.zip"
+					UI.section("Tdfire: zip #{framework_directory}/#{framework_name} ...") do
 						FileUtils.chdir(framework_directory) do
 							system "zip --symlinks -r #{output_name} #{framework_name}"
-							system "mv #{output_name} ../../"
+							system "mv #{output_name} #{framework_directory.split('/').count.times.reduce("") { |r, n| r + "../" }}"
 						end
 					end
 
 					Pod::UI::puts "Tdfire: save framework zip file to #{Dir.pwd}/#{output_name}".green
-
-					clean(spec) if @clean
-        end
+				end
 
         def clean(spec)
           file = "#{spec.name}-#{spec.version}"
