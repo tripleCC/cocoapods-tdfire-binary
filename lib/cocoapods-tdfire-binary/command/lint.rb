@@ -15,13 +15,16 @@ module Pod
 							['--sources', '私有源地址'],
 							['--clean', '执行成功后，删除 zip 文件外的所有生成文件'],
 							['--one-binary', '只让 Lint 的 Pod 进行二进制依赖，其余都用源码'],
+							['--subspec', 'lint 特定 subspec']
 					].concat(super)
 				end
 
 				def initialize(argv)
 					@clean = argv.flag?('clean')
 					@sources = argv.option('sources')
+					@subspec = argv.option('subspec')
 					@one_binary = argv.flag?('one-binary')
+
 					@spec_file = first_podspec
 					@spec_name = @spec_file.split('/').last.split('.').first unless @spec_file.nil?
 					unzip_framework
@@ -56,6 +59,8 @@ module Pod
 							'--use-libraries',
 							'--verbose'
 					]
+
+					argvs << "--subspec=#{@subspec}" unless @subspec.nil?
 
 					lint= Pod::Command::Lib::Lint.new(CLAide::ARGV.new(argvs))
 					lint.validate!

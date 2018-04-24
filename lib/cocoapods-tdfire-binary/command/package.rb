@@ -20,6 +20,7 @@ module Pod
             ['--spec-sources', '私有源地址'],
             # ['--local', '使用本地代码'],
             ['--use-carthage', 'carthage使用carthage进行打包，三方库提供carthage的优先'],
+						['--subspecs', '打包子组件']
           ].concat(super)
         end
 
@@ -28,6 +29,7 @@ module Pod
           @local = argv.flag?('local')
           @use_carthage = argv.flag?('use-carthage')
 	      	@spec_sources = argv.option('spec-sources')
+					@subspecs= argv.option('subspecs')
 	      	@spec_file = first_podspec
 	      	super
 	      end
@@ -107,6 +109,7 @@ rm -fr swift-staticlibs
             ]
 
             argvs << "--local" if @local
+						argvs << "--subspecs=#{@subspecs}" unless @subspecs.nil?
             
             package = Pod::Command::Package.new(CLAide::ARGV.new(argvs))
             package.validate!
