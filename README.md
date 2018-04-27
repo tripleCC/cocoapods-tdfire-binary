@@ -1,4 +1,4 @@
-x# cocoapods-tdfire-binary
+# cocoapods-tdfire-binary
 
 A description of cocoapods-tdfire-binary.
 
