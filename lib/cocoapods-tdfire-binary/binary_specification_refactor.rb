@@ -114,8 +114,12 @@ module Pod
 
         # cococapods 会将以下头文件添加入 user search path ，这样使用者可以使用 " " 对头文件进行引用
         #
-				target_spec.source_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
-				target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
+        #
+        # 不能通过下面这种方式判断
+        # Dir.glob("#{target_spec.root.name}.framework/Headers/*").count
+
+        target_spec.source_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
+        target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 
         available_platforms(spec).each do |platform|
           Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
