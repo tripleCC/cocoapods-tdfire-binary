@@ -24,6 +24,11 @@ module Pod
 				run_curl command
 			end
 
+			def self.delete_binary(name, version)
+				command = "curl -X 'DELETE' #{HOST}/framework/PRODUCTION/#{name}/#{version} -O -J"
+				run_curl command
+			end
+
 			def self.run_curl(command)
 				Pod::UI.message "CURL: \n" + command + "\n"
 
