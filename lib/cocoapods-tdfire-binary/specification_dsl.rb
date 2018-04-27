@@ -40,8 +40,6 @@ module Pod
             Pod::Tdfire::BinaryStateStore.printed_pods << root.name
           end
 
-          yield self if block_given?
-
           # name 一定要有，否则 subspec dependecy 会出现 split nil 错误
           @tdfire_reference_spec = Specification.new(nil, 'TdfireSpecification')
           configurator.call @tdfire_reference_spec
@@ -53,6 +51,8 @@ module Pod
           else
             tdfire_refactor.configure_binary(@tdfire_reference_spec)
           end
+
+          yield self if block_given?
         end
       end
 
