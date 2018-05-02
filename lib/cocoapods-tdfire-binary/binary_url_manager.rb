@@ -4,7 +4,7 @@ module Pod
 			HOST = "http://iosframeworkserver-shopkeeperclient.cloudapps.2dfire.com"
 
 			def self.pull_url_for_pod_version(pod, version)
-				HOST + "/getframework/PRODUCTION/#{pod}/#{version}"
+				HOST + "/download/#{pod}/#{version}"
 			end
 
 			def self.get_pull_url_for_pod_version(pod, version)
@@ -18,14 +18,14 @@ module Pod
 			end
 
 			def self.post_push_url(name, version, path, commit = nil, commit_hash = nil)
-				param = %Q[-F "frameworkName=#{name}" -F "version=#{version}" -F "environment=PRODUCTION" -F "changelog=#{commit}" -F "featureName=#{commit}" -F "framework=@#{path}" -F "commitHash=#{commit_hash}"]
+				param = %Q[-F "frameworkName=#{name}" -F "version=#{version}" -F "changelog=#{commit}" -F "featureName=#{commit}" -F "framework=@#{path}" -F "commitHash=#{commit_hash}"]
 				command = "curl #{push_url} #{param}"
 
 				run_curl command
 			end
 
 			def self.delete_binary(name, version)
-				command = "curl -X 'DELETE' #{HOST}/framework/PRODUCTION/#{name}/#{version} -O -J"
+				command = "curl -X 'DELETE' #{HOST}/framework/#{name}/#{version} -O -J"
 				run_curl command
 			end
 
