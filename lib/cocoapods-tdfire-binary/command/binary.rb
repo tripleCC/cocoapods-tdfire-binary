@@ -7,6 +7,7 @@ require 'cocoapods-tdfire-binary/command/assemble'
 require 'cocoapods-tdfire-binary/command/lib'
 require 'cocoapods-tdfire-binary/command/delete'
 require 'cocoapods-tdfire-binary/command/search'
+require 'cocoapods-tdfire-binary/command/list'
 
 module Pod
 	class Command

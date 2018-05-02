@@ -29,6 +29,11 @@ module Pod
 				run_curl command
 			end
 
+			def self.list_binary()
+				command = "curl #{HOST}/frameworks\?allinfo=true"
+				run_curl command
+			end
+
 			def self.search_binary(name)
 				command = "curl #{HOST}/framework/#{name}"
 				run_curl command
