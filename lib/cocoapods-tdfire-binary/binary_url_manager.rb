@@ -29,10 +29,15 @@ module Pod
 				run_curl command
 			end
 
+			def self.search_binary(name)
+				command = "curl #{HOST}/framework/#{name}"
+				run_curl command
+			end
+
 			def self.run_curl(command)
 				Pod::UI.message "CURL: \n" + command + "\n"
 
-				system command
+				`#{command} -s`
 			end
 
 			def self.private_cocoapods_url
