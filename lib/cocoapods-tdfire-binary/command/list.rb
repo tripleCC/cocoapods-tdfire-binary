@@ -25,9 +25,11 @@ module Pod
           result = Pod::Tdfire::BinaryUrlManager.list_binary
           result = JSON.parse(result)
 
-          result.each do |pod, versions|
-            UI.puts "#{pod + " " + versions.last}\n"
+          result.sort.each do |pod, versions|
+            UI.puts "  #{pod + " " + versions.last}\n"
           end
+
+          UI.puts "\n#{result.keys.count} pods were found"
         end
       end
     end
