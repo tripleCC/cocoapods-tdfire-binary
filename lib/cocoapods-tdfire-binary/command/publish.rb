@@ -37,7 +37,7 @@ module Pod
 
           UI.section("Tdfire: start publishing #{spec.name} ...") do
             argvs = [
-                fire_sources.first.name,
+                private_sources.first.name,
                 @spec_file,
                 '--allow-warnings',
                 '--use-libraries',
@@ -53,7 +53,7 @@ module Pod
 
         private
         def commit_prefix(spec)
-          output_path = fire_sources.first.pod_path(spec.name) + spec.version.to_s
+          output_path = private_sources.first.pod_path(spec.name) + spec.version.to_s
           if output_path.exist?
             message = "[Fix] #{spec}"
           elsif output_path.dirname.directory?

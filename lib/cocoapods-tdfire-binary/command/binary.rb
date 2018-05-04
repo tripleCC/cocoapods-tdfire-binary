@@ -28,10 +28,8 @@ module Pod
       	Dir["#{Dir.pwd}/*.podspec"].first
 			end
 
-			def fire_sources
-				config.sources_manager.all.select do |source|
-					source.url.downcase.include? binary_config.repo_url
-				end
+			def private_sources
+				binary_config.private_sources
 			end
 		end
 	end
