@@ -29,10 +29,11 @@ module Pod
 
         def run
           result = Pod::Tdfire::BinaryUrlManager.search_binary(@name)
-          result = JSON.parse(result)
+          pod = JSON.parse(result) unless result.nil?
+          pod ||= {'' => []}
 
-          name = result['name'] || @name
-          versions = result['versions'] || []
+          name = pod['name'] || @name
+          versions = pod['versions'] || []
 
           title = "-> #{name} (#{versions.last})".green
 

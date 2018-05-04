@@ -8,6 +8,8 @@ require 'cocoapods-tdfire-binary/command/lib'
 require 'cocoapods-tdfire-binary/command/delete'
 require 'cocoapods-tdfire-binary/command/search'
 require 'cocoapods-tdfire-binary/command/list'
+require 'cocoapods-tdfire-binary/command/init'
+require 'cocoapods-tdfire-binary/binary_config'
 
 module Pod
 	class Command
@@ -18,8 +20,9 @@ module Pod
 				2Dfire 二进制工具库，提供打包、lint、推送、拉取、发布等命令
       DESC
 
-			FIRE_FLAG = "2dfire"
-			# FIRE_FLAG = "private"
+			def binary_config
+				Tdfire::BinaryConfig.instance
+			end
 
       def first_podspec
       	Dir["#{Dir.pwd}/*.podspec"].first
@@ -27,7 +30,7 @@ module Pod
 
 			def fire_sources
 				config.sources_manager.all.select do |source|
-					source.url.downcase.include? FIRE_FLAG
+					source.url.downcase.include? binary_config.repo_url
 				end
 			end
 		end
