@@ -23,13 +23,14 @@ module Pod
 
         def run
           result = Pod::Tdfire::BinaryUrlManager.list_binary
-          result = JSON.parse(result)
+          pods = JSON.parse(result) unless result.nil?
+          pods ||= []
 
-          result.sort.each do |pod, versions|
+          pods.sort.each do |pod, versions|
             UI.puts "  #{pod + " " + versions.last}\n"
           end
 
-          UI.puts "\n#{result.keys.count} pods were found"
+          UI.puts "\n#{pods.keys.count} pods were found"
         end
       end
     end
