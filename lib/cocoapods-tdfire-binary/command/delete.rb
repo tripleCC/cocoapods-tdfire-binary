@@ -19,7 +19,6 @@ module Pod
         def initialize(argv)
           @name = argv.shift_argument
           @version = argv.shift_argument
-
           super
         end
 

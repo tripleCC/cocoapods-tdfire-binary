@@ -6,9 +6,9 @@ module Pod
     class BinaryConfig
       public
 
-      REPO_URL_KEY = "repo_url"
-      SERVER_ROOT_KEY = "server_host"
-      TEMPLATE_URL_KEY = "template_url"
+      REPO_URL_KEY = 'repo_url'.freeze
+      SERVER_ROOT_KEY = 'server_host'.freeze
+      TEMPLATE_URL_KEY = 'template_url'.freeze
 
       def self.instance
         @instance ||= new
@@ -29,7 +29,7 @@ module Pod
       def setting_hash
         @setting ||= begin
           if File.exist?(binary_setting_file)
-            setting = YAML.load_file(binary_setting_file)
+            @setting = YAML.load_file(binary_setting_file)
           end
         end
         @setting
@@ -44,7 +44,7 @@ module Pod
       end
 
       def config_with_setting(setting)
-        File.open(binary_setting_file, "w+") do |f|
+        File.open(binary_setting_file, 'w+') do |f|
           f.write(setting.to_yaml)
         end
       end
@@ -72,23 +72,21 @@ module Pod
       end
 
       def validate_setting_file
-        if !binary_setting_file.exist?
-          # 公司内部就不用自己配置了
-          sources = private_sources('2dfire')
-          if sources.length > 0
-            FileUtils.cd(config.home_dir) do
-              `git clone http://git.2dfire-inc.com/qingmu/cocoapods-tdfire-binary-config`
+        return if binary_setting_file.exist?
 
-              FileUtils.mv("cocoapods-tdfire-binary-config/#{setting_file_name}", ".")
-              FileUtils.rm_rf(config.home_dir + "cocoapods-tdfire-binary-config")
-            end
-          else
-            raise Pod::Informative, "获取不到配置信息，执行 pod binary init 初始化配置信息."
-          end
+        # 公司内部就不用自己配置了
+        sources = private_sources('2dfire')
+        if sources.empty?
+          raise Pod::Informative, '获取不到配置信息，执行 pod binary init 初始化配置信息.'
         end
 
-      end
+        FileUtils.cd(config.home_dir) do
+          `git clone http://git.2dfire-inc.com/qingmu/cocoapods-tdfire-binary-config`
 
+          FileUtils.mv("cocoapods-tdfire-binary-config/#{setting_file_name}", '.')
+          FileUtils.rm_rf(config.home_dir + 'cocoapods-tdfire-binary-config')
+        end
+      end
     end
   end
 end
