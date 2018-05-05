@@ -1,20 +1,16 @@
 # cocoapods-tdfire-binary
 
-A description of cocoapods-tdfire-binary.
+<a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
 ## Installation
 
     $ gem install cocoapods-tdfire-binary
     
-    
-## TODO
-
-1. 拥有 Subspec 的组件二进制依赖方式
-2. 本地 Lint 二进制
 
 ## Usage
 
 ```
+
 
 Usage:
 
@@ -24,11 +20,17 @@ Usage:
 
 Commands:
 
-    + lint      对本地二进制进行 Lint
-    + package   二进制打包
-    + publish   正式发布二进制组件
-    + pull      下载二进制 zip 包
-    + push      推送二进制 zip 包
+    + assemble   执行二进制组件发布操作集合
+    + delete     删除二进制版本
+    + init       初始化二进制插件
+    + lib        二进制模版库操作
+    + lint       对本地二进制进行 Lint
+    + list       查看所有二进制版本信息
+    + package    二进制打包
+    + publish    正式发布二进制组件
+    + pull       下载二进制 zip 包
+    + push       推送二进制 zip 包
+    + search     查找二进制版本信息
 
 ```
 
@@ -83,7 +85,7 @@ end
 
 ```
 
-- tdfire_source_proc
+- tdfire_source_configurator
   - 配置源码依赖
 
 - tdfire_binary
