@@ -9,8 +9,8 @@ module Pod
 			self.summary = '二进制模版库操作'
 			self.description = <<-DESC
 				二进制模版库操作
-      DESC
-      end
+	DESC
+	end
 		end
 	end
 end
