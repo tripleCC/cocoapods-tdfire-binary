@@ -11,3 +11,7 @@ end
 
 task :default => :spec
 
+task :console do
+  sh "irb -r cocoapods-tdfire-binary -I ./lib"
+end
+
