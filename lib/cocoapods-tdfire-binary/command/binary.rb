@@ -21,7 +21,7 @@ module Pod
       DESC
 
 			def binary_config
-				Tdfire::BinaryConfig.instance
+				Pod::Tdfire::BinaryConfig.instance
 			end
 
       def first_podspec
