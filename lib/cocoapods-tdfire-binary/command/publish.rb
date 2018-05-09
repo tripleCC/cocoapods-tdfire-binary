@@ -48,6 +48,8 @@ module Pod
             push = Pod::Command::Repo::Push.new(CLAide::ARGV.new(argvs))
             push.validate!
             push.run
+
+            raise Pod::StandardError, "执行 pod repo push 失败，错误信息 #{$?}" if $?.exitstatus != 0
           end
         end
 
