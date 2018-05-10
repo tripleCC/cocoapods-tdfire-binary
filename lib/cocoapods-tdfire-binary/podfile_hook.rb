@@ -9,15 +9,46 @@ module Pod
 		define_method(:resolve_dependencies) do 
 			old_resolve_dependencies.bind(self).call()
 
-			specs = analysis_result.specifications
+			specs = analysis_result.specifications.uniq { |s| s.root.name }
 			use_binary_specs = specs.reject(&:tdfire_use_source?)
 			invalid_specs =  use_binary_specs.reject do |s|
 				json_string = Pod::Tdfire::BinaryUrlManager.search_binary(s.root.name)
 				pod = JSON.parse(json_string, object_class: OpenStruct)
-				pod.versions.include?(s.version.to_s)
+				versions = pod.versions || []
+				versions.include?(s.version.to_s)
+			end
+
+			valid_specs = use_binary_specs - invalid_specs
+			if valid_specs.any?
+				cache = Downloader::Cache.new(Config.instance.cache_root + 'Pods')
+				cache_descriptors = cache.cache_descriptors_per_pod
+
+				valid_specs.each do |s|
+					# Config.instance.sandbox
+
+					puts s.root.name
+					descriptors = cache_descriptors[s.root.name]
+					
+					next if descriptors.nil?
+
+					descriptor = descriptors.select { |d| d[:version] == s.version }
+					next if descriptor.nil?
+
+					framework_path = File.join(descriptor[:slug], "#{s.root.name}.framework")
+					puts framework_path
+					unless (File.directory?(framework_path))
+						# FileUtils.rm(descriptor[:spec_file])
+						# FileUtils.rm(descriptor[:slug])
+					end
+				end
 			end
 			
-			raise Informative, "以下组件没有二进制版本 #{invalid_specs.join(',')} ！" if invalid_specs.any?
+			if invalid_specs.any?
+				specs_message = invalid_specs.map do |s|
+					"#{s.root.name} (#{s.version})"
+				end.uniq.join("\n")
+				raise Informative, "以下组件没有二进制版本: \n#{specs_message} " 
+			end
 		end
 	end
 end

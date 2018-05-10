@@ -1,0 +1,31 @@
+PODS:
+  - Celebi (0.3.7):
+    - TDFAsync
+    - TDFCelebiParser
+    - TDFDataBinding
+  - TDFAsync (0.1.3)
+  - TDFCelebiFunctions (0.3.9):
+    - Celebi
+  - TDFCelebiParser (0.5.2)
+  - TDFDataBinding (0.2.4)
+  - test (0.1.0)
+
+DEPENDENCIES:
+  - TDFCelebiFunctions
+  - test (from `../`)
+
+EXTERNAL SOURCES:
+  test:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Celebi: 3c38b21ef1c9750baef67fc1c3ee2722aa7f8e4e
+  TDFAsync: d6e9cbf6e8af5f28d16eb69821240852cceca23b
+  TDFCelebiFunctions: 3884d6c8f67a562ced0079da144b657cfa31d5eb
+  TDFCelebiParser: 268c3497760cba08f32402f5cd11a15e39228511
+  TDFDataBinding: 3be1c69001aa50e61975b07ce5f659848d4a9ad6
+  test: fb2905095e3417a905339ffdb06e336029a4a95c
+
+PODFILE CHECKSUM: a7d04cf1a695dc9bb93e358723e0441b8a24a1fd
+
+COCOAPODS: 1.2.1
