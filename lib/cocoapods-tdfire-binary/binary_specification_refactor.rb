@@ -191,7 +191,6 @@ module Pod
 			def set_framework_download_script
 				download_url = Pod::Tdfire::BinaryUrlManager.pull_url_for_pod_version(target_spec.root.name, target_spec.version)
 
-        error_message = %Q["Tdfire: 请确认 #{target_spec.root.name}(#{target_spec.version}) 二进制版本是否存在!"].force_encoding('UTF-8')
 				download_script = <<-EOF
         #!/bin/sh
 
@@ -213,11 +212,6 @@ module Pod
 
           unzip #{framework_name}.zip
           cp -fa #{framework_name} ../
-        else
-          echo "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-          echo #{error_message}
-          echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
-          exit 127
         fi
 
         cd ..

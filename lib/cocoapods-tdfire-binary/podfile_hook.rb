@@ -1,5 +1,26 @@
 require 'cocoapods-tdfire-binary/binary_state_store'
 require 'cocoapods-tdfire-binary/source_chain_analyzer'
+require 'cocoapods-tdfire-binary/specification_dsl'
+require 'cocoapods-tdfire-binary/binary_url_manager'
+
+module Pod
+	class Installer
+		old_resolve_dependencies = instance_method(:resolve_dependencies)
+		define_method(:resolve_dependencies) do 
+			old_resolve_dependencies.bind(self).call()
+
+			specs = analysis_result.specifications
+			use_binary_specs = specs.reject(&:tdfire_use_source?)
+			invalid_specs =  use_binary_specs.reject do |s|
+				json_string = Pod::Tdfire::BinaryUrlManager.search_binary(s.root.name)
+				pod = JSON.parse(json_string, object_class: OpenStruct)
+				pod.versions.include?(s.version.to_s)
+			end
+			
+			raise Informative, "以下组件没有二进制版本 #{invalid_specs.join(',')} ！" if invalid_specs.any?
+		end
+	end
+end
 
 module CocoapodsTdfireBinary
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :pre_install) do |context, _|
