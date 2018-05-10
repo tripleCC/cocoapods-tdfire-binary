@@ -1,17 +1,305 @@
 PODS:
+  - AFNetworking (3.1.0.1):
+    - AFNetworking/NSURLSession (= 3.1.0.1)
+    - AFNetworking/Reachability (= 3.1.0.1)
+    - AFNetworking/Security (= 3.1.0.1)
+    - AFNetworking/Serialization (= 3.1.0.1)
+    - AFNetworking/UIKit (= 3.1.0.1)
+  - AFNetworking/NSURLSession (3.1.0.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.1.0.1)
+  - AFNetworking/Security (3.1.0.1)
+  - AFNetworking/Serialization (3.1.0.1)
+  - AFNetworking/UIKit (3.1.0.1):
+    - AFNetworking/NSURLSession
   - Celebi (0.3.7):
     - TDFAsync
     - TDFCelebiParser
     - TDFDataBinding
+  - CocoaLumberjack (3.4.1):
+    - CocoaLumberjack/Default (= 3.4.1)
+    - CocoaLumberjack/Extensions (= 3.4.1)
+  - CocoaLumberjack/Default (3.4.1)
+  - CocoaLumberjack/Extensions (3.4.1):
+    - CocoaLumberjack/Default
+  - CocoaSecurity (1.2.4.2)
+  - GYLThemeKit (0.0.1):
+    - YYModel
+  - JSONKit (1.5.3)
+  - libextobjc (0.5.1):
+    - libextobjc/EXTADT (= 0.5.1)
+    - libextobjc/EXTConcreteProtocol (= 0.5.1)
+    - libextobjc/EXTCoroutine (= 0.5.1)
+    - libextobjc/EXTKeyPathCoding (= 0.5.1)
+    - libextobjc/EXTNil (= 0.5.1)
+    - libextobjc/EXTSafeCategory (= 0.5.1)
+    - libextobjc/EXTScope (= 0.5.1)
+    - libextobjc/EXTSelectorChecking.h (= 0.5.1)
+    - libextobjc/EXTSynthesize (= 0.5.1)
+    - libextobjc/NSInvocation+EXT (= 0.5.1)
+    - libextobjc/NSMethodSignature+EXT (= 0.5.1)
+    - libextobjc/RuntimeExtensions (= 0.5.1)
+    - libextobjc/UmbrellaHeader (= 0.5.1)
+  - libextobjc/EXTADT (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTConcreteProtocol (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTCoroutine (0.5.1)
+  - libextobjc/EXTKeyPathCoding (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTNil (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSafeCategory (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTScope (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSelectorChecking.h (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSynthesize (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSInvocation+EXT (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSMethodSignature+EXT (0.5.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/RuntimeExtensions (0.5.1)
+  - libextobjc/UmbrellaHeader (0.5.1)
+  - Mantle (2.0.7.1):
+    - Mantle/extobjc (= 2.0.7.1)
+  - Mantle/extobjc (2.0.7.1)
+  - Masonry (1.0.1.1)
+  - MBProgressHUD (1.1.0.1)
+  - Nimbus/Core (1.3.0)
+  - NSHash (1.1.0.1)
+  - PinYin4Objc (1.1.3)
+  - ReactiveObjC (2.1.0.4)
+  - RegexKitLite (4.0.2)
+  - SDWebImage (4.0.0.2):
+    - SDWebImage/Core (= 4.0.0.2)
+  - SDWebImage/Core (4.0.0.2)
+  - TBXML (1.5.1.1)
+  - TDFAdaptationKit (0.1.1)
+  - TDFAPIHUDPresenter (1.1.3):
+    - Masonry
+    - MBProgressHUD (~> 1.0)
+    - TDFAPIKit (~> 1.0)
+    - TDFCategories
+  - TDFAPIKit (1.2.8):
+    - TDFCategories
+    - TDFNetworking
   - TDFAsync (0.1.3)
+  - TDFBaseInfoKit (0.2.2)
+  - TDFBaseUI (0.1.8):
+    - Masonry
+    - TDFBaseUI/Common (= 0.1.8)
+    - TDFBaseUI/Login (= 0.1.8)
+    - TDFBaseUI/SearchBar (= 0.1.8)
+  - TDFBaseUI/Common (0.1.8):
+    - Masonry
+    - TDFBaseUI/Login
+    - TDFCore
+    - TOCropViewController
+  - TDFBaseUI/Login (0.1.8):
+    - Masonry
+    - TDFAPIHUDPresenter
+    - TDFBatchOperation
+    - TDFCommunalModel
+    - TDFKeyboard
+    - TDFOldSystemService
+    - TDFStyleKit
+  - TDFBaseUI/SearchBar (0.1.8):
+    - Masonry
+    - TDFBaseUI/Login
+    - TDFCore
+  - TDFBatchOperation (1.1.6):
+    - TDFCoreProtocol (~> 1.0)
+  - TDFCategories (2.0.14):
+    - TDFCategories/NSBundle (= 2.0.14)
+    - TDFCategories/NSData (= 2.0.14)
+    - TDFCategories/NSDictionay (= 2.0.14)
+    - TDFCategories/NSMutableArray (= 2.0.14)
+    - TDFCategories/NSString (= 2.0.14)
+    - TDFCategories/UICollectionReusableView (= 2.0.14)
+    - TDFCategories/UICollectionViewCell (= 2.0.14)
+    - TDFCategories/UIColor (= 2.0.14)
+    - TDFCategories/UIImage (= 2.0.14)
+    - TDFCategories/UILabel (= 2.0.14)
+    - TDFCategories/UIScrollView (= 2.0.14)
+    - TDFCategories/UITableViewCell (= 2.0.14)
+    - TDFCategories/UITableViewHeaderFooterView (= 2.0.14)
+    - TDFCategories/UIView (= 2.0.14)
+    - TDFCategories/UIViewController (= 2.0.14)
+  - TDFCategories/NSBundle (2.0.14)
+  - TDFCategories/NSData (2.0.14)
+  - TDFCategories/NSDictionay (2.0.14)
+  - TDFCategories/NSMutableArray (2.0.14)
+  - TDFCategories/NSString (2.0.14):
+    - TDFDataCenterKit
+  - TDFCategories/UICollectionReusableView (2.0.14)
+  - TDFCategories/UICollectionViewCell (2.0.14)
+  - TDFCategories/UIColor (2.0.14)
+  - TDFCategories/UIImage (2.0.14)
+  - TDFCategories/UILabel (2.0.14)
+  - TDFCategories/UIScrollView (2.0.14)
+  - TDFCategories/UITableViewCell (2.0.14)
+  - TDFCategories/UITableViewHeaderFooterView (2.0.14)
+  - TDFCategories/UIView (2.0.14)
+  - TDFCategories/UIViewController (2.0.14)
   - TDFCelebiFunctions (0.3.9):
     - Celebi
   - TDFCelebiParser (0.5.2)
+  - TDFCommonUtility (0.1.0):
+    - Masonry
+  - TDFCommunalModel (0.1.8):
+    - Mantle
+    - Masonry
+    - PinYin4Objc
+    - TDFBatchOperation
+    - TDFCategories
+    - TDFCoreProtocol
+    - TDFOldBaseUtil
+    - YYModel
+  - TDFComponents (1.9.4):
+    - TDFComponents/Business (= 1.9.4)
+    - TDFComponents/Core (= 1.9.4)
+    - TDFComponents/Login (= 1.9.4)
+    - TDFComponents/SupplyChainBridge (= 1.9.4)
+  - TDFComponents/Business (1.9.4):
+    - Celebi
+    - TDFCommonUtility
+    - TDFComponents/SupplyChainBridge
+    - TDFImageSourceManager
+    - TDFOldBaseUtil
+  - TDFComponents/Core (1.9.4):
+    - Masonry
+  - TDFComponents/Login (1.9.4):
+    - ReactiveObjC
+    - SDWebImage
+    - TDFAPIKit
+    - TDFBatchOperation
+    - TDFCategories
+    - TDFCommunalModel
+    - TDFComponents/Core
+    - TDFCore
+    - TDFDateFormatKit
+    - TDFKeyboard
+    - TDFOldBaseUtil
+    - TDFOldSystemService
+    - TDFPickerProxy
+    - TDFProvinceManager
+    - TTTAttributedLabel
+    - YYText
+  - TDFComponents/SupplyChainBridge (1.9.4):
+    - TDFComponents/Login
+  - TDFCore (1.2.0):
+    - GYLThemeKit (~> 0.0.1)
+    - libextobjc
+    - MBProgressHUD (~> 1.0)
+    - RegexKitLite
+    - SDWebImage
+    - TDFAdaptationKit
+    - TDFCategories/NSString
+    - TDFCategories/UIColor
+    - TDFCategories/UIImage
+    - TDFCategories/UIViewController
+    - TDFCoreProtocol (~> 1.0)
+    - TDFDataCenterKit
+    - TDFNetworking
+    - TDFOldBaseUtil
+    - TDFStyleKit
+    - TDFThemeKit
+  - TDFCoreProtocol (1.2.5)
   - TDFDataBinding (0.2.4)
+  - TDFDataCenterKit (0.2.4)
+  - TDFDateFormatKit (1.0.5)
+  - TDFHTTPDNSKit (0.0.5):
+    - TDFSecurityKit
+  - TDFImageSourceManager (1.2.5):
+    - ReactiveObjC
+    - SDWebImage
+    - TDFAPIHUDPresenter
+    - TDFAPIKit (~> 1.0)
+    - TDFCategories
+    - TDFDataCenterKit
+    - TDFLogger
+    - TDFMediatorKit
+    - TOCropViewController
+  - TDFKeyboard (0.1.7)
+  - TDFLogger (1.2.0):
+    - TDFLogger/Core (= 1.2.0)
+    - TDFLogger/Initializer (= 1.2.0)
+  - TDFLogger/Core (1.2.0):
+    - CocoaLumberjack (~> 3.0)
+  - TDFLogger/Initializer (1.2.0):
+    - TDFLogger/Core
+    - TDFModuleKit
+  - TDFMediatorKit (0.9.21)
+  - TDFModuleKit (1.0.3)
+  - TDFNetworking (0.5.3):
+    - AFNetworking
+    - CocoaSecurity
+    - MBProgressHUD
+    - Nimbus/Core
+    - NSHash
+    - TDFDataCenterKit
+    - TDFHTTPDNSKit
+  - TDFOldBaseUtil (0.2.20):
+    - JSONKit
+    - Masonry
+    - PinYin4Objc
+    - RegexKitLite
+    - SDWebImage
+    - TDFBaseInfoKit
+    - TDFNetworking (~> 0.3)
+  - TDFOldSystemService (0.2.6):
+    - TBXML
+    - TDFBaseInfoKit
+    - TDFCoreProtocol
+    - TDFDataCenterKit
+    - TDFOldBaseUtil
+    - YYModel
+  - TDFPickerProxy (1.1.20):
+    - TDFPickerProxy/AddressPicker (= 1.1.20)
+    - TDFPickerProxy/Core (= 1.1.20)
+    - TDFPickerProxy/DatePicker (= 1.1.20)
+    - TDFPickerProxy/GeneralPicker (= 1.1.20)
+    - TDFPickerProxy/OptionPicker (= 1.1.20)
+  - TDFPickerProxy/AddressPicker (1.1.20):
+    - TDFBatchOperation (~> 1.0)
+    - TDFPickerProxy/Core
+    - TDFProvinceManager
+  - TDFPickerProxy/Core (1.1.20):
+    - Masonry
+    - TDFPresentationController (~> 1.0)
+  - TDFPickerProxy/DatePicker (1.1.20):
+    - TDFDateFormatKit
+    - TDFPickerProxy/Core
+    - TDFPresentationController (~> 1.0)
+  - TDFPickerProxy/GeneralPicker (1.1.20):
+    - TDFPickerProxy/Core
+  - TDFPickerProxy/OptionPicker (1.1.20):
+    - TDFBatchOperation (~> 1.0)
+    - TDFPickerProxy/Core
+  - TDFPresentationController (1.0.2)
+  - TDFProvinceManager (0.0.8):
+    - TDFBatchOperation
+    - YYModel
+  - TDFSecurityKit (0.1.0)
+  - TDFStyleKit (0.2.0)
+  - TDFThemeKit (0.1.1):
+    - YYModel
   - test (0.1.0)
+  - TOCropViewController (0.0.5)
+  - TTTAttributedLabel (2.0.0.1)
+  - YYModel (1.0.4.2)
+  - YYText (1.0.7.1)
 
 DEPENDENCIES:
+  - TDFBaseUI
   - TDFCelebiFunctions
+  - TDFComponents
+  - TDFCoreProtocol
   - test (from `../`)
 
 EXTERNAL SOURCES:
@@ -19,13 +307,62 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  AFNetworking: 032062ffb24bf902c3040070304569831ee6eeea
   Celebi: 3c38b21ef1c9750baef67fc1c3ee2722aa7f8e4e
+  CocoaLumberjack: 3c886aa76d56528b0482320c2549c925adb67fd2
+  CocoaSecurity: b61a06b3567d9a817ea2fe457cbe691669886288
+  GYLThemeKit: d5f5eb1695fc8091628079f0af54f880232a61fd
+  JSONKit: 38454d68cc832cb1a878475a6d1b9db148e5be77
+  libextobjc: 728d4dc0e915e8f0713fc4d9c100feaec4fe52f0
+  Mantle: 2b5ef77100047f0bb201dd09c9f78bbb3ea9e7cf
+  Masonry: '05666589d973e2a8624b5c6134b2e1015f3dfdac'
+  MBProgressHUD: 51126d6c82778b4a5fa3636f6e91ff1a2bd5a2c4
+  Nimbus: 76f04cfdbd2ab192cb3f61b3e5cc4e09117b7595
+  NSHash: 2061df4462dde0b8583dbcc620eaf80b227dd845
+  PinYin4Objc: ac8acd50672dc33ec6e7b5bf969cdf8115645234
+  ReactiveObjC: 5b6952495a73242167f201ee017c335daa802574
+  RegexKitLite: b78a6e6d457040b7e9a7cad0f30d0c83e5e0eaa4
+  SDWebImage: 8ffb21d8dc6efff54c166bc5505f9c1ff18061ff
+  TBXML: '05775619d410c76b5f85b117522d016f349ed5ec'
+  TDFAdaptationKit: a8d77595709aed38180d93cdaa93f9fa78f9b2f4
+  TDFAPIHUDPresenter: aaa406637e2802697bc99011b05f229ab464df70
+  TDFAPIKit: 9db08b3931a1565ed5972ed5a85e1a47a9cc3a0a
   TDFAsync: d6e9cbf6e8af5f28d16eb69821240852cceca23b
+  TDFBaseInfoKit: 448d51c9e23c2c6b7fc8047d74fae15e5925c426
+  TDFBaseUI: c57f80706c881305cba1fdc4acbb23a018fb7f4f
+  TDFBatchOperation: fdba5a19e6d9a520a28f8b71515df0841f622b59
+  TDFCategories: 6fee21b25b72f50749ae15b3a6bf25efb292ee0b
   TDFCelebiFunctions: 3884d6c8f67a562ced0079da144b657cfa31d5eb
   TDFCelebiParser: 268c3497760cba08f32402f5cd11a15e39228511
+  TDFCommonUtility: dce0608012023d238863854451fb0c3c73f2c46a
+  TDFCommunalModel: df8b24c12d03c614feb6d643eda3df0e1d867e7d
+  TDFComponents: 15891bbfae1edc6071312a6756c157b369ad39c4
+  TDFCore: 6bb8c9c29a95404b02f0f9d3f05465fb017453c3
+  TDFCoreProtocol: cef7fe5894e1bb178946cdbb65eec226aa816656
   TDFDataBinding: 3be1c69001aa50e61975b07ce5f659848d4a9ad6
+  TDFDataCenterKit: e1193e9251dcd4bf0b861cf10e926a95db335391
+  TDFDateFormatKit: 729f4bd1b0ab5ba2383c758351664bcac1dd6507
+  TDFHTTPDNSKit: dd45426f9aff78a1139d45facd4003761dfaf6df
+  TDFImageSourceManager: 0a4bb1f7e16891dc5242a465b6e68d0c1ad861e7
+  TDFKeyboard: 79275c2e2850eb2c220d85dd158d6a1cc701c774
+  TDFLogger: 7eed4ef751cc42fc44ec470f9aa39c32e3a3a22d
+  TDFMediatorKit: cce96aa5ad938b0c558012506c182de63083b076
+  TDFModuleKit: 9f195cb1aca1c773a47c0fa7138bdd73c35bb394
+  TDFNetworking: aa19c50ba4f31cb9b8fc45bac864fee14995a61f
+  TDFOldBaseUtil: 524e2d07b2c08a9d164c20100cc591cbb090530f
+  TDFOldSystemService: 21b3125907ef736bd42e0a686c1611a37e464a46
+  TDFPickerProxy: aa9770c90b3baef53bea607af2df61f1590031d8
+  TDFPresentationController: 378575ff47176bf2efec25a5995a662b662a8bec
+  TDFProvinceManager: 58b48bb16076c64a0eefb690b80abf13d45cb5fe
+  TDFSecurityKit: 6c9f8923c6bcfc3ba5083f212a36862598f97c8b
+  TDFStyleKit: be5429ac923bfbc47e6bd381d582610af2428a79
+  TDFThemeKit: 72be0908ce7a6fc92a4ae6322786e80e2b68e631
   test: fb2905095e3417a905339ffdb06e336029a4a95c
+  TOCropViewController: 22a00046ec4e8b06521c77694421fb9568e1682b
+  TTTAttributedLabel: 4c78ee313a5900522091fed41a008b63a749d2a7
+  YYModel: e7c12e5834b520a7b9b2dcb6bd822e0bc546d45c
+  YYText: d4c12072e7a98c9d1ae60904adf53f9e4b59e625
 
-PODFILE CHECKSUM: a7d04cf1a695dc9bb93e358723e0441b8a24a1fd
+PODFILE CHECKSUM: 409d187cf074b2482d2d632eadd2a1860946b726
 
 COCOAPODS: 1.2.1
