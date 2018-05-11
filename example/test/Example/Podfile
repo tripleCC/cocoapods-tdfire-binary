@@ -1,0 +1,22 @@
+source 'git@git.2dfire-inc.com:ios/cocoapods-spec.git'
+platform :ios, '8.0'
+
+#use_frameworks!
+
+plugin 'cocoapods-tdfire-binary'
+
+tdfire_use_binary!
+ tdfire_use_source_pods ['TDFCelebiFunctions']
+
+target 'test_Example' do
+  pod 'test', :path => '../'
+  pod 'TDFCelebiFunctions'
+  pod 'TDFComponents'
+  pod 'TDFBaseUI'
+  pod 'TDFCoreProtocol'
+  target 'test_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

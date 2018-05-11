@@ -1,5 +1,4 @@
 require 'cocoapods-tdfire-binary/binary_state_store'
-require 'cocoapods-tdfire-binary/source_chain_analyzer'
 
 module CocoapodsTdfireBinary
 	Pod::HooksManager.register('cocoapods-tdfire-binary', :pre_install) do |context, _|

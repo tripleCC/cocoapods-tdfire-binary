@@ -70,17 +70,17 @@ module Pod
       end
     end
 
-    private 
-
-    def tdfire_reference_spec
-      @tdfire_reference_spec || self        
-    end
-
     def tdfire_use_source?
       ((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
           (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
           Pod::Tdfire::BinaryStateStore.force_use_source?) &&
           (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)
+    end
+
+    private 
+
+    def tdfire_reference_spec
+      @tdfire_reference_spec || self        
     end
 
     def tdfire_should_skip_download?
