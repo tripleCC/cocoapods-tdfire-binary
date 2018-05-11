@@ -35,12 +35,15 @@ module Pod
       def clean!
         # 判断有效组件的 cache 中是否有二进制，没有的话，删除组件缓存
         specs = use_binary_specs - no_binary_specs
-        specs.each do |s|
-          # 处理 cache
-          clean_pod_cache(s)
-          
-          # 处理 Pods 
-          clean_local_cache(s)
+
+        UI.section 'Tdfire: 处理没有二进制版本的组件' do
+          specs.each do |s|
+            # 处理 cache
+            clean_pod_cache(s)
+            
+            # 处理 Pods 
+            clean_local_cache(s)
+          end
         end
       end
 
@@ -68,7 +71,7 @@ module Pod
         pod_dir = Config.instance.sandbox.pod_dir(spec.root.name)
         framework_file = pod_dir + "#{spec.root.name}.framework"
         if pod_dir.exist? && !framework_file.exist?
-          UI.message "Tdfire: 删除缺少二进制的组件 #{spec.root.name}".yellow
+          UI.message "Tdfire: 删除本地 Pods 目录下缺少二进制的组件 #{spec.root.name}"
 
           # 设置沙盒变动标记，去 cache 中拿
           # 只有 :changed 、:added 两种状态才会重新去 cache 中拿
@@ -92,7 +95,7 @@ module Pod
           slug = d[:slug].dirname + "#{spec.version}-#{spec.checksum[0, 5]}"
           framework_file = slug + "#{spec.root.name}.framework"
           unless (framework_file.exist?)
-            UI.message "Tdfire: 删除缺少二进制的Cache #{spec.root.name}".magenta
+            UI.message "Tdfire: 删除缺少二进制的 Cache #{spec.root.name}"
             begin
               FileUtils.rm(descriptor[:spec_file])
               FileUtils.rm_rf(descriptor[:slug])
