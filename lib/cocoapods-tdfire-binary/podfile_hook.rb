@@ -70,8 +70,9 @@ module Pod
 					"#{s.root.name} (#{s.version})"
 				end.uniq.join("\n")
 
-				UI.message "Tdfire: 添加以下代码至Podfile规避此错误: tdfire_use_source_pods #{invalid_specs.map { |s| s.root.name }}"
-				raise Informative, "以下组件没有二进制版本: \n#{specs_message} " 
+				pods = invalid_specs.map { |s| s.root.name }
+				Pod::Tdfire::BinaryStateStore.use_source_pods += pods
+				UI.warn "Tdfire: 以下组件没有二进制版本，将强制使用源码依赖，添加以下代码至Podfile规避此警告: tdfire_use_source_pods #{pods}"
 			end
 		end
 	end

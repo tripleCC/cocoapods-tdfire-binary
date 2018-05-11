@@ -1,19 +1,7 @@
 PODS:
   - AFNetworking (3.1.0.1):
-    - AFNetworking/NSURLSession (= 3.1.0.1)
-    - AFNetworking/Reachability (= 3.1.0.1)
-    - AFNetworking/Security (= 3.1.0.1)
-    - AFNetworking/Serialization (= 3.1.0.1)
-    - AFNetworking/UIKit (= 3.1.0.1)
-  - AFNetworking/NSURLSession (3.1.0.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.1.0.1)
-  - AFNetworking/Security (3.1.0.1)
-  - AFNetworking/Serialization (3.1.0.1)
-  - AFNetworking/UIKit (3.1.0.1):
-    - AFNetworking/NSURLSession
+    - AFNetworking/TdfireBinary (= 3.1.0.1)
+  - AFNetworking/TdfireBinary (3.1.0.1)
   - Celebi (0.3.7):
     - TDFAsync
     - TDFCelebiParser
@@ -25,49 +13,40 @@ PODS:
   - CocoaLumberjack/Extensions (3.4.1):
     - CocoaLumberjack/Default
   - CocoaSecurity (1.2.4.2)
+  - FLAnimatedImage (1.0.14)
   - GYLThemeKit (0.0.1):
     - YYModel
   - JSONKit (1.5.3)
   - libextobjc (0.5.1):
-    - libextobjc/EXTADT (= 0.5.1)
-    - libextobjc/EXTConcreteProtocol (= 0.5.1)
-    - libextobjc/EXTCoroutine (= 0.5.1)
-    - libextobjc/EXTKeyPathCoding (= 0.5.1)
-    - libextobjc/EXTNil (= 0.5.1)
-    - libextobjc/EXTSafeCategory (= 0.5.1)
-    - libextobjc/EXTScope (= 0.5.1)
-    - libextobjc/EXTSelectorChecking.h (= 0.5.1)
-    - libextobjc/EXTSynthesize (= 0.5.1)
-    - libextobjc/NSInvocation+EXT (= 0.5.1)
-    - libextobjc/NSMethodSignature+EXT (= 0.5.1)
-    - libextobjc/RuntimeExtensions (= 0.5.1)
-    - libextobjc/UmbrellaHeader (= 0.5.1)
-  - libextobjc/EXTADT (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTConcreteProtocol (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTCoroutine (0.5.1)
-  - libextobjc/EXTKeyPathCoding (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTNil (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTSafeCategory (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTScope (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTSelectorChecking.h (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/EXTSynthesize (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/NSInvocation+EXT (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/NSMethodSignature+EXT (0.5.1):
-    - libextobjc/RuntimeExtensions
-  - libextobjc/RuntimeExtensions (0.5.1)
-  - libextobjc/UmbrellaHeader (0.5.1)
+    - libextobjc/TdfireBinary (= 0.5.1)
+  - libextobjc/TdfireBinary (0.5.1)
+  - libwebp (0.6.0):
+    - libwebp/core (= 0.6.0)
+    - libwebp/dec (= 0.6.0)
+    - libwebp/demux (= 0.6.0)
+    - libwebp/dsp (= 0.6.0)
+    - libwebp/enc (= 0.6.0)
+    - libwebp/mux (= 0.6.0)
+    - libwebp/utils (= 0.6.0)
+    - libwebp/webp (= 0.6.0)
+  - libwebp/core (0.6.0):
+    - libwebp/webp
+  - libwebp/dec (0.6.0):
+    - libwebp/core
+  - libwebp/demux (0.6.0):
+    - libwebp/core
+  - libwebp/dsp (0.6.0):
+    - libwebp/core
+  - libwebp/enc (0.6.0):
+    - libwebp/core
+  - libwebp/mux (0.6.0):
+    - libwebp/core
+  - libwebp/utils (0.6.0):
+    - libwebp/core
+  - libwebp/webp (0.6.0)
   - Mantle (2.0.7.1):
-    - Mantle/extobjc (= 2.0.7.1)
-  - Mantle/extobjc (2.0.7.1)
+    - Mantle/TdfireBinary (= 2.0.7.1)
+  - Mantle/TdfireBinary (2.0.7.1)
   - Masonry (1.0.1.1)
   - MBProgressHUD (1.1.0.1)
   - Nimbus/Core (1.3.0)
@@ -76,8 +55,10 @@ PODS:
   - ReactiveObjC (2.1.0.4)
   - RegexKitLite (4.0.2)
   - SDWebImage (4.0.0.2):
-    - SDWebImage/Core (= 4.0.0.2)
-  - SDWebImage/Core (4.0.0.2)
+    - SDWebImage/TdfireBinary (= 4.0.0.2)
+  - SDWebImage/TdfireBinary (4.0.0.2):
+    - FLAnimatedImage (~> 1.0)
+    - libwebp
   - TBXML (1.5.1.1)
   - TDFAdaptationKit (0.1.1)
   - TDFAPIHUDPresenter (1.1.3):
@@ -260,27 +241,13 @@ PODS:
     - TDFOldBaseUtil
     - YYModel
   - TDFPickerProxy (1.1.20):
-    - TDFPickerProxy/AddressPicker (= 1.1.20)
-    - TDFPickerProxy/Core (= 1.1.20)
-    - TDFPickerProxy/DatePicker (= 1.1.20)
-    - TDFPickerProxy/GeneralPicker (= 1.1.20)
-    - TDFPickerProxy/OptionPicker (= 1.1.20)
-  - TDFPickerProxy/AddressPicker (1.1.20):
-    - TDFBatchOperation (~> 1.0)
-    - TDFPickerProxy/Core
-    - TDFProvinceManager
-  - TDFPickerProxy/Core (1.1.20):
+    - TDFPickerProxy/TdfireBinary (= 1.1.20)
+  - TDFPickerProxy/TdfireBinary (1.1.20):
     - Masonry
-    - TDFPresentationController (~> 1.0)
-  - TDFPickerProxy/DatePicker (1.1.20):
-    - TDFDateFormatKit
-    - TDFPickerProxy/Core
-    - TDFPresentationController (~> 1.0)
-  - TDFPickerProxy/GeneralPicker (1.1.20):
-    - TDFPickerProxy/Core
-  - TDFPickerProxy/OptionPicker (1.1.20):
     - TDFBatchOperation (~> 1.0)
-    - TDFPickerProxy/Core
+    - TDFDateFormatKit
+    - TDFPresentationController (~> 1.0)
+    - TDFProvinceManager
   - TDFPresentationController (1.0.2)
   - TDFProvinceManager (0.0.8):
     - TDFBatchOperation
@@ -311,9 +278,11 @@ SPEC CHECKSUMS:
   Celebi: 3c38b21ef1c9750baef67fc1c3ee2722aa7f8e4e
   CocoaLumberjack: 3c886aa76d56528b0482320c2549c925adb67fd2
   CocoaSecurity: b61a06b3567d9a817ea2fe457cbe691669886288
+  FLAnimatedImage: e002796fb1f89aff2d28ce6b4979cfb27a8d8da5
   GYLThemeKit: d5f5eb1695fc8091628079f0af54f880232a61fd
   JSONKit: 38454d68cc832cb1a878475a6d1b9db148e5be77
   libextobjc: 728d4dc0e915e8f0713fc4d9c100feaec4fe52f0
+  libwebp: ede9260022b6604376c51f660b2662b4b76f2fa5
   Mantle: 2b5ef77100047f0bb201dd09c9f78bbb3ea9e7cf
   Masonry: '05666589d973e2a8624b5c6134b2e1015f3dfdac'
   MBProgressHUD: 51126d6c82778b4a5fa3636f6e91ff1a2bd5a2c4
@@ -363,6 +332,6 @@ SPEC CHECKSUMS:
   YYModel: e7c12e5834b520a7b9b2dcb6bd822e0bc546d45c
   YYText: d4c12072e7a98c9d1ae60904adf53f9e4b59e625
 
-PODFILE CHECKSUM: 409d187cf074b2482d2d632eadd2a1860946b726
+PODFILE CHECKSUM: d02ee15d0a00d734ae15348bfe913b2a1ead0cab
 
 COCOAPODS: 1.2.1
