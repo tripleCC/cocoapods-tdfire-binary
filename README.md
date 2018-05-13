@@ -2,12 +2,27 @@
 
 <a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
-## Installation
+## 安装
 
     $ gem install cocoapods-tdfire-binary
-    
 
-## Usage
+
+
+## 插件目标
+
+
+
+1. 通过提前将组件打包成 static-framework，减少主 App 打包时间
+2. 提供源码和二进制依赖切换功能，方便开发调试
+3. 尽量减少二进制化的工作量，以及对原发布流程的影响
+4. 规避维护两套 podspec 和对应的 tag 
+5. 体验尽量贴近 CocoaPods 原生 DSL
+
+
+
+## 使用
+
+
 
 ```
 
@@ -112,8 +127,8 @@ end
       end
     end
   end
-  ``` 
-   
+  ```
+  
 - tdfire_set_binary_download_configurations
   - 强制设置 static_framework 为 true，规避使用 use_frameworks! 时，动态库依赖链（动态库依赖静态库问题）、影响启动时间问题
   - 设置 preserve_paths，让 cache 保留源码、资源、二进制全部文件
