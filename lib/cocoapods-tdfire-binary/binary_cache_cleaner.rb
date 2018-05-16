@@ -36,6 +36,8 @@ module Pod
         # 判断有效组件的 cache 中是否有二进制，没有的话，删除组件缓存
         specs = use_binary_specs - no_binary_specs
 
+        return if specs.empty?
+
         UI.section 'Tdfire: 处理没有二进制版本的组件' do
           specs.each do |s|
             # 处理 cache
