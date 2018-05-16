@@ -32,7 +32,7 @@
 
 
 
-此插件需要结合二进制服务器使用，其中主要接口如下：
+此插件需要结合[二进制服务器](https://github.com/tripleCC/binary-server)使用，其中主要接口如下：
 
 
 
