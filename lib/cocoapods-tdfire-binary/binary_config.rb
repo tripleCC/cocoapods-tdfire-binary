@@ -50,9 +50,15 @@ module Pod
       end
 
       def private_sources(keywords = repo_url)
-        config.sources_manager.all.select do |source|
+        sources = config.sources_manager.all.select do |source|
           source.url.downcase.include? keywords
         end
+
+        if sources.empty?
+          raise Pod::Informative, "获取不到与 #{repo_url} 相关的私有源信息，执行 pod binary init 或手动在 #{binary_setting_file} 重新设置." 
+        end
+
+        sources
       end
 
       private
