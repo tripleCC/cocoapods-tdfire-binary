@@ -80,7 +80,8 @@ module Pod
           @analysis_result.sandbox_state.add_name(spec.name, :changed)
           begin
             FileUtils.rm_rf(pod_dir)
-          rescue
+          rescue => err
+            puts err
           end
         end
       end
@@ -99,9 +100,10 @@ module Pod
           unless (framework_file.exist?)
             UI.message "Tdfire: 删除缺少二进制的 Cache #{spec.root.name}"
             begin
-              FileUtils.rm(descriptor[:spec_file])
-              FileUtils.rm_rf(descriptor[:slug])
-            rescue
+              FileUtils.rm(d[:spec_file])
+              FileUtils.rm_rf(slug)
+            rescue => err
+              puts err
             end
           end
         end
