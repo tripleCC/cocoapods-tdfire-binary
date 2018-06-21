@@ -4,7 +4,6 @@ require 'colored2'
 
 module Pod
   class Specification
-
     def tdfire_refactor
       @refactor ||= Pod::Tdfire::BinarySpecificationRefactor.new(self)
     end
@@ -20,6 +19,8 @@ module Pod
 
       # 源码依赖配置
       def tdfire_source(configurator)
+        tdfire_set_binary_strategy_flag
+
         if tdfire_use_source?
           if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
             UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
@@ -34,6 +35,8 @@ module Pod
 
       # 二进制依赖配置
       def tdfire_binary(configurator, &block)
+        tdfire_set_binary_strategy_flag
+
         if !tdfire_use_source?
           if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
             UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold
@@ -59,6 +62,8 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations
+        tdfire_set_binary_strategy_flag
+
         tdfire_refactor.set_preserve_paths(tdfire_reference_spec)
 
         # 没有发布的pod，没有二进制版本，不进行下载配置
@@ -71,13 +76,23 @@ module Pod
     end
 
     def tdfire_use_source?
-      ((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
+      (((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
           (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
           Pod::Tdfire::BinaryStateStore.force_use_source?) &&
-          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)
+          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)) || 
+          !tdfire_had_set_binary_strategy
     end
 
     private 
+
+    # 没有配置二进制策略的，使用源码依赖
+    def tdfire_had_set_binary_strategy
+      @tdfire_binary_strategy_flag || false
+    end
+
+    def tdfire_set_binary_strategy_flag
+      @tdfire_binary_strategy_flag = true
+    end
 
     def tdfire_reference_spec
       @tdfire_reference_spec || self        

@@ -183,8 +183,8 @@ module Pod
 			def set_use_static_framework
         # 1.4.0 版本生效
         # 使用 use_frameworks! 后，生成静态 Framework
-        #
-				target_spec.static_framework = true if target_spec.respond_to?('static_framework')
+        # 有些组件 podspec 没有进行二进制配置， Podfile 使用 use_frameworks! 就会出现  has transitive dependencies that include static frameworks 错误
+				# target_spec.static_framework = true if target_spec.respond_to?('static_framework')
 			end
 
 			#--------------------------------------------------------------------#

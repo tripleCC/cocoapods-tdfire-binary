@@ -9,6 +9,12 @@ module Pod
 		define_method(:resolve_dependencies) do 
 			old_resolve_dependencies.bind(self).call()
 
+      # 1.4.0 版本生效
+      # 使用 use_frameworks! 后，生成静态 Framework
+      analysis_result.specifications.each do |spec|
+        spec.static_framework = true if spec.respond_to?('static_framework')
+      end
+
       cleaner = Pod::Tdfire::BinaryCacheCleaner.new(analysis_result)
       cleaner.clean!
 			
@@ -16,7 +22,11 @@ module Pod
 			if cleaner.no_binary_specs.any?
 				pods = cleaner.no_binary_specs.map { |s| s.root.name }
 				Pod::Tdfire::BinaryStateStore.use_source_pods += pods
-				UI.warn "Tdfire: 以下组件没有二进制版本，将强制使用源码依赖，添加以下代码至Podfile规避此警告: tdfire_use_source_pods #{pods}"
+        UI.warn "Tdfire: 以下组件没有二进制版本，将强制使用源码依赖，添加以下代码至Podfile规避此警告: tdfire_use_source_pods #{pods}"
+        
+        # 在这个时间点设置 use_source_pods ，实际上并不会生效，因为 analysis_result 已经生成，依赖关系不会改变
+        # 所以这里强制进行第二次分析，更新 analysis_result
+        old_resolve_dependencies.bind(self).call()
       end
 		end
 	end
