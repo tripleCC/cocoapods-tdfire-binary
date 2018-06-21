@@ -9,6 +9,12 @@ module Pod
 		define_method(:resolve_dependencies) do 
 			old_resolve_dependencies.bind(self).call()
 
+      # 1.4.0 版本生效
+      # 使用 use_frameworks! 后，生成静态 Framework
+      analysis_result.specifications.each do |spec|
+        spec.static_framework = true if spec.respond_to?('static_framework')
+      end
+
       cleaner = Pod::Tdfire::BinaryCacheCleaner.new(analysis_result)
       cleaner.clean!
 			
