@@ -13,7 +13,7 @@ module Pod
         DESC
 
         def initialize(argv)
-          @asker = Tdfire::InitAsker.new
+          @asker = Pod::Tdfire::InitAsker.new
           super
         end
 
@@ -21,8 +21,7 @@ module Pod
           @asker.wellcome_message
 
           hash = binary_config.setting_hash
-
-          Tdfire::InitAsker::QUESTIONS.each do |k, v|
+          Pod::Tdfire::InitAsker::QUESTIONS.each do |k, v|
             default = hash[k] unless hash.nil?
             hash[k] = @asker.ask_with_answer(v, default)
           end
