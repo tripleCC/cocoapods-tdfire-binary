@@ -21,9 +21,9 @@ module Pod
           @asker.wellcome_message
 
           hash = binary_config.setting_hash
-
           Pod::Tdfire::InitAsker::QUESTIONS.each do |k, v|
-            hash[k] = @asker.ask_with_answer(v, hash[k])
+            default = hash[k] unless hash.nil?
+            hash[k] = @asker.ask_with_answer(v, default)
           end
 
           binary_config.config_with_setting(hash)

@@ -30,21 +30,102 @@
 
 ## 使用
 
+> 二进制组件发布
+
+此插件需要结合[二进制服务器](https://github.com/tripleCC/binary-server)使用，运行服务器之后，就可以测试二进制打包了。
+
+运行 `pod binary init` 配置二进制插件基本信息，其中包括二进制服务器地址，私有源 Git 地址，pod 模版地址：
+
+```shell
+开始设置二进制化初始信息.
+所有的信息都会保存在 binary_config.yaml 文件中.
+你可以在 /Users/songruiwang/.cocoapods/binary_config.yml 目录下手动添加编辑该文件.
+/Users/songruiwang/.cocoapods/binary_config.yml 文件包含配置信息如下：
+
+---
+server_host: 输入二进制服务器地址 (比如 http://xxxxx:8080)
+repo_url: 输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
+template_url: 输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
 
 
-此插件需要结合二进制服务器使用，其中主要接口如下：
+输入二进制服务器地址 (比如 http://xxxxx:8080)
+旧值：http://localhost:8080
+ >
+http://localhost:8080
 
+输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
+旧值：git@git.2dfire-inc.com:ios/cocoapods-spec.git
+ >
+git@git.2dfire-inc.com:ios/cocoapods-spec.git
 
+输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
+旧值：git@git.2dfire-inc.com:ios/binary-pod-template.git
+ >
+git@git.2dfire-inc.com:ios/binary-pod-template.git
 
+设置完成.
 ```
 
+设置完成之后，运行 `pod binary lib create` 创建组件库。
+
+组件库创建完成后，修改 `podspec` 文件：
+
+```ruby
+Pod::Spec.new do |s|
+  s.name = 'XXXX'
+  ....
+
+  tdfire_source_configurator = lambda do |s|
+    # 把一些源码配置移到 lambda 中
+    # source configuration
+    # s.source_files = 'PodA/Classes/**/*'
+    # s.resource_bundles = {
+    #   'PodA' => ['PodA/Assets/*']
+    # }
+  end
+
+  # 此段原样拷贝即可
+  unless %w[tdfire_set_binary_download_configurations tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
+    
+    tdfire_source_configurator.call s
+  else
+    s.tdfire_source tdfire_source_configurator
+    s.tdfire_binary tdfire_source_configurator
+    s.tdfire_set_binary_download_configurations
+  end
+end
 ```
 
+修改完成后，提交代码，打个 Tag ，推送至远程仓库。
 
+接下来处理二进制版本事宜。
 
+首先执行 `pod binary package` 创建二进制版本（静态 framework），可以看到本地文件中会新增 `xxx.framework.zip` 压缩文件。
 
+接下来执行 `pod binary push` 推送二进制至服务器，执行 `pod binary list` 可以查看推送上去的组件信息。
 
+源码和二进制版本都安排妥当，就可以执行 `pod binary publish` 发布组件了。
+
+> 使用二进制组件
+
+执行 `pod binary lib create` 创建测试工程，修改 `Podfile` ：
+
+```ruby
+# 引入插件
+plugin 'cocoapods-tdfire-binary'
+
+# 使用二进制依赖
+tdfire_use_binary!
+
+# 使用源码依赖的组件
+tdfire_use_source_pods ['AFNetworking']
 ```
+
+运行 `pod update --verbose`，可以看到插件输出额外的 `Tdfire: xxx` 信息。
+
+集成完成后，点击工程 `Pods` 下对应组件目录，就可以看到此次集成采用的二进制依赖了。
+
+<!-- ```
 
 
 Usage:
@@ -179,4 +260,4 @@ end
 ```
 env tdfire_use_binary=1 tdfire_unpublished_pods=PodA pod lib lint xxxx
 env tdfire_force_use_source=1 pod install
-```
+``` -->
