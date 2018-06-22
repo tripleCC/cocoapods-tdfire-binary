@@ -45,7 +45,7 @@ module Pod
 
 
 	      	@path = path
-	      	@name = name || path.split('/').last - ZIP_SUBFFIX
+	      	@name = name || path.split('/').last.sub(ZIP_SUBFFIX, '')
 	      	@version = version
 	      	@commit = commit
 	      	super
