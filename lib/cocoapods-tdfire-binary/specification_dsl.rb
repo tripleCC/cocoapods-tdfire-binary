@@ -76,14 +76,22 @@ module Pod
     end
 
     def tdfire_use_source?
-      (((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
-          (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
+      ((((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
+          (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name)) && 
+          (!(Pod::Tdfire::BinaryStateStore.third_party_use_binary? && tdfire_third_party?) || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
           Pod::Tdfire::BinaryStateStore.force_use_source?) &&
           (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)) || 
-          !tdfire_had_set_binary_strategy
+          !tdfire_had_set_binary_strategy)
     end
 
     private 
+    def tdfire_third_party?
+      if source 
+        source[:git]&.include?('cocoapods-repos')
+      else 
+        false
+      end
+    end
 
     # 没有配置二进制策略的，使用源码依赖
     def tdfire_had_set_binary_strategy
