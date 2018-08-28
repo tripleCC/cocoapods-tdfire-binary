@@ -4,6 +4,7 @@ require 'cocoapods-tdfire-binary/binary_state_store'
 module Pod
   class Podfile
     module DSL
+
       # 使用源码依赖的pod
       def tdfire_use_source_pods(pods)
         Pod::UI.puts "Tdfire: set use source pods: #{Array(pods).join(', ')}"
@@ -14,6 +15,10 @@ module Pod
       def tdfire_use_binary!
         Pod::Tdfire::BinaryStateStore.set_use_binary
       end  
+
+      def tdfire_third_party_use_binary!
+        Pod::Tdfire::BinaryStateStore.set_third_party_use_binary
+      end
 
       # 因为暂时无法将全部组件二进制化，tdfire_use_binary! 默认全部进行二进制依赖不利于渐进测试
       # 所以添加 tdfire_use_source! 默认全部进行源码依赖，开放指定二进制依赖组件接口

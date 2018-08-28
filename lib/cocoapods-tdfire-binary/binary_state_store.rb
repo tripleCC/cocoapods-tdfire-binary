@@ -56,12 +56,21 @@ module Pod
         ENV[FORCE_USE_SOURCE_KEY] == USE_SURE_VALUE
       end
 
+      def self.set_third_party_use_binary
+        ENV[THIRD_PARTY_USE_BINARY_KEY] = USE_SURE_VALUE
+      end
+
+      def self.third_party_use_binary?
+        ENV[THIRD_PARTY_USE_BINARY_KEY] == USE_SURE_VALUE
+      end
+
       private
 
       UNPBLISHED_PODS = "tdfire_unpublished_pods"
       FORCE_USE_SOURCE_KEY = 'tdfire_force_use_source'
       FORCE_USE_BINARY_KEY = 'tdfire_force_use_binary'
       USE_BINARY_KEY = 'tdfire_use_binary'
+      THIRD_PARTY_USE_BINARY_KEY = 'tdfire_third_party_use_binary'
       LIMIT_PLATFORM_KEY = 'tdfire_limit_platform'
       USE_SURE_VALUE = '1'
     end
