@@ -10,7 +10,7 @@ module Pod
             def self.get_pull_url_for_pod_version(pod, version)
                 command = "curl #{pull_url_for_pod_version(pod, version)} > #{pod}.framework.zip"
 
-                run_curl command
+                run_curl command, 20
             end
 
             def self.push_url
@@ -21,7 +21,7 @@ module Pod
                 param = %Q[-F "frameworkName=#{name}" -F "version=#{version}" -F "changelog=#{commit}" -F "featureName=#{commit}" -F "framework=@#{path}" -F "commitHash=#{commit_hash}"]
                 command = "curl #{push_url} #{param}"
 
-                run_curl command
+                run_curl command, 20
             end
 
             def self.delete_binary(name, version)
@@ -39,10 +39,10 @@ module Pod
                 run_curl command
             end
 
-            def self.run_curl(command)
+            def self.run_curl(command, time_out = 5)
                 Pod::UI.message "CURL: \n" + command + "\n"
 
-                result = `#{command} -s -m 5`
+                result = `#{command} -s -m #{time_out}`
 
                 raise Pod::Informative, "执行 #{command} 失败，查看网络或者 binary_config.yml 配置." if $?.exitstatus != 0
 
