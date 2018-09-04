@@ -86,8 +86,9 @@ module Pod
 
     private 
     def tdfire_third_party?
-      if source 
-        source[:git]&.include?('cocoapods-repos')
+      if source && source[:git]
+        source[:git].include?('cocoapods-repos')
+        # source[:git]&.include?('cocoapods-repos')
       else 
         false
       end

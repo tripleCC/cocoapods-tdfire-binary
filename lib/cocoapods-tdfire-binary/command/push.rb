@@ -41,11 +41,13 @@ module Pod
 						name = spec.name 
 	      	end
 
-		      path += ZIP_SUBFFIX unless path.end_with?(ZIP_SUBFFIX)
+	      	if path 
+			      path += ZIP_SUBFFIX unless path.end_with?(ZIP_SUBFFIX)
+			    end
 
 
 	      	@path = path
-	      	@name = name || path.split('/').last.sub(ZIP_SUBFFIX, '')
+	      	@name = name || path.split('/').last.sub(ZIP_SUBFFIX, '') if path
 	      	@version = version
 	      	@commit = commit
 	      	super
