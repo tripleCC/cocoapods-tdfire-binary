@@ -76,12 +76,26 @@ module Pod
     end
 
     def tdfire_use_source?
-      ((((!Pod::Tdfire::BinaryStateStore.force_use_binary? &&
-          (!Pod::Tdfire::BinaryStateStore.use_binary? || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name)) && 
-          (!(Pod::Tdfire::BinaryStateStore.third_party_use_binary? && tdfire_third_party?) || Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name))) ||
-          Pod::Tdfire::BinaryStateStore.force_use_source?) &&
-          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod != root.name)) || 
-          !tdfire_had_set_binary_strategy)
+      (
+        (
+          (
+            !Pod::Tdfire::BinaryStateStore.force_use_binary? &&
+            (
+              !Pod::Tdfire::BinaryStateStore.use_binary? || 
+              Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name)
+            ) && 
+            (
+              !(
+                Pod::Tdfire::BinaryStateStore.third_party_use_binary? && 
+                tdfire_third_party?
+               ) || 
+              Pod::Tdfire::BinaryStateStore.real_use_source_pods.include?(root.name)
+            )
+          ) ||
+          Pod::Tdfire::BinaryStateStore.force_use_source? # 强制源码
+        ) || 
+        !tdfire_had_set_binary_strategy  # 没有配置二进制策略
+      )
     end
 
     private 

@@ -2,6 +2,7 @@ require 'colored2'
 require 'fileutils'
 require 'cocoapods_packager'
 require 'cocoapods-tdfire-binary/binary_url_manager'
+require 'cocoapods-tdfire-binary/binary_state_store'
 require 'cocoapods-tdfire-binary/binary_specification_refactor'
 
 module Pod
@@ -20,7 +21,8 @@ module Pod
             ['--spec-sources', '私有源地址'],
             # ['--local', '使用本地代码'],
             ['--use-carthage', 'carthage使用carthage进行打包，三方库提供carthage的优先'],
-						['--subspecs', '打包子组件']
+						['--subspecs', '打包子组件'],
+						['--binary-first', '二进制优先']
           ].concat(super)
         end
 
@@ -31,6 +33,7 @@ module Pod
 	      	@spec_sources = argv.option('spec-sources')
 					@subspecs= argv.option('subspecs')
 	      	@spec_file = first_podspec
+	      	@binary_first = argv.flag?('binary-first')
 	      	super
 	      end
 
@@ -54,6 +57,12 @@ module Pod
 
 					spec = Specification.from_file(@spec_file)
 					prepare(spec)
+					
+					if @binary_first
+						Pod::Tdfire::BinaryStateStore.use_source_pods << @spec.name
+						Pod::Tdfire::BinaryStateStore.set_use_binary
+					end
+
 					package(spec)
 					zip_packager_framework(spec)
 
