@@ -48,7 +48,7 @@ module Pod
 
 				def run
 					if @binary_first
-						Pod::Tdfire::BinaryStateStore.use_source_pods << @spec_name 
+						Pod::Tdfire::BinaryStateStore.unpublished_pods = Pod::Tdfire::BinaryStateStore.unpublished_pods + Array(@spec_name)
 						Pod::Tdfire::BinaryStateStore.set_use_binary
 					end
 

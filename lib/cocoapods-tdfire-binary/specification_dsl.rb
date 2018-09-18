@@ -122,8 +122,7 @@ module Pod
     end
 
     def tdfire_should_skip_download?
-      (!Pod::Tdfire::BinaryStateStore.force_use_binary? && Pod::Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)) ||
-          (Pod::Tdfire::BinaryStateStore.lib_lint_binary_pod == root.name)
+      (!Pod::Tdfire::BinaryStateStore.force_use_binary? && Pod::Tdfire::BinaryStateStore.unpublished_pods.include?(root.name)) 
     end
   end
 end

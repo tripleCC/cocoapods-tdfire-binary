@@ -40,7 +40,7 @@ module Pod
           spec = Specification.from_file(@spec_file)
 
           if @binary_first
-            Pod::Tdfire::BinaryStateStore.use_source_pods << spec.name
+            Pod::Tdfire::BinaryStateStore.unpublished_pods = Pod::Tdfire::BinaryStateStore.unpublished_pods + Array(spec.name)
             Pod::Tdfire::BinaryStateStore.set_use_binary
           end
 
