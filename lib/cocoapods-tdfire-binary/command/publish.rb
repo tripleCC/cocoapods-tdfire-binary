@@ -17,13 +17,15 @@ module Pod
         def self.options
           [
             ['--commit="Fix some bugs"', '发布的 commit 信息'],
-            ['--binary-first', '二进制优先']
+            ['--binary-first', '二进制优先'],
+            ['--sources', '私有源地址']
           ].concat(super)
         end
 
         def initialize(argv)
           spec_file = argv.shift_argument
           @commit = argv.option('commit')
+          @sources = argv.option('sources')
 
           spec_file = first_podspec if spec_file.nil?
           @spec_file = spec_file
@@ -48,6 +50,7 @@ module Pod
             argvs = [
                 private_sources.first.name,
                 @spec_file,
+                "--sources=#{@sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}",
                 '--allow-warnings',
                 '--use-libraries',
                 '--verbose'
