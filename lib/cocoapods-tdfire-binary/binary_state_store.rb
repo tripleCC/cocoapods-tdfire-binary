@@ -10,7 +10,6 @@ module Pod
         attr_reader :printed_pods
         attr_accessor :use_frameworks
         attr_accessor :use_source
-        attr_accessor :lib_lint_binary_pod
         attr_accessor :limit_platform
       end
 

@@ -1,3 +1,5 @@
+require 'cocoapods-tdfire-binary/binary_state_store'
+
 module Pod
   class Command
     class Binary < Command
@@ -14,16 +16,20 @@ module Pod
 
         def self.options
           [
-            ['--commit="Fix some bugs"', '发布的 commit 信息']
+            ['--commit="Fix some bugs"', '发布的 commit 信息'],
+            ['--binary-first', '二进制优先'],
+            ['--sources', '私有源地址']
           ].concat(super)
         end
 
         def initialize(argv)
           spec_file = argv.shift_argument
           @commit = argv.option('commit')
+          @sources = argv.option('sources')
 
           spec_file = first_podspec if spec_file.nil?
           @spec_file = spec_file
+          @binary_first = argv.flag?('binary-first')
           super
         end
 
@@ -35,10 +41,16 @@ module Pod
         def run
           spec = Specification.from_file(@spec_file)
 
+          if @binary_first
+            Pod::Tdfire::BinaryStateStore.unpublished_pods = Pod::Tdfire::BinaryStateStore.unpublished_pods + Array(spec.name)
+            Pod::Tdfire::BinaryStateStore.set_use_binary
+          end
+
           UI.section("Tdfire: start publishing #{spec.name} ...") do
             argvs = [
                 private_sources.first.name,
                 @spec_file,
+                "--sources=#{@sources || Pod::Tdfire::BinaryUrlManager.private_cocoapods_url}",
                 '--allow-warnings',
                 '--use-libraries',
                 '--verbose'
