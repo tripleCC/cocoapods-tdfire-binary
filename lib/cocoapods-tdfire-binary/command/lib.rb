@@ -1,4 +1,5 @@
 require 'cocoapods-tdfire-binary/command/lib/create'
+require 'cocoapods-tdfire-binary/command/lib/import'
 
 module Pod
 	class Command
