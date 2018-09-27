@@ -105,6 +105,7 @@ module Pod
           # pod cache 文件名由文件内容的 sha1 组成，由于生成时使用的是 podspec，获取时使用的是 podspec.json 
           # 导致生成的文件名不一致
           # Downloader::Request slug
+          # cache_descriptors_per_pod 表明，specs_dir 中都是以 .json 形式保存 spec
           slug = d[:slug].dirname + "#{spec.version}-#{spec.checksum[0, 5]}"
           framework_file = slug + "#{spec.root.name}.framework"
           unless (framework_file.exist?)
