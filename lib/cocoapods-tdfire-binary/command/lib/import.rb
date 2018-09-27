@@ -17,8 +17,7 @@ module Pod
         	]
 
 	        def initialize(argv)
-	        	@path = argv.shift_argument || "#{pod_name}.h"
-	        	@path = Pathname.new(@path) 
+	        	@path = argv.shift_argument 
 	        	@spec_file = first_podspec
 	          super
 	        end
@@ -31,6 +30,9 @@ module Pod
 	        def run
 	          UI.section("Tdfire: import public header files to #{@path} ...") do
 	          	pod_name = @spec_file.split('.').first
+	          	@path ||= "#{pod_name}.h"
+	          	@path = Pathname.new(@path)
+
 	          	header_generator = Pod::Generator::Header.new(Platform.ios)  
 	          	spec = Pod::Specification.from_file(Pathname.new(@spec_file))
 	          	public_header_files = spec.consumer(:ios).public_header_files
