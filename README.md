@@ -233,18 +233,18 @@ http:xxxxxx
 
 > pod binary lib import [PATH]
 
-根据 podspec 生成与组件同名伞头文件。在没有指定 PATH 的情况下，默认在执行命令目录生成伞头文件。当指定目录文件已存在时，会执行替换操作。
+根据 podspec 生成与组件同名伞头文件。在没有指定 PATH 的情况下，默认在执行命令目录生成伞头文件。当指定目录伞头文件已存在时，会执行替换操作。
 
 
 ### pod binary list 
 
-查看所有二进制版本信息。和 pod list 输出格式一致。
+查看所有二进制版本信息。和 `pod list` 输出格式一致。
 
 ### pod binary lint
 
 > pod binary lint --sources=xxxx --binary-first
 
-对本地组件进行 lint。
+对本地组件进行 lint。内部为 `pod lib lint` 的封装。
 
 - `--binary-first`
   - 在没有指定 `--binary-first` 的情况下，和 `pod lib lint` 效果一致，指定之后，插件会优先采用**依赖组件的二进制版本**加快 lint ，lint 组件自身依然会采用源码。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
@@ -255,7 +255,7 @@ http:xxxxxx
 
 > pod binary search NAME
 
-查找二进制版本信息。和 pod search 输出格式一致。
+查找二进制版本信息。和 `pod search` 输出格式一致。
 
 ### pod binary package
 
