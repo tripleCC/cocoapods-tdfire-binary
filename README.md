@@ -2,132 +2,29 @@
 
 <a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
+组件二进制化辅助 CocoaPods 插件，**通过提前将组件打包成静态 framework，加快正式打包、组件 lint、组件发布的编译速度**。
 
-
-辅助组件二进制组件化的 CocoaPods 插件，适合希望解决以下业务场景的开发者：
-
-
-
-1. 通过提前将组件打包成 static-framework，减少主 App 打包时间
-
-2. 提供源码和二进制依赖切换功能，方便开发调试
-
-3. 尽量减少二进制化的工作量，以及对原发布流程的影响
-
-4. 规避维护两套 podspec 和对应的 tag 
-
-5. 体验尽量贴近 CocoaPods 原生 DSL
-
-   
-
-
+提供简易的源码/二进制依赖切换功能，方便开发调试。
 
 ## 安装
 
     $ gem install cocoapods-tdfire-binary
 
-
-
 ## 使用
 
-> 二进制组件发布
+插件分为 pod binary 命令， 二进制 DSL 两部分。
 
-此插件需要结合[二进制服务器](https://github.com/tripleCC/binary-server)使用，运行服务器之后，就可以测试二进制打包了。
+由于组件的二进制版本并不存放在 GitLab 上，插件需要一个二进制服务器进行上传和下载，服务器部分可查看 [binary-server](https://github.com/tripleCC/binary-server) 。使用插件前，需要先启动二进制服务器，否则插件二进制相关的功能将不可用。
 
-运行 `pod binary init` 配置二进制插件基本信息，其中包括二进制服务器地址，私有源 Git 地址，pod 模版地址：
+
+## pod binary 命令
+
+以下命令都可以追加 `--verbose` 查看执行的详细流程。
+
+执行 `pod binary`： 
 
 ```shell
-开始设置二进制化初始信息.
-所有的信息都会保存在 binary_config.yaml 文件中.
-你可以在 /Users/songruiwang/.cocoapods/binary_config.yml 目录下手动添加编辑该文件.
-/Users/songruiwang/.cocoapods/binary_config.yml 文件包含配置信息如下：
-
----
-server_host: 输入二进制服务器地址 (比如 http://xxxxx:8080)
-repo_url: 输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
-template_url: 输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
-
-
-输入二进制服务器地址 (比如 http://xxxxx:8080)
-旧值：http://localhost:8080
- >
-http://localhost:8080
-
-输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
-旧值：git@git.2dfire-inc.com:ios/cocoapods-spec.git
- >
-git@git.2dfire-inc.com:ios/cocoapods-spec.git
-
-输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
-旧值：git@git.2dfire-inc.com:ios/binary-pod-template.git
- >
-git@git.2dfire-inc.com:ios/binary-pod-template.git
-
-设置完成.
-```
-
-设置完成之后，运行 `pod binary lib create` 创建组件库。
-
-组件库创建完成后，修改 `podspec` 文件：
-
-```ruby
-Pod::Spec.new do |s|
-  s.name = 'XXXX'
-  ....
-
-  tdfire_source_configurator = lambda do |s|
-    # 把一些源码配置移到 lambda 中
-    # source configuration
-    # s.source_files = 'PodA/Classes/**/*'
-    # s.resource_bundles = {
-    #   'PodA' => ['PodA/Assets/*']
-    # }
-  end
-
-  # 此段原样拷贝即可
-  unless %w[tdfire_set_binary_download_configurations tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
-    
-    tdfire_source_configurator.call s
-  else
-    s.tdfire_source tdfire_source_configurator
-    s.tdfire_binary tdfire_source_configurator
-    s.tdfire_set_binary_download_configurations
-  end
-end
-```
-
-修改完成后，提交代码，打个 Tag ，推送至远程仓库。
-
-接下来处理二进制版本事宜。
-
-首先执行 `pod binary package` 创建二进制版本（静态 framework），可以看到本地文件中会新增 `xxx.framework.zip` 压缩文件。
-
-接下来执行 `pod binary push` 推送二进制至服务器，执行 `pod binary list` 可以查看推送上去的组件信息。
-
-源码和二进制版本都安排妥当，就可以执行 `pod binary publish` 发布组件了。
-
-> 使用二进制组件
-
-执行 `pod binary lib create` 创建测试工程，修改 `Podfile` ：
-
-```ruby
-# 引入插件
-plugin 'cocoapods-tdfire-binary'
-
-# 使用二进制依赖
-tdfire_use_binary!
-
-# 使用源码依赖的组件
-tdfire_use_source_pods ['AFNetworking']
-```
-
-运行 `pod update --verbose`，可以看到插件输出额外的 `Tdfire: xxx` 信息。
-
-集成完成后，点击工程 `Pods` 下对应组件目录，就可以看到此次集成采用的二进制依赖了。
-
-<!-- ```
-
-
+➜  TDF pod binary
 Usage:
 
     $ pod binary COMMAND
@@ -140,7 +37,7 @@ Commands:
     + delete     删除二进制版本
     + init       初始化二进制插件
     + lib        二进制模版库操作
-    + lint       对本地二进制进行 Lint
+    + lint       对本地组件进行 Lint
     + list       查看所有二进制版本信息
     + package    二进制打包
     + publish    正式发布二进制组件
@@ -148,32 +45,224 @@ Commands:
     + push       推送二进制 zip 包
     + search     查找二进制版本信息
 
+Options:
+
+    --silent     Show nothing
+    --verbose    Show more debugging information
+    --no-ansi    Show output without ANSI codes
+    --help       Show help banner of specified command
 ```
 
-### For .gitignore
+### pod binary init
+
+初始化二进制插件（公司内部可以忽略此步骤，插件内部会下载默认配置文件）。执行命令后，展示以下交互界面：
 
 ```
-...
+开始设置二进制化初始信息.
+所有的信息都会保存在 binary_config.yaml 文件中.
+你可以在 /Users/songruiwang/.cocoapods/binary_config.yml 目录下手动添加编辑该文件.
+/Users/songruiwang/.cocoapods/binary_config.yml 文件包含配置信息如下：
 
+---
+server_host: 输入二进制服务器地址 (比如 http://xxxxx:8080)
+repo_url: 输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
+template_url: 输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
+three_party_group: 输入三方库所在的 group (比如 cocoapods-repos)
+
+输入二进制服务器地址 (比如 http://xxxxx:8080)
+ > 
+```
+
+使用者需要提供以下信息：
+
+- server_host
+  - 二进制服务器地址，供插件的二进制功能部分使用
+- repo_url
+  - 私有源 Git 地址，通过插件 lint 、发布等功能时使用
+- template_url 
+  - pod 模版 Git 地址，通过插件创建模版时使用
+- three_party_group:
+  - 三方库所在的 group ，设置三方组件使用二进制时使用
+
+如果存在旧值，直接键入回车键表示采用旧值。
+
+```
+输入二进制服务器地址 (比如 http://xxxxx:8080)
+旧值：http:xxxxxx
+ >
+http:xxxxxx
+```
+
+### pod binary lib create 
+
+> pod binary lib create NAME
+
+创建二进制模版库。内部为 `pod lib create --template-url=xxx` 的一层简单包装，其中的 `--template-url` 对应上一小节 `binary_config.yaml` 中的 `template_url` 配置项。
+
+推荐在模版库中预置项目组开发常用信息，如添加 CI/CD 配置文件，在 Podfile 中设置业务组件常见底层依赖等。
+
+### pod binary lib import
+
+> pod binary lib import [PATH]
+
+根据 podspec 生成与组件同名伞头文件。在没有指定 PATH 的情况下，默认在执行命令目录生成伞头文件。当指定目录伞头文件已存在时，会执行替换操作。
+
+
+### pod binary list 
+
+查看所有二进制版本信息。和 `pod list` 输出格式一致。
+
+### pod binary lint
+
+> pod binary lint --sources=xxxx --binary-first
+
+对本地组件进行 lint。内部为 `pod lib lint` 的封装。
+
+- `--binary-first`
+  - 在没有指定 `--binary-first` 的情况下，和 `pod lib lint` 效果一致，指定之后，插件会优先采用**依赖组件的二进制版本**加快 lint ，lint 组件自身依然会采用源码。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--sources`
+  - 私有源地址，在没有指定 `--sources` 的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+
+### pod binary search
+
+> pod binary search NAME
+
+查找二进制版本信息。和 `pod search` 输出格式一致。
+
+### pod binary package
+
+> pod binary package --spec-sources=xxxx --subspecs=xxxx --use-carthage --clean --binary-first
+
+将源码打包成二进制，并压缩成 zip 包。其中二进制为静态 framework 封装格式。
+
+- `--spec-sources`
+  - 私有源地址，在没有指定的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+- `--subspecs`
+  - 打包目标子组件，默认会打包所有组件
+- `--use-carthage`
+  - 使用 carthage 进行打包，三方库提供 carthage 的优先。没有指定的话，使用 `cocoapods-packager` 插件进行打包。
+- `--binary-first`
+  - 打包时，依赖组件优先采用二进制版本，加快编译。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--clean`
+  - 执行成功后，删除 zip 文件外的所有生成文件
+
+### pod binary pull
+
+> pod binary pull NAME VERSION
+
+下载二进制 zip 包。
+
+### pod binary push
+
+> pod binary push [PATH] --name=xxxx --version=xxxx --commit=xxxx
+
+将二进制 zip 包推送至二进制服务器。 PATH 为 zip 包所在地址。
+
+- `--name`
+  - 推送二进制的组件名，没指定时，采用当前 podspec 中的组件名
+- `--versio`
+  - 推送二进制的版本号，没指定时，采用当前 podspec 中的版本号
+- `--commit`
+  - 推送二进制的版本日志，没指定时，采用当前分支最新 commit sha
+
+### pod binary publish 
+
+> pod binary publish [NAME.podspec] --commit=xxxx --sources=xxxx --binary-first
+
+正式发布二进制组件版本。内部为 `pod repo push` 的封装。
+
+- `--commit`
+  - 发布的 commit 信息
+- `--binary-first`
+  - 发布时，依赖组件优先采用二进制版本，加快编译。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--sources`
+  - 私有源地址，在没有指定的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+
+### pod binary delete
+
+> pod binary delete NAME VERSION
+
+将二进制从服务器中删除。
+
+
+## 二进制 DSL
+
+在二进制化前，需要先在组件仓库中的 `.gitignore` 中添加 :
+
+```
 *.framework
 *.zip
 ```
 
-> For Podfile
+**由于插件内部下载缓存机制，如果 tag 中存在 .framework 文件，则不下载二进制服务器的二进制文件**。这就容易出现二进制版本和源码对不上问题，所以忽略 .framework 文件是必要的。
 
+推荐将 `.gitignore` 放到 `pod-template` 中，使用 `pod binary lib create` 创建新组件工程。
+
+### podspec DSL
+
+> 只支持 iOS 平台, Objective-C 项目（插件内部也会进行限制）
+
+一份标准的二进制组件 podspec 如下所示：
+
+```ruby
+tdfire_source_configurator = lambda do |s|
+  # 源码依赖配置
+  s.source_files = '${POD_NAME}/Classes/**/*'
+  s.public_header_files = '${POD_NAME}/Classes/**/*.{h}'
+  # s.private_header_files =
+
+  # 资源依赖必须使用 bundle
+  # s.resource_bundles = {
+  #     '${POD_NAME}' => ['${POD_NAME}/Assets/*']
+  # }
+
+  # s.dependency 'TDFModuleKit'
+end
+
+unless %w[tdfire_set_binary_download_configurations tdfire_source tdfire_binary].reduce(true) { |r, m| s.respond_to?(m) & r }
+  tdfire_source_configurator.call s
+else
+  s.tdfire_source tdfire_source_configurator
+  s.tdfire_binary tdfire_source_configurator
+
+  #s.tdfire_binary tdfire_source_configurator do |s|
+  # 额外配置 (一般不用)
+  #end
+
+  s.tdfire_set_binary_download_configurations
+end
 ```
+
+以上代码，除了 lambda `tdfire_source_configurator` 中的代码由使用者配置外，剩余代码都是固定的。使用者只需要将原来的源码配置，挪进 lambda 中即可。
+
+
+### Podfile DSL
+
+一份采用二进制组件的 Podfile 如下所示：
+
+```ruby
 ...
 plugin 'cocoapods-tdfire-binary'
 
 tdfire_use_binary!
+
+# tdfire_third_party_use_binary!
 tdfire_use_source_pods ['AFNetworking']
-
-use_frameworks!
-
 ...
 
 ```
 
+`plugin` 方法为 CocoaPods 原生 DSL ，表示引入的插件。
+
+- `tdfire_use_binary!`
+  - 所有组件优先采用二进制版本。
+- `tdfire_third_party_use_binary!`
+  - 三方组件优先采用二进制版本。
+- `tdfire_use_source_pods`
+  - 使用源码依赖的组件。在采用二进制版本时，如果想某些组件采用源码，可以向该方法传入组件名数组。
+
+
+<!-- 
 ### For podspec
 
 > 目前只支持 iOS 平台 （插件内部也会进行限制）
@@ -253,11 +342,4 @@ end
   - tdfire_force_use_binary
     - 强制使用二进制依赖，确认值 1
     - 基本无用，在验证当前版本是否有对应二进制版本时可使用
-  
-
-例子：
-
-```
-env tdfire_use_binary=1 tdfire_unpublished_pods=PodA pod lib lint xxxx
-env tdfire_force_use_source=1 pod install
-``` -->
+   -->
