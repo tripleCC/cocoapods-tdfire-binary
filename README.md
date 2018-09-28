@@ -2,7 +2,7 @@
 
 <a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
-
+插件分为 pod binary 命令， 二进制 SDL 两部分。
 
 辅助组件二进制组件化的 CocoaPods 插件，适合希望解决以下业务场景的开发者：
 
@@ -17,10 +17,6 @@
 4. 规避维护两套 podspec 和对应的 tag 
 
 5. 体验尽量贴近 CocoaPods 原生 DSL
-
-   
-
-
 
 ## 安装
 
@@ -180,3 +176,139 @@ end
 env tdfire_use_binary=1 tdfire_unpublished_pods=PodA pod lib lint xxxx
 env tdfire_force_use_source=1 pod install
 ```
+
+
+
+## pod binary 命令
+
+以下命令都可以追加 `--verbose` 查看执行的详细流程。
+
+### pod binary init
+
+初始化二进制插件，执行命令后，展示以下交互界面：
+
+```
+开始设置二进制化初始信息.
+所有的信息都会保存在 binary_config.yaml 文件中.
+你可以在 /Users/songruiwang/.cocoapods/binary_config.yml 目录下手动添加编辑该文件.
+/Users/songruiwang/.cocoapods/binary_config.yml 文件包含配置信息如下：
+
+---
+server_host: 输入二进制服务器地址 (比如 http://xxxxx:8080)
+repo_url: 输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
+template_url: 输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
+
+
+输入二进制服务器地址 (比如 http://xxxxx:8080)
+ > 
+```
+
+使用者需要提供以下信息：
+
+- server_host
+  - 二进制服务器地址，供插件的二进制功能部分使用
+- repo_url
+  - 私有源 Git 地址，通过插件 lint 、发布等功能时使用
+- template_url 
+  - pod 模版 Git 地址，通过插件创建模版时使用
+
+如果存在旧值，直接键入回车键表示采用旧值。
+
+```
+输入二进制服务器地址 (比如 http://xxxxx:8080)
+旧值：http:xxxxxx
+ >
+http:xxxxxx
+```
+
+### pod binary lib create 
+
+> pod binary lib create NAME
+
+创建二进制模版库。内部为 `pod lib create --template-url=xxx` 的一层简单包装，其中的 `--template-url` 对应上一小节 `binary_config.yaml` 中的 `template_url` 配置项。
+
+推荐在模版库中预置项目组开发常用信息，如添加 CI/CD 配置文件，在 Podfile 中设置业务组件常见底层依赖等。
+
+### pod binary lib import
+
+> pod binary lib import [PATH]
+
+根据 podspec 生成与组件同名伞头文件。在没有指定 PATH 的情况下，默认在执行命令目录生成伞头文件。当指定目录文件已存在时，会执行替换操作。
+
+
+### pod binary list 
+
+查看所有二进制版本信息。和 pod list 输出格式一致。
+
+### pod binary lint
+
+> pod binary lint --sources=xxxx --binary-first
+
+对本地组件进行 lint。
+
+- `--binary-first`
+  - 在没有指定 `--binary-first` 的情况下，和 `pod lib lint` 效果一致，指定之后，插件会优先采用**依赖组件的二进制版本**加快 lint ，lint 组件自身依然会采用源码。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--sources`
+  - 私有源地址，在没有指定 `--sources` 的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+
+### pod binary search
+
+> pod binary search NAME
+
+查找二进制版本信息。和 pod search 输出格式一致。
+
+### pod binary package
+
+> pod binary package --spec-sources=xxxx --subspecs=xxxx --use-carthage --clean --binary-first
+
+将源码打包成二进制，并压缩成 zip 包。其中二进制为静态 framework 封装格式。
+
+- `--spec-sources`
+  - 私有源地址，在没有指定的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+- `--subspecs`
+  - 打包目标子组件，默认会打包所有组件
+- `--use-carthage`
+  - 使用 carthage 进行打包，三方库提供 carthage 的优先。没有指定的话，使用 `cocoapods-packager` 插件进行打包。
+- `--binary-first`
+  - 打包时，依赖组件优先采用二进制版本，加快编译。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--clean`
+  - 执行成功后，删除 zip 文件外的所有生成文件
+
+### pod binary pull
+
+> pod binary pull NAME VERSION
+
+下载二进制 zip 包。
+
+### pod binary push
+
+> pod binary push [PATH] --name=xxxx --version=xxxx --commit=xxxx
+
+将二进制 zip 包推送至二进制服务器。 PATH 为 zip 包所在地址。
+
+- `--name`
+  - 推送二进制的组件名，没指定时，采用当前 podspec 中的组件名
+- `--versio`
+  - 推送二进制的版本号，没指定时，采用当前 podspec 中的版本号
+- `--commit`
+  - 推送二进制的版本日志，没指定时，采用当前分支最新 commit sha
+
+### pod binary publish 
+
+> pod binary publish [NAME.podspec] --commit=xxxx --sources=xxxx --binary-first
+
+正式发布二进制组件版本。内部为 `pod repo push` 的封装。
+
+- `--commit`
+  - 发布的 commit 信息
+- `--binary-first`
+  - 发布时，依赖组件优先采用二进制版本，加快编译。如果依赖的某些组件没有二进制版本，插件会对这些组件采用源码依赖。
+- `--sources`
+  - 私有源地址，在没有指定的情况下，使用的 sources 为 `binary_config.yaml` 中的 `repo_url` 配置。
+
+### pod binary delete
+
+> pod binary delete NAME VERSION
+
+将二进制从服务器中删除。
+
