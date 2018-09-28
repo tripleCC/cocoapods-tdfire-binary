@@ -6,7 +6,8 @@ module Pod
       QUESTIONS = {
           BinaryConfig::SERVER_ROOT_KEY => '输入二进制服务器地址 (比如 http://xxxxx:8080)',
           BinaryConfig::REPO_URL_KEY => '输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)',
-          BinaryConfig::TEMPLATE_URL_KEY => '输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)'
+          BinaryConfig::TEMPLATE_URL_KEY => '输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)',
+          BinaryConfig::THREE_PARTY_GROUP_KEY => '输入三方库所在的 group (比如 cocoapods-repos)'
       }
 
       def show_prompt

@@ -1,5 +1,6 @@
 require 'cocoapods-tdfire-binary/binary_state_store'
 require 'cocoapods-tdfire-binary/binary_specification_refactor'
+require 'cocoapods-tdfire-binary/binary_config'
 require 'colored2'
 
 module Pod
@@ -101,7 +102,7 @@ module Pod
     private 
     def tdfire_third_party?
       if source && source[:git]
-        source[:git].include?('cocoapods-repos')
+        source[:git].include?(BinaryConfig.instance.three_party_group)
         # source[:git]&.include?('cocoapods-repos')
       else 
         false

@@ -2,41 +2,19 @@
 
 <a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
-插件分为 pod binary 命令， 二进制 SDL 两部分。
+组件二进制化辅助 CocoaPods 插件，通过提前将组件打包成静态 framework，加快正式打包、组件 lint、组件发布的编译速度。
 
-辅助组件二进制组件化的 CocoaPods 插件，适合希望解决以下业务场景的开发者：
-
-
-
-1. 通过提前将组件打包成 static-framework，减少主 App 打包时间
-
-2. 提供源码和二进制依赖切换功能，方便开发调试
-
-3. 尽量减少二进制化的工作量，以及对原发布流程的影响
-
-4. 规避维护两套 podspec 和对应的 tag 
-
-5. 体验尽量贴近 CocoaPods 原生 DSL
+提供简易的源码/二进制依赖切换功能，方便开发调试。
 
 ## 安装
 
     $ gem install cocoapods-tdfire-binary
 
-
-
 ## 使用
 
+插件分为 pod binary 命令， 二进制 SDL 两部分。
 
-
-此插件需要结合二进制服务器使用，其中主要接口如下：
-
-
-
-```
-
-```
-
-
+由于组件的二进制版本并不存放在 GitLab 上，插件需要一个二进制服务器进行上传和下载，服务器部分可查看 [binary-server](https://github.com/tripleCC/binary-server) 。使用插件前，需要先启动二进制服务器，否则插件二进制相关的功能将不可用。
 
 
 

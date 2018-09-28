@@ -9,6 +9,7 @@ module Pod
       REPO_URL_KEY = 'repo_url'.freeze
       SERVER_ROOT_KEY = 'server_host'.freeze
       TEMPLATE_URL_KEY = 'template_url'.freeze
+      THREE_PARTY_GROUP_KEY = 'three_party_group'.freeze
 
       def self.instance
         @instance ||= new
@@ -24,6 +25,10 @@ module Pod
 
       def template_url
         setting_for_key(TEMPLATE_URL_KEY)
+      end
+
+      def three_party_group
+        setting_for_key(THREE_PARTY_GROUP_KEY, 'cocoapods-repos')
       end
 
       def setting_hash
@@ -61,14 +66,14 @@ module Pod
         Config.instance
       end
 
-      def setting_for_key(key)
+      def setting_for_key(key, default = nil)
         validate_setting_file
 
         setting = setting_hash[key]
-        if setting.nil?
+        if setting.nil? && default.nil?
           raise Pod::Informative, "获取不到 #{key} 的配置信息，执行 pod binary init 或手动在 #{binary_setting_file} 设置."
         end
-        setting
+        setting || default
       end
 
       def validate_setting_file
