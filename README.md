@@ -23,7 +23,7 @@
 
 执行 `pod binary`： 
 
-```
+```shell
 ➜  TDF pod binary
 Usage:
 
@@ -204,7 +204,7 @@ http:xxxxxx
 
 一份标准的二进制组件 podspec 如下所示：
 
-```
+```ruby
 tdfire_source_configurator = lambda do |s|
   # 源码依赖配置
   s.source_files = '${POD_NAME}/Classes/**/*'
@@ -240,7 +240,7 @@ end
 
 一份采用二进制组件的 Podfile 如下所示：
 
-```
+```ruby
 ...
 plugin 'cocoapods-tdfire-binary'
 
