@@ -205,6 +205,8 @@ http:xxxxxx
 一份标准的二进制组件 podspec 如下所示：
 
 ```ruby
+....
+
 tdfire_source_configurator = lambda do |s|
   # 源码依赖配置
   s.source_files = '${POD_NAME}/Classes/**/*'
@@ -252,7 +254,7 @@ tdfire_use_source_pods ['AFNetworking']
 
 ```
 
-`plugin` 方法为 CocoaPods 原生 DSL ，表示引入的插件。
+`plugin` 方法为 CocoaPods 原生 DSL ，表示引入二进制化插件。
 
 - `tdfire_use_binary!`
   - 所有组件优先采用二进制版本。
