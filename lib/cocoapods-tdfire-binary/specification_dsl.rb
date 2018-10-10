@@ -102,7 +102,7 @@ module Pod
     private 
     def tdfire_third_party?
       if source && source[:git]
-        source[:git].include?(BinaryConfig.instance.three_party_group)
+        source[:git].include?(Pod::Tdfire::BinaryConfig.instance.three_party_group)
         # source[:git]&.include?('cocoapods-repos')
       else 
         false
