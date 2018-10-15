@@ -55,9 +55,13 @@ module Pod
       end
 
       def private_sources(keywords = repo_url)
-        config.sources_manager.all.select do |source|
+        sources = config.sources_manager.all.select do |source|
           source.url.downcase.include? keywords
         end
+
+        raise Pod::Informative, "匹配 #{keywords} 私有源不能为空，执行 pod repo add 添加私有源，或者 pod bianry init 调整私有源 Git 地址." if sources.empty?
+
+        sources
       end
 
       private
