@@ -1,3 +1,3 @@
 module CocoapodsTdfireBinary
-  VERSION = "1.3.18"
+  VERSION = "1.4.18"
 end
