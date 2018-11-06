@@ -23,7 +23,7 @@ module Pod
           hash = binary_config.setting_hash
 
           Pod::Tdfire::InitAsker::QUESTIONS.each do |k, v|
-            hash[k] = @asker.ask_with_answer(v, hash[k])
+            hash[k] = @asker.ask_with_answer(v, hash.try([k]))
           end
 
           binary_config.config_with_setting(hash)
