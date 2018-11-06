@@ -67,7 +67,7 @@ Options:
 server_host: 输入二进制服务器地址 (比如 http://xxxxx:8080)
 repo_url: 输入私有源 Git 地址 (比如 https://github.com/tripleCC/PrivateSpecRepo.git)
 template_url: 输入 pod 模版 Git 地址 (比如 https://github.com/CocoaPods/pod-template.git)
-three_party_group: 输入三方库所在的 group (比如 cocoapods-repos)
+third_party_group: 输入三方库所在的 group (比如 cocoapods-repos)
 
 输入二进制服务器地址 (比如 http://xxxxx:8080)
  > 

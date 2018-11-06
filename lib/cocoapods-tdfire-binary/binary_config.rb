@@ -9,7 +9,7 @@ module Pod
       REPO_URL_KEY = 'repo_url'.freeze
       SERVER_ROOT_KEY = 'server_host'.freeze
       TEMPLATE_URL_KEY = 'template_url'.freeze
-      THREE_PARTY_GROUP_KEY = 'three_party_group'.freeze
+      THREE_PARTY_GROUP_KEY = 'third_party_group'.freeze
 
       def self.instance
         @instance ||= new
