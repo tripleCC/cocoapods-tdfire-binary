@@ -123,7 +123,7 @@ module Pod
         target_spec.public_header_files = ["#{target_spec.root.name}.framework/Headers/*", "#{target_spec.root.name}.framework/Versions/A/Headers/*"]
 
         available_platforms(spec).each do |platform|
-          Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
+          # Pod::UI.section("Tdfire: copying configuration for platform #{platform}") do
             target_platform = target_spec.send(platform.to_sym)
 
             # 保留对 frameworks lib 的依赖
@@ -143,7 +143,7 @@ module Pod
                 .each { |d| target_platform.dependency(d.name, d.requirement.to_s) }
 
             Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.tdfire_recursive_value('dependencies', platform).map(&:name).join(', ')}"
-          end
+          # end
         end
       end
 

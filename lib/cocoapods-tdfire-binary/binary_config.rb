@@ -59,9 +59,7 @@ module Pod
           source.url.downcase.include? keywords
         end
 
-        if sources.empty?
-          raise Pod::Informative, "获取不到与 #{repo_url} 相关的私有源信息，执行 pod binary init 或手动在 #{binary_setting_file} 重新设置." 
-        end
+        raise Pod::Informative, "匹配 #{keywords} 私有源不能为空，执行 pod repo add 添加私有源，或者 pod bianry init 调整私有源 Git 地址." if sources.empty?
 
         sources
       end

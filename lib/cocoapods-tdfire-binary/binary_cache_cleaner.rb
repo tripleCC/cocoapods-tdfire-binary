@@ -63,7 +63,13 @@ module Pod
         @invalid_specs ||= begin 
           use_binary_specs.reject do |s|
             json_string = Pod::Tdfire::BinaryUrlManager.search_binary(s.root.name)
-            pod = JSON.parse(json_string, object_class: OpenStruct)
+
+            begin
+              pod = JSON.parse(json_string, object_class: OpenStruct)
+            rescue JSON::ParserError => err
+              pod = OpenStruct.new
+              UI.message "获取 #{s.root.name} 二进制信息失败, 具体信息 #{err}".red
+            end
             versions = pod.versions || []
             versions.include?(s.version.to_s)
           end

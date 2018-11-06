@@ -107,6 +107,17 @@ http:xxxxxx
 
 根据 podspec 生成与组件同名伞头文件。在没有指定 PATH 的情况下，默认在执行命令目录生成伞头文件。当指定目录伞头文件已存在时，会执行替换操作。
 
+### pod binary lib upgrade
+
+> pod binary lib upgrade 
+
+更新 podspec 版本。
+
+- `--type` 更新版本类型，可选值为 patch/minor/major ，优先级比 `--version` 低
+- `--version` 更新版本号，优先级比 `--type` 高，设置之后会忽略 `--type`
+- `--commit` 提交 commit 日志，没有设置则不执行 `git add / commit`
+
+
 
 ### pod binary list 
 
@@ -205,6 +216,8 @@ http:xxxxxx
 一份标准的二进制组件 podspec 如下所示：
 
 ```ruby
+....
+
 tdfire_source_configurator = lambda do |s|
   # 源码依赖配置
   s.source_files = '${POD_NAME}/Classes/**/*'
@@ -252,7 +265,7 @@ tdfire_use_source_pods ['AFNetworking']
 
 ```
 
-`plugin` 方法为 CocoaPods 原生 DSL ，表示引入的插件。
+`plugin` 方法为 CocoaPods 原生 DSL ，表示引入二进制化插件。
 
 - `tdfire_use_binary!`
   - 所有组件优先采用二进制版本。
