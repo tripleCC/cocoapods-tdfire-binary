@@ -29,16 +29,20 @@ module Pod
 
         def run
           result = Pod::Tdfire::BinaryUrlManager.search_binary(@name)
-          pod = JSON.parse(result) unless result.nil?
-          pod ||= {'' => []}
+          begin
+            pod = JSON.parse(result) unless result.nil?
+            pod ||= {'' => []}
 
-          name = pod['name'] || @name
-          versions = pod['versions'] || []
+            name = pod['name'] || @name
+            versions = pod['versions'] || []
 
-          title = "-> #{name} (#{versions.last})".green
+            title = "-> #{name} (#{versions.last})".green
 
-          Pod::UI::title(title, '', 1) do
-            Pod::UI::labeled('Versions', versions.join(', '))
+            Pod::UI::title(title, '', 1) do
+              Pod::UI::labeled('Versions', versions.join(', '))
+            end
+          rescue JSON::ParserError => err
+            UI.message "查看二进制信息失败, 具体信息 #{err}".red
           end
         end
       end

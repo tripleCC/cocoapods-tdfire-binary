@@ -23,14 +23,17 @@ module Pod
 
         def run
           result = Pod::Tdfire::BinaryUrlManager.list_binary
-          pods = JSON.parse(result) unless result.nil?
-          pods ||= []
-
-          pods.sort.each do |pod, versions|
-            UI.puts "  #{pod + " " + versions.last}\n"
+          begin
+            pods = JSON.parse(result) unless result.nil?
+            pods ||= []
+            pods.sort.each do |pod, versions|
+              UI.puts "  #{pod + " " + versions.last}\n"
+            end
+            UI.puts "\n#{pods.keys.count} pods were found"
+          rescue JSON::ParserError => err
+            UI.message "查看二进制信息失败, 具体信息 #{err}".red
           end
 
-          UI.puts "\n#{pods.keys.count} pods were found"
         end
       end
     end
