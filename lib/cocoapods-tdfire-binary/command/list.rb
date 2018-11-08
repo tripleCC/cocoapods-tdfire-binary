@@ -31,7 +31,7 @@ module Pod
             end
             UI.puts "\n#{pods.keys.count} pods were found"
           rescue JSON::ParserError => err
-            UI.message "查看二进制信息失败, 具体信息 #{err}".red
+            UI.puts "查看二进制信息失败, 服务器返回 #{result}".red
           end
 
         end

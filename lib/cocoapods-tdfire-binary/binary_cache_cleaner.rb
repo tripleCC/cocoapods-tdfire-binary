@@ -68,7 +68,8 @@ module Pod
               pod = JSON.parse(json_string, object_class: OpenStruct)
             rescue JSON::ParserError => err
               pod = OpenStruct.new
-              UI.message "获取 #{s.root.name} 二进制信息失败, 具体信息 #{err}".red
+              # 这里查询失败，后面 shell 就不会去下载了，也就不会抛错
+              UI.puts "获取 #{s.root.name} 二进制信息失败, 服务器返回 #{json_string}".red
             end
             versions = pod.versions || []
             versions.include?(s.version.to_s)
