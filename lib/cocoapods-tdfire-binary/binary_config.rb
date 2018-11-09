@@ -56,7 +56,7 @@ module Pod
 
       def private_sources(keywords = repo_url)
         sources = config.sources_manager.all.select do |source|
-          return false unless source.url
+          next false unless source.url
           source.url.downcase.include? keywords
         end
 
