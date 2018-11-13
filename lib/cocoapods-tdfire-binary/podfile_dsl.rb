@@ -7,7 +7,7 @@ module Pod
 
       # 使用源码依赖的pod
       def tdfire_use_source_pods(pods)
-        Pod::UI.puts "Tdfire: set use source pods: #{Array(pods).join(', ')}"
+        # Pod::UI.puts "Tdfire: set use source pods: #{Array(pods).join(', ')}"
         Pod::Tdfire::BinaryStateStore.use_source_pods = Array(pods)
       end
 
