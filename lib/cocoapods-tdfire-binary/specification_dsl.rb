@@ -23,10 +23,10 @@ module Pod
         tdfire_set_binary_strategy_flag
 
         if tdfire_use_source?
-          if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
-            UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
-            Pod::Tdfire::BinaryStateStore.printed_pods << root.name
-          end
+          # if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+          #   UI.message "Source".magenta.bold + " dependecy for " + "#{root.name} #{version}".green.bold
+          #   Pod::Tdfire::BinaryStateStore.printed_pods << root.name
+          # end
 
           configurator.call self
 
@@ -39,10 +39,11 @@ module Pod
         tdfire_set_binary_strategy_flag
 
         if !tdfire_use_source?
-          if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
-            UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold
-            Pod::Tdfire::BinaryStateStore.printed_pods << root.name
-          end
+          # if !Pod::Tdfire::BinaryStateStore.printed_pods.include?(root.name)
+          #   # 这里会执行两次，一次是最新的 podspec ，一次是指定的 podspec，所以这里版本没必要输出
+          #   UI.message "Binary".cyan.bold + " dependecy for " + "#{root.name} #{version}".green.bold
+          #   Pod::Tdfire::BinaryStateStore.printed_pods << root.name
+          # end
 
           # name 一定要有，否则 subspec dependecy 会出现 split nil 错误
           @tdfire_reference_spec = Specification.new(nil, 'TdfireSpecification')

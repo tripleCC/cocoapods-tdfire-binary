@@ -15,6 +15,15 @@ module Pod
         spec.static_framework = true if spec.respond_to?('static_framework')
       end if Pod::Tdfire::BinaryStateStore.use_binary?
 
+      analysis_result.specifications.uniq { |s| s.root.name }.each do |spec|
+        if spec.tdfire_use_source?
+          UI.message "Source".magenta.bold + " dependecy for " + "#{spec.root.name} #{spec.version}".green.bold
+        else
+          UI.message "Binary".cyan.bold + " dependecy for " + "#{spec.root.name} #{spec.version}".green.bold
+        end
+      end
+
+
       cleaner = Pod::Tdfire::BinaryCacheCleaner.new(analysis_result)
       cleaner.clean!
 			

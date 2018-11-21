@@ -85,7 +85,7 @@ module Pod
 				target_spec.default_subspec = default_subspec
 				target_spec.default_subspec = default_subspec
 
-				Pod::UI.message "Tdfire: subspecs for #{target_spec.name}: #{target_spec.subspecs.map(&:name).join(', ')}"
+				# Pod::UI.message "Tdfire: subspecs for #{target_spec.name}: #{target_spec.subspecs.map(&:name).join(', ')}"
 			end
 
 			#--------------------------------------------------------------------#
@@ -111,7 +111,7 @@ module Pod
         resource_bundles = spec.tdfire_recursive_value('resource_bundles', :ios)
         # 不判断 lint 会报错 did not match any file
         target_spec.resources = ["#{target_spec.root.name}.framework/Resources/*", "#{target_spec.root.name}.framework/Versions/A/Resources/*"] if resource_bundles.select(&:any?).any? || framework_resources.any?
-        Pod::UI.message "Tdfire: resources for binary: #{target_spec.tdfire_recursive_value('resources', :ios).join(', ')}"
+        # Pod::UI.message "Tdfire: resources for binary: #{target_spec.tdfire_recursive_value('resources', :ios).join(', ')}"
 
         # cococapods 会将以下头文件添加入 user search path ，这样使用者可以使用 " " 对头文件进行引用
         #
@@ -131,7 +131,7 @@ module Pod
               value = spec.tdfire_recursive_value(name, platform )
               target_platform.send("#{name}=", value) unless value.empty?
 
-              Pod::UI.message "Tdfire: #{name} for #{platform}: #{target_spec.tdfire_recursive_value(name, platform)}"
+              # Pod::UI.message "Tdfire: #{name} for #{platform}: #{target_spec.tdfire_recursive_value(name, platform)}"
             end
 
             # 保留对其他组件的依赖
@@ -142,7 +142,7 @@ module Pod
                 .select { |d| d.root_name != target_spec.root.name }
                 .each { |d| target_platform.dependency(d.name, d.requirement.to_s) }
 
-            Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.tdfire_recursive_value('dependencies', platform).map(&:name).join(', ')}"
+            # Pod::UI.message "Tdfire: dependencies for #{platform}: #{target_spec.tdfire_recursive_value('dependencies', platform).map(&:name).join(', ')}"
           # end
         end
       end
@@ -154,7 +154,7 @@ module Pod
 			# spec 是源码依赖时的配置
 			def set_preserve_paths(spec)
         available_platforms(spec).each do |platform|
-          Pod::UI.message("Tdfire: set preserve paths for platform #{platform}")
+          # Pod::UI.message("Tdfire: set preserve paths for platform #{platform}")
           # 源码、资源文件
           #
           source_files = spec.tdfire_recursive_value('source_files', platform)
@@ -174,7 +174,7 @@ module Pod
           target_platform = target_spec.send(platform.to_sym)
           target_platform.preserve_paths = preserve_paths.uniq
 
-          Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
+          # Pod::UI.message "Tdfire: preserve paths for #{platform}: #{preserve_paths.join(', ')}"
         end
 			end
 
