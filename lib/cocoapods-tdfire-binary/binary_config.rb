@@ -92,7 +92,7 @@ module Pod
         end
 
         FileUtils.cd(config.home_dir) do
-          `git clone http://git.2dfire-inc.com/qingmu/cocoapods-tdfire-binary-config`
+          `git clone http://git.2dfire.net/qingmu/cocoapods-tdfire-binary-config`
 
           FileUtils.mv("cocoapods-tdfire-binary-config/#{setting_file_name}", '.')
           FileUtils.rm_rf(config.home_dir + 'cocoapods-tdfire-binary-config')
