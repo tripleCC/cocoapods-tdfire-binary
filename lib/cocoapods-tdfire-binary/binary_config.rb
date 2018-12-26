@@ -66,6 +66,16 @@ module Pod
         sources
       end
 
+
+      def clone_default_config
+        FileUtils.cd(config.home_dir) do
+          `git clone http://git.2dfire.net/qingmu/cocoapods-tdfire-binary-config`
+
+          FileUtils.mv("cocoapods-tdfire-binary-config/#{setting_file_name}", '.')
+          FileUtils.rm_rf(config.home_dir + 'cocoapods-tdfire-binary-config')
+        end
+      end
+
       private
 
       def config
@@ -91,12 +101,7 @@ module Pod
           raise Pod::Informative, '获取不到配置信息，执行 pod binary init 初始化配置信息.'
         end
 
-        FileUtils.cd(config.home_dir) do
-          `git clone http://git.2dfire.net/qingmu/cocoapods-tdfire-binary-config`
-
-          FileUtils.mv("cocoapods-tdfire-binary-config/#{setting_file_name}", '.')
-          FileUtils.rm_rf(config.home_dir + 'cocoapods-tdfire-binary-config')
-        end
+        clone_default_config
       end
     end
   end

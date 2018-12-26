@@ -12,7 +12,14 @@ module Pod
 					初始化二进制插件
         DESC
 
+        def self.options
+          [
+            ['--without-ask', '直接下载配置'],
+          ].concat(super)
+        end
+
         def initialize(argv)
+          @without_ask = argv.flag?('without-ask')
           @asker = Pod::Tdfire::InitAsker.new
           super
         end
@@ -20,14 +27,18 @@ module Pod
         def run
           @asker.wellcome_message
 
-          hash = binary_config.setting_hash
+          if @without_ask
+            binary_config.clone_default_config
+          else 
+            hash = binary_config.setting_hash
 
-          Pod::Tdfire::InitAsker::QUESTIONS.each do |k, v|
-            default = hash[k] if hash
-            hash[k] = @asker.ask_with_answer(v, default)
+            Pod::Tdfire::InitAsker::QUESTIONS.each do |k, v|
+              default = hash[k] if hash
+              hash[k] = @asker.ask_with_answer(v, default)
+            end
+
+            binary_config.config_with_setting(hash)
           end
-
-          binary_config.config_with_setting(hash)
 
           @asker.done_message
         end
