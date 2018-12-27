@@ -9,6 +9,7 @@ require 'cocoapods-tdfire-binary/command/delete'
 require 'cocoapods-tdfire-binary/command/search'
 require 'cocoapods-tdfire-binary/command/list'
 require 'cocoapods-tdfire-binary/command/init'
+require 'cocoapods-tdfire-binary/command/version'
 require 'cocoapods-tdfire-binary/binary_config'
 
 module Pod
