@@ -20,6 +20,9 @@ module Pod
 
       # 源码依赖配置
       def tdfire_source(configurator)
+        configurator.call self
+        return 
+        
         tdfire_set_binary_strategy_flag
 
         if tdfire_use_source?
@@ -36,6 +39,8 @@ module Pod
 
       # 二进制依赖配置
       def tdfire_binary(configurator, &block)
+        return
+
         tdfire_set_binary_strategy_flag
 
         if !tdfire_use_source?
@@ -64,6 +69,8 @@ module Pod
 
       # 配置二进制文件下载、cache 住解压好的 framework
       def tdfire_set_binary_download_configurations
+        return
+
         tdfire_set_binary_strategy_flag
 
         tdfire_refactor.set_preserve_paths(tdfire_reference_spec)

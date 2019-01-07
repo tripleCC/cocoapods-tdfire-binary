@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoapods-tdfire-binary (1.4.30)
+    cocoapods-tdfire-binary (2.0.0)
       cocoapods (~> 1.2)
       cocoapods-packager (~> 1.5.0)
 
