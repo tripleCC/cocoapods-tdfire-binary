@@ -26,7 +26,7 @@ module Pod
 			end
 
       def first_podspec
-      	Dir["#{Dir.pwd}/*.podspec"].first
+      	Dir["#{Dir.pwd}/*.podspec"].sort.reverse.first
 			end
 
 			def private_sources

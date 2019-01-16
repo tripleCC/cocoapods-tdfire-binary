@@ -30,7 +30,7 @@ module Pod
 	      	@clean = argv.flag?('clean')
           @local = argv.flag?('local')
           @use_carthage = argv.flag?('use-carthage')
-	      	@spec_sources = argv.option('spec-sources')
+	      	@spec_sources = argv.option('spec-sources') || 'git@git.2dfire.net:ios/cocoapods-spec-binary.git,git@git.2dfire.net:ios/cocoapods-spec.git'
 					@subspecs= argv.option('subspecs')
 	      	@spec_file = first_podspec
 	      	@binary_first = argv.flag?('binary-first')
@@ -120,7 +120,7 @@ rm -fr swift-staticlibs
 
             argvs << "--local" if @local
 						argvs << "--subspecs=#{@subspecs}" unless @subspecs.nil?
-            
+
             package = Pod::Command::Package.new(CLAide::ARGV.new(argvs))
             package.validate!
             package.run
