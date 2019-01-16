@@ -54,6 +54,7 @@ module Pod
 				def build_by_pod_packager
 					# 组件有多个 platform 时，限制 cocoapods-packager 只打 ios 代码
 					Pod::Tdfire::BinaryStateStore.limit_platform = true
+					ENV['use_binaries'] = 'true'
 
 					spec = Specification.from_file(@spec_file)
 					prepare(spec)
