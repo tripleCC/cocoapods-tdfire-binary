@@ -22,5 +22,5 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'cocoapods', '~> 1.2'
   spec.add_runtime_dependency 'cocoapods-bin'
-  spec.add_runtime_dependency 'cocoapods-packager', '~> 1.5.0'
+  spec.add_runtime_dependency 'cocoapods-packager-pro', '~> 1.5.0'
 end

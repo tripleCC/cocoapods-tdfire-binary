@@ -4,6 +4,7 @@ require 'cocoapods_packager'
 require 'cocoapods-tdfire-binary/binary_url_manager'
 require 'cocoapods-tdfire-binary/binary_state_store'
 require 'cocoapods-tdfire-binary/binary_specification_refactor'
+require 'cocoapods-bin'
 
 module Pod
 	class Command
@@ -30,7 +31,7 @@ module Pod
 	      	@clean = argv.flag?('clean')
           @local = argv.flag?('local')
           @use_carthage = argv.flag?('use-carthage')
-	      	@spec_sources = argv.option('spec-sources') || 'git@git.2dfire.net:ios/cocoapods-spec-binary.git,git@git.2dfire.net:ios/cocoapods-spec.git'
+	      	@spec_sources = argv.option('spec-sources') || [:binary_source, :code_source].map { |m| Config.instance.sources_manager.send(m) }.map(&:url).join(',')
 					@subspecs= argv.option('subspecs')
 	      	@spec_file = first_podspec
 	      	@binary_first = argv.flag?('binary-first')
@@ -136,7 +137,7 @@ rm -fr swift-staticlibs
 
 					# cocoapods-packager 使用了 --exclude-deps 后，虽然没有把 dependency 的符号信息打进可执行文件，但是它把 dependency 的 bundle 给拷贝过来了 (builder.rb 229 copy_resources)
 					# 这里把多余的 bundle 删除
-					# https://github.com/CocoaPods/cocoapods-packager/pull/199
+					# https://github.com/CocoaPods/CocoaPodsds-packager/pull/199
 					resource_bundles = spec.tdfire_recursive_value('resource_bundles').map(&:keys).flatten.uniq
 					resources= spec.tdfire_recursive_value('resources').map { |r| r.split('/').last }
 					FileUtils.chdir("#{framework_path}/Versions/A/Resources") do

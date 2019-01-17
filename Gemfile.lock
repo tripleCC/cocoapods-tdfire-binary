@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    cocoapods-tdfire-binary (2.0.5)
+    cocoapods-tdfire-binary (2.0.6)
       cocoapods (~> 1.2)
       cocoapods-bin
-      cocoapods-packager (~> 1.5.0)
+      cocoapods-packager-pro (~> 1.5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -37,7 +37,7 @@ GEM
       nap (~> 1.0)
       ruby-macho (~> 1.1)
       xcodeproj (>= 1.5.7, < 2.0)
-    cocoapods-bin (0.0.8)
+    cocoapods-bin (0.0.9)
       cocoapods (~> 1.4)
       parallel
     cocoapods-core (1.5.3)
@@ -46,7 +46,7 @@ GEM
       nap (~> 1.0)
     cocoapods-deintegrate (1.0.2)
     cocoapods-downloader (1.2.2)
-    cocoapods-packager (1.5.0)
+    cocoapods-packager-pro (1.5.1)
       cocoapods (>= 1.1.1, < 2.0)
     cocoapods-plugins (1.0.0)
       nap
@@ -74,7 +74,7 @@ GEM
     nanaimo (0.2.6)
     nap (1.1.0)
     netrc (0.11.0)
-    parallel (1.12.1)
+    parallel (1.13.0)
     prettybacon (0.0.2)
       bacon (~> 1.2)
     rake (12.3.2)
