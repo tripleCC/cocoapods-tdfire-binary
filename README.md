@@ -2,6 +2,8 @@
 
 <a href="https://travis-ci.org/tripleCC/cocoapods-tdfire-binary"><img src="https://img.shields.io/travis/tripleCC/cocoapods-tdfire-binary/master.svg"></a>
 
+已不维护，参考 [cocoapods-bin](https://github.com/tripleCC/cocoapods-bin)
+
 组件二进制化辅助 CocoaPods 插件，**通过提前将组件打包成静态 framework，加快正式打包、组件 lint、组件发布的编译速度**。
 
 提供简易的源码/二进制依赖切换功能，方便开发调试。
