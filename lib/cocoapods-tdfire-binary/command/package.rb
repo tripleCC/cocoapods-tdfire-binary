@@ -122,7 +122,7 @@ rm -fr swift-staticlibs
             argvs << "--local" if @local
 						argvs << "--subspecs=#{@subspecs}" unless @subspecs.nil?
 
-            package = Pod::Command::Package.new(CLAide::ARGV.new(argvs))
+            package = Pod::Command::PackagePro.new(CLAide::ARGV.new(argvs))
             package.validate!
             package.run
 	        end
